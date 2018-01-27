@@ -1,0 +1,56 @@
+#hydrogen
+
+variable        sname index hydrogen
+units           electron
+newton          on
+boundary        p p p
+
+atom_style      electron
+
+read_data  	    432_20.11_0.30/data.lammps
+
+pair_style      eff/cut 20.15
+pair_coeff      * *
+timestep        0.005
+neigh_modify	  one 20000 page 200000
+
+#comm_modify	  vel yes
+group           at type 1
+group		        el type 2
+
+thermo          100
+
+# dump            1 all cfg 10000 output/all/all.*.cfg mass type xs ys zs
+# dump_modify     1 element C H
+
+# dump            4  el cfg 10000 output/all/el.*.cfg mass type xs ys zs
+# dump_modify     4 element C H
+
+compute         1a all property/atom spin eradius ervel
+dump            2 all custom 1000 output/all/all.*.lammpstrj id type q c_1a[1] c_1a[2] x y z vx vy vz c_1a[3]
+
+fix		          1 all nve/eff
+# fix             2 all nvt/eff temp 40000.0 40000.0 100.0
+fix 		        2 all temp/rescale/eff 100 40000 40000 0.02 1.0
+
+# compute       eff_energy components
+
+compute         effTemp all temp/eff
+compute         energies all pair eff/cut
+variable        eke equal c_energies[1]
+variable        epauli equal c_energies[2]
+variable        ecoul equal c_energies[3]
+variable        erres equal c_energies[4]
+
+thermo_style    custom step pe temp press vol v_eke v_epauli v_ecoul v_erres lx
+thermo_modify	temp effTemp
+
+dump            3 all xyz 1000 ${sname}.xyz
+
+
+run		          50000
+
+unfix           2
+
+run             100000
+write_data      h_03_40K_826N_diff_mass.data
