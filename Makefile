@@ -1,4 +1,7 @@
-all: test_lammpstrj
+all: dash
+
+dash:
+	python3 start.py
 
 test_log: test.py
 	python3 test.py log
