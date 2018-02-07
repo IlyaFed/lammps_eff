@@ -122,5 +122,5 @@ class system:
 
         self.set_callback(items)
 
-        self.app.run_server()
+        self.app.run_server(port = 8050, host = '0.0.0.')
 
