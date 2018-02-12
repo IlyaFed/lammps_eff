@@ -1,6 +1,6 @@
 # it's a common class of all system object
-from lib.common_object import dash_object
-
+from lib.common_object import *
+import numpy as np
 
 class coordinate_visualisation(dash_object):
     def load_step(self, Step, parametrs):
@@ -39,18 +39,18 @@ class coordinate_visualisation(dash_object):
             x = ions[0],
             y = ions[1],
             z = ions[2],
-            mode = 'markers',
             name = 'ions',
-            markers = dict( size = 5)
+            mode = 'markers',
+            marker = dict( size = 5)
         ))
         electrons = self.data.loc[self.current_index, 'electron']
         traces.append(go.Scatter3d(
             x=electrons[0],
             y=electrons[1],
             z=electrons[2],
-            mode='markers',
             name='electronss',
-            markers=dict(size=5)
+            mode = 'markers',
+            marker = dict( size = 5)
         ))
         return traces
 
@@ -88,7 +88,6 @@ class coordinate_visualisation(dash_object):
         '''
         Here we explain reaction into external step change
         '''
-
         @self.app.callback(
             dash.dependencies.Output(self.name, 'figure'),
             [dash.dependencies.Input(step_input, 'value')])
@@ -96,7 +95,17 @@ class coordinate_visualisation(dash_object):
             self.current_index = self.data[self.data['Step'] == selected_Step].index[0]
             return self.__update_graph()
 
-    def __get_html(self):
+
+
+    def add_app(self, app, step_input):
+        '''
+        Here we add Dash visualisation for our data
+        '''
+        self.app = app
+        self.__external_callback(step_input)
+        self.__internal_callback()
+
+    def get_html(self):
         '''
         Here we describe frontend of our object
         '''
@@ -106,13 +115,12 @@ class coordinate_visualisation(dash_object):
                         ),
                     style = {'width': '49%', 'display': 'inline-block'}
                     )
-                )
         return layout
 
     def __init__(self):
-        self.data = pd.Dataframe(columns=["Step", "ion", "electron"])
+        self.data = pd.DataFrame(columns=["Step", "ion", "electron"])
         self.current_index = 0
         self.graph_type = 'scatter'
-        self.name = 'Coordinate visualisation'
+        self.name = 'Coordinate visualisation' + str(random.randrange(200)) # it's for not one graph
 
 
