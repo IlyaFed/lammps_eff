@@ -76,7 +76,7 @@ class lammpstrj:
 
     def E_distribution_ion(self, parametrs):
         def sum_func(x):
-            return x['c_peatom'] + x['c_keatom']
+            return x['c_peatom']# + x['c_keatom']
 
         energy = parametrs[parametrs['type'] == 1.0].apply(sum_func, axis = 1)
         e_max = energy.max()
@@ -109,16 +109,6 @@ class lammpstrj:
         energy.apply(f_e_dist)
 
         return e
-
-    def Maxwell_e(self, parametrs):
-        energy = parametrs[parametrs['type'] == 2.0].apply(lambda x: x['c_peatom'] + x['c_keatom'], axis = 1)
-        e_max = energy.max()
-        e_min = energy.min()
-        e = np.zeros((2, self.el_e_dist_grid+1))
-        for i in range(100):
-            e[0][i] = e_min + (e_max - e_min) / 100. * i
-#        Maxwell_ion = [E**0.5*np.exp(-3*E/2/T_ion)
-        return 0
 
     def coordinates_ion(self, parametrs):
         our_param = parametrs[ parametrs['type'] == 1.0]
@@ -173,7 +163,8 @@ class lammpstrj:
             "E_dist_e": self.E_distribution_electron,
             "X_e": self.coordinates_electron,
             "X_i": self.coordinates_ion,
-            "X": self.coordinates
+            "X": self.coordinates,
+
         }
 
 class log:

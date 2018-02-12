@@ -2,18 +2,18 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
-
+  #  Maxwell_ion = [E**0.5*np.exp(-3*E/2/T_ion)
 class T_electron:
     def __init__(self, obj):
         self.obj= obj
 
     def layout(self):
-        self.obj.graphic_children.append(
+        self.obj.children_little.append(
             html.Div(
                 dcc.Graph(
                     id='T_e',
                     ),
-                style={'width': '49%', 'display': 'inline-block'}
+                style = self.obj.style_little
                 )
         )
 
@@ -24,17 +24,51 @@ class T_ion:
     def __init__(self, obj):
         self.obj= obj
     def layout(self):
-        self.obj.graphic_children.append(
+        self.obj.children_little.append(
             html.Div(
                 dcc.Graph(
                     id='T_i',
                     ),
-                style={'width': '49%', 'display': 'inline-block'}
+                style = self.obj.style_little
                 )
-        )
+            )
 
     def callback(self):
         self.obj.make_1D('T_i', ['T_i'])
+
+class E_distribution_ion:
+    def __init__(self, obj):
+        self.obj = obj
+
+    def layout(self):
+        self.obj.children_little.append(
+                html.Div(
+                    dcc.Graph(
+                        id='E_dist_i',
+                        ),
+                    style = self.obj.style_little
+                    )
+                )
+
+    def callback(self):
+        self.obj.make_2D('E_dist_i', ['E_dist_i'])
+
+class E_distribution_electron:
+    def __init__(self, obj):
+        self.obj = obj
+
+    def layout(self):
+        self.obj.children_little.append(
+                html.Div(
+                    dcc.Graph(
+                        id='E_dist_e',
+                        ),
+                    style = self.obj.style_little
+                    )
+                )
+
+    def callback(self):
+        self.obj.make_2D('E_dist_e', ['E_dist_e'])
 
 class X_coord:
 
@@ -44,12 +78,12 @@ class X_coord:
         self.mol_types = ['ion', 'electron']
 
     def layout(self):
-        self.obj.graphic_children.append(
+        self.obj.children_big.append(
                 html.Div(
                     dcc.Graph(
                         id=self.item,
                         ),
-                    style={'width': '49%', 'display': 'inline-block'}
+                    style = self.obj.style_big
                     )
                 )
     def callback(self):

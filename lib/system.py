@@ -15,7 +15,14 @@ class system:
     m_electron = 0
     functions = []
     items_functions = dict()
-    graphic_children = []
+    children_little = []
+    children_big = []
+    style_little = {'width': '33%', 'display': 'inline-block'}
+    style_big = {'width': '49%', 'display': 'inline-block'}
+    layout = go.Layout(
+            width = 500,
+            height = 300
+            )
 
     def read(self, fileplace, filetype):
         if filetype == 'lammpstrj':
@@ -45,7 +52,7 @@ class system:
 
             return {
                     'data': traces,
-                    'layout': go.Layout()
+                    'layout': self.layout
                     }
 
     def make_1D(self, item, columns):
@@ -74,7 +81,7 @@ class system:
 
             return {
                     'data': traces,
-                    'layout': go.Layout()
+                    'layout': self.layout
                     }
 
     def __init__(self, start, step, stop, m_ion, m_electron, functions):
@@ -87,7 +94,9 @@ class system:
         self.items_functions = {
                 'T_i': dfunc.T_ion(self),
                 'T_e': dfunc.T_electron(self),
-                'X': dfunc.X_coord(self)
+                'X': dfunc.X_coord(self),
+                'E_dist_i': dfunc.E_distribution_ion(self),
+                'E_dist_e': dfunc.E_distribution_electron(self)
                 }
     def set_callback(self, items):
         for item in items:
@@ -107,9 +116,12 @@ class system:
         )
 
         self.app.layout = html.Div([
-            html.Div(className = 'row', children = self.graphic_children),
-            html.Div(children = slider),
-            ])
+            html.Div(className = 'row', children = self.children_little),
+            html.Div(className = 'row', children = self.children_big),
+            html.Div(children = slider, className='twelve columns'),
+            ]
+#            className = 'twelve columns'
+            )
 
 
 
@@ -122,5 +134,5 @@ class system:
 
         self.set_callback(items)
 
-        self.app.run_server(port = 8050, host = '0.0.0.')
+        self.app.run_server() #port = 8050, host = '0.0.0.')
 
