@@ -37,12 +37,12 @@ class system(load):
             object.add_app(app = self.app, step_input = self.step_input)
         
         if self.server:
-            self.app.run_server(port = 8050, host = '0.0.0.')
+            self.app.run_server(port = 8050, host = '0.0.0.0')
         else:
             self.app.run_server()
 
-    def __init__(self, lammpstrj, logfile, objects, server = 0):
-        super(system, self).__init__(objects)
+    def __init__(self, lammpstrj, logfile, objects, server = 0, minstep = 0):
+        super(system, self).__init__(objects, minstep=minstep)
         self.load(lammpstrj=lammpstrj, logfile=logfile)
         self.server = server
         self.set_app()

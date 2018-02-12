@@ -19,7 +19,7 @@ class load:
                 llist = np.append(llist, [int(msdfile.split('.')[1])])
         llist.sort()
         self.start = int(llist[0])
-        self.step = int(llist[1] - llist[0])
+        self.step = max(int(llist[1] - llist[0]), self.minstep)
         self.stop = int(llist[-1])
         del llist
 
@@ -43,7 +43,6 @@ class load:
 
 
     def load_log(self, name):
-        #TODO доделать эту часть, она не объектно ориентированна
         """
         Read date from lammps log
         :param name: full name of you log
@@ -57,7 +56,7 @@ class load:
             print ("\nError (file not found)")
             pass
         p = Popen(["wc", "-l", "{:s}".format(name)], stdout=PIPE)
-        line_in_file = int(str(p.stdout.read()).split(" ")[2])
+        line_in_file = int(str(p.stdout.read()).split("b'")[1].split(name)[0])
         read_flag = 0
         for num_line, line in enumerate( open( name, 'r')):
             if (line[0] == 'S') and  (line.split()[0] == 'Step') and (read_flag == 0):
@@ -77,6 +76,7 @@ class load:
         del read_flag, data
         print ( "\ncomplete" )
 
-    def __init__(self, objects):
+    def __init__(self, objects, minstep):
         self.objects = objects
+        self.minstep = minstep
 
