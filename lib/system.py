@@ -35,10 +35,14 @@ class system(load):
             )
         for object in self.objects:
             object.add_app(app = self.app, step_input = self.step_input)
+        
+        if self.server:
+            self.app.run_server(port = 8050, host = '0.0.0.')
+        else:
+            self.app.run_server()
 
-        self.app.run_server() # (port = 8050, host = '0.0.0.')
-
-    def __init__(self, lammpstrj, logfile, objects):
+    def __init__(self, lammpstrj, logfile, objects, server = 0):
         super(system, self).__init__(objects)
         self.load(lammpstrj=lammpstrj, logfile=logfile)
+        self.server = server
         self.set_app()
