@@ -3,19 +3,12 @@ from lib.common_object import *
 import numpy as np
 
 
-class energy(dash_object):
-    def load_step(self, Step, parametrs):
+class pt_diagram(dash_object):
+    def load_log(self, parametrs):
         '''
         Here we upload step data and put it into data structure
         '''
-        k_boltz = 1.3806485279e-23
-        e_hartry = 27.2113845
-        # read ions temp
-        def sum_f(x):
-            return (x['c_peatom'] + x['c_keatom']) * e_hartry
-        ion = parametrs[parametrs['type'] == 1.0].apply(sum_f, axis = 1).sum()
-        electron = parametrs[parametrs['type'] == 2.0].apply(sum_f, axis = 1).sum()
-        self.data.loc[len(self.data)] = [Step, ion, electron, ion + electron]
+        self.data = pd.concat([parametrs['Step'], parametrs['Temp'], parametrs['Press']], axis = 1, keys = ['Step', 'Temp', 'Press'])
 
     def __get_scatter_trace(self):
         '''
@@ -25,33 +18,19 @@ class energy(dash_object):
         traces = []
 
         traces.append(go.Scatter(
-            x = self.data['Step'].values,
-            y = self.data['ion'].values,
-            name = 'ions',
-            mode = 'line'
-        ))
-        traces.append(go.Scatter(
-            x=self.data['Step'].values,
-            y=self.data['electron'].values,
-            name='electrons',
+            x=self.data['Press'].values,
+            y=self.data['Temp'].values,
             mode = 'line',
-        ))
-
-        traces.append(go.Scatter(
-            x=self.data['Step'].values,
-            y=self.data['all'].values,
-            name='full',
-            mode = 'line'
+            name = 'Data'
         ))
         # create line in choosen step
-        max_T = max(self.data['ion'].max(), self.data['electron'].max(), self.data['all'].max())
-        min_T = min(self.data['ion'].min(), self.data['electron'].min(), self.data['all'].min())
-        step = self.data.loc[self.current_index, 'Step']
+        max_T = max(self.data['Temp'].max(), self.data['Temp'].max())
+        min_T = min(self.data['Temp'].min(), self.data['Temp'].min())
+        press = self.data.loc[self.current_index, 'Press']
         traces.append(go.Scatter(
-            x = np.linspace(step, step, 100),
+            x = np.linspace(press, press, 100),
             y = np.linspace(min_T, max_T, 100),
-            name = 'current step',
-            mode='line'
+            name = 'current step'
         ))
 
         return traces
@@ -61,21 +40,19 @@ class energy(dash_object):
             return self.__get_scatter_trace()
     def __get_layout(self):
         return go.Layout(
-            showlegend = True,
-            width=500,
-            height=300,
-            title = 'Energy of system',
+            showlegend = False,
+            title = 'PT diagram',
             xaxis = dict(
                 showgrid = True,
                 zeroline = False,
                 showline = True,
-                title = 'Step'
+                title = 'Pressure, GPa'
             ),
             yaxis=dict(
                 showgrid=True,
                 zeroline=False,
                 showline=True,
-                title='Energy, eV'
+                title='Temperature, K'
             )
         )
     def __update_graph(self):
@@ -130,7 +107,6 @@ class energy(dash_object):
         return layout
 
     def __init__(self):
-        self.data = pd.DataFrame(columns=["Step", "ion", "electron", "all"])
         self.current_index = 0
         self.graph_type = 'scatter'
-        self.name = 'temperature' + str(random.randrange(200)) # it's for not one graph
+        self.name = 'PT' + str(random.randrange(200)) # it's for not one graph

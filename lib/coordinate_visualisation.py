@@ -41,7 +41,7 @@ class coordinate_visualisation(dash_object):
             z = ions[2],
             name = 'ions',
             mode = 'markers',
-            marker = dict( size = 5)
+            marker = dict( size = 2)
         ))
         electrons = self.data.loc[self.current_index, 'electron']
         traces.append(go.Scatter3d(
@@ -50,7 +50,7 @@ class coordinate_visualisation(dash_object):
             z=electrons[2],
             name='electronss',
             mode = 'markers',
-            marker = dict( size = 5)
+            marker = dict( size = 2)
         ))
         return traces
 

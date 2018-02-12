@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
+from subprocess import Popen, PIPE
 
 class load:
     def load_lammpstrj(self, path):
@@ -55,22 +56,25 @@ class load:
         except:
             print ("\nError (file not found)")
             pass
-
+        p = Popen(["wc", "-l", "{:s}".format(name)], stdout=PIPE)
+        line_in_file = int(str(p.stdout.read()).split(" ")[2])
         read_flag = 0
         for num_line, line in enumerate( open( name, 'r')):
             if (line[0] == 'S') and  (line.split()[0] == 'Step') and (read_flag == 0):
-                self.data = pd.DataFrame(columns=line.split())
+                data = pd.DataFrame(columns=line.split())
                 read_flag = 1
                 continue
             if read_flag:
-                print ( "\rread lammps log ({:6d} row)".format(num_line), end = '')
+                print ( "\rread lammps log ({:2d} %)".format(int(num_line/line_in_file * 100)), end = '')
                 try:
-                    self.data.loc[len(self.data)] = [float(i) for i in line.split()]
+                    data.loc[len(data)] = [float(i) for i in line.split()]
                 except ValueError:
                     read_flag = 0
-
-        self.data['Step'] = self.data['Step'].astype(int)
-        del read_flag
+        print("\rread lammps log ({:2d} %)".format(100))
+        data['Step'] = data['Step'].astype(int)
+        for object in self.objects:
+            object.load_log(data)
+        del read_flag, data
         print ( "\ncomplete" )
 
     def __init__(self, objects):

@@ -12,6 +12,14 @@ class dash_object:
         Here we upload step data and put it into data structure
         '''
 
+    def load_log(self, Step, parametrs):
+        '''
+        Here we get data from log lammps file
+        :param Step:
+        :param parametrs:
+        :return:
+        '''
+
     def __update_graph(self):
         '''
         Here we update graph with neccessary parametrs

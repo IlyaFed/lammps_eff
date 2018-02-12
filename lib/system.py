@@ -5,11 +5,9 @@ import dash_html_components as html
 
 class system(load):
 
-    def load(self, fileplace, filetype):
-        if filetype == 'lammpstrj':
-            self.load_lammpstrj(path = fileplace)
-        if filetype == 'log':
-            self.load_log(name = fileplace)
+    def load(self, lammpstrj, logfile):
+        self.load_lammpstrj(path = lammpstrj)
+        self.load_log(name = logfile)
 
     def set_app(self):
         self.app = dash.Dash()
@@ -38,15 +36,9 @@ class system(load):
         for object in self.objects:
             object.add_app(app = self.app, step_input = self.step_input)
 
-        self.app.run_server()
+        self.app.run_server() # (port = 8050, host = '0.0.0.')
 
-    def __init__(self, fileplace, objects, filetype = ''):
-        if filetype == '':
-            try:
-                filetype = fileplace.split('.')[-1]
-            except:
-                print ("error: need filetype")
-                exit(1)
+    def __init__(self, lammpstrj, logfile, objects):
         super(system, self).__init__(objects)
-        self.load(fileplace=fileplace, filetype=filetype)
+        self.load(lammpstrj=lammpstrj, logfile=logfile)
         self.set_app()

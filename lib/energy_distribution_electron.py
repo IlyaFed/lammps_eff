@@ -1,21 +1,47 @@
-# it's a common class of all system object
 from lib.common_object import *
 import numpy as np
 
-
-class energy(dash_object):
+class energy_distribution_electron(dash_object):
     def load_step(self, Step, parametrs):
         '''
         Here we upload step data and put it into data structure
         '''
-        k_boltz = 1.3806485279e-23
+
+        grid = 100
         e_hartry = 27.2113845
-        # read ions temp
-        def sum_f(x):
-            return (x['c_peatom'] + x['c_keatom']) * e_hartry
-        ion = parametrs[parametrs['type'] == 1.0].apply(sum_f, axis = 1).sum()
-        electron = parametrs[parametrs['type'] == 2.0].apply(sum_f, axis = 1).sum()
-        self.data.loc[len(self.data)] = [Step, ion, electron, ion + electron]
+
+        if self.energy == 'potential':
+            col_name = 'c_peatom'
+        else:
+            col_name = 'c_keatom'
+
+        energy = parametrs[parametrs['type'] == 2.0][col_name].apply(lambda x: x*e_hartry)
+        e_max = energy.max()
+        e_min = energy.min()
+        e = np.zeros((2, grid + 1))
+        for i in range(grid + 1):
+            e[0][i] = e_min + (e_max - e_min) / grid * i
+
+        def f_e_dist(x):
+            e[1][int((x - e_min) / (e_max - e_min) * grid)] += 1
+
+        energy.apply(f_e_dist)
+        '''
+        Temperature = 2. / 3. / (parametrs[parametrs['type'] == 1.0]['c_keatom'].mean() * e_hartry)
+        if self.energy == 'potential':
+            theory = e.copy()
+            for i in range(grid + 1):
+                theory[1][i] = np.exp(- theory[0][i] / Temperature )
+
+            theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
+        else:
+            theory = e.copy()
+            for i in range(grid + 1):
+                theory[1][i] = theory[0][i] ** 0.5 * np.exp(- theory[0][i] / Temperature)
+
+            theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
+        '''
+        self.data.loc[len(self.data)] = [Step, e]
 
     def __get_scatter_trace(self):
         '''
@@ -23,35 +49,12 @@ class energy(dash_object):
         :return:
         '''
         traces = []
-
+        distribution = self.data.loc[self.current_index, self.energy]
         traces.append(go.Scatter(
-            x = self.data['Step'].values,
-            y = self.data['ion'].values,
-            name = 'ions',
+            x = distribution[0],
+            y = distribution[1],
+            name = self.energy,
             mode = 'line'
-        ))
-        traces.append(go.Scatter(
-            x=self.data['Step'].values,
-            y=self.data['electron'].values,
-            name='electrons',
-            mode = 'line',
-        ))
-
-        traces.append(go.Scatter(
-            x=self.data['Step'].values,
-            y=self.data['all'].values,
-            name='full',
-            mode = 'line'
-        ))
-        # create line in choosen step
-        max_T = max(self.data['ion'].max(), self.data['electron'].max(), self.data['all'].max())
-        min_T = min(self.data['ion'].min(), self.data['electron'].min(), self.data['all'].min())
-        step = self.data.loc[self.current_index, 'Step']
-        traces.append(go.Scatter(
-            x = np.linspace(step, step, 100),
-            y = np.linspace(min_T, max_T, 100),
-            name = 'current step',
-            mode='line'
         ))
 
         return traces
@@ -59,23 +62,24 @@ class energy(dash_object):
     def __get_trace(self):
         if self.graph_type == 'scatter':
             return self.__get_scatter_trace()
+
     def __get_layout(self):
         return go.Layout(
             showlegend = True,
             width=500,
             height=300,
-            title = 'Energy of system',
+            title = 'Distribution of {:s} electron energy'.format(self.energy),
             xaxis = dict(
                 showgrid = True,
                 zeroline = False,
                 showline = True,
-                title = 'Step'
+                title = 'Energy, eV'
             ),
             yaxis=dict(
                 showgrid=True,
                 zeroline=False,
                 showline=True,
-                title='Energy, eV'
+                title='Distribution'
             )
         )
     def __update_graph(self):
@@ -129,8 +133,11 @@ class energy(dash_object):
                     )
         return layout
 
-    def __init__(self):
-        self.data = pd.DataFrame(columns=["Step", "ion", "electron", "all"])
+    def __init__(self, energy):
+        self.data = pd.DataFrame(columns=["Step", energy])
         self.current_index = 0
+        self.energy = energy
         self.graph_type = 'scatter'
-        self.name = 'temperature' + str(random.randrange(200)) # it's for not one graph
+        self.name = 'energy_distribution_electron' + str(random.randrange(200)) # it's for not one graph
+
+
