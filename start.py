@@ -9,7 +9,6 @@ from lib.pt_diagram import *
 path = './test/all'
 logfile = './test/log.log'
 objects = [coordinate_visualisation(),
-           pt_diagram(),
            temperature(),
            energy_distribution_ion('potential'), energy_distribution_ion('kinetic'),
            energy_distribution_electron('potential'), energy_distribution_electron('kinetic'),
