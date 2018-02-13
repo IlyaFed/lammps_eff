@@ -21,7 +21,7 @@ class pt_diagram(dash_object):
         traces.append(go.Scatter(
             x=self.data['Press'].values,
             y=self.data['Temp'].values,
-            mode = 'line',
+            mode = 'marker',
             name = 'Data'
         ))
         # create line in choosen step
