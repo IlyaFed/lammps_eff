@@ -69,19 +69,10 @@ class pt_diagram(dash_object):
             'layout': layout
         }
 
-    def __internal_callback(self):
+    def _internal_callback(self):
         '''
         Here we explain all callback which caused bu internal parametrs changes
         '''
-
-
-    def add_app(self, app, step_input):
-        '''
-        Here we add Dash visualisation for our data
-        '''
-        self.app = app
-        self.__external_callback(step_input)
-        self.__internal_callback()
 
     def get_html(self):
         '''
