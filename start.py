@@ -15,4 +15,4 @@ objects = [coordinate_visualisation(),
            energy_distribution_electron('potential'), energy_distribution_electron('kinetic'),
            energy()]
 
-hydrogen = system(lammpstrj = path, logfile = logfile, objects = objects, server = 1, minstep = 30000)
+hydrogen = system(lammpstrj = path, logfile = logfile, objects = objects, server = 1, minstep = 30000, backup_path=".backup/")

@@ -24,7 +24,7 @@ class load:
         del llist
 
         for read_step in range(self.start, self.stop + self.step, self.step):
-            print ("\rread lammpstrj: ({:2d} %)".format(int(100.*(read_step-self.start)/(self.stop-self.start + self.step))), end = '')
+            print ("\rread lammpstrj: ( {:3d} %)".format(int(100.*(read_step-self.start)/(self.stop-self.start + self.step))), end = '')
             file_name = "all.{:d}.lammpstrj".format(read_step)
             try:
                 os.stat(path + file_name)
@@ -39,7 +39,7 @@ class load:
                     step_pandas.loc[len(step_pandas)] = [float(word) for word in line]
             for object in self.objects:
                 object.load_step(read_step, step_pandas)
-        print ("\rread lammpstrj: (100 %)")
+        print ("\rread lammpstrj: ( 100 %)")
 
 
     def load_log(self, name):
