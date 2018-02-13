@@ -45,12 +45,12 @@ class dash_object:
 
 
     def save(self, path="./"):
-        self.data.to_hdf(path + "." + self.name)
+        self.data.to_pickle(path + "." + self.name + ".pkl")
         print ("\rsave: {:30s}".format(self.name), end = "")
 
     def load(self, path="./"):
         try:
-            os.stat(path + "." + self.name)
+            os.stat(path + "." + self.name + ".pkl")
         except:
             print("\rload: {:30s} no ".format(self.name), end="")
             self.load_flag = 0
@@ -58,7 +58,7 @@ class dash_object:
 
         print("\rload: {:30s} yes".format(self.name), end="")
         self.load_flag = 1
-        self.data.read_hdf(path + "." + self.name)
+        self.data.read_pickle(path + "." + self.name + ".pkl")
         return 0
 
     def get_html(self):
