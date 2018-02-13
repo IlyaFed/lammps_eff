@@ -56,18 +56,18 @@ class dash_object:
     def save(self, path="./"):
         name = path + "." + self.name + ".pkl"
         self.data.to_pickle(name)
-        print ("save: {:30s}".format(self.name))
+        print ("save: {:100s}".format(self.name))
 
     def load(self, path="./"):
         name = path + "." + self.name + ".pkl"
         my_file = Path(name)
         if my_file.is_file():
-            print("load: {:30s} yes".format(self.name))
+            print("load: {:100s} yes".format(self.name))
             self.load_flag = 1
             self.data = pd.read_pickle(name)
             return 0
 
-        print("load: {:30s} no ".format(self.name))
+        print("load: {:100s} no ".format(self.name))
         self.load_flag = 0
         return 1
 

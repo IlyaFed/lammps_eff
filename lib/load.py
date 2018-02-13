@@ -41,6 +41,24 @@ class load:
                 object.load_step(read_step, step_pandas)
         print ("\r{:30s} 100 %".format("read lammpstrj"))
 
+    def load_step(self, path):
+        """
+        Read lammpstrj file and apply function
+        :param path: path to you lammpstr files
+        """
+        print ( "\r{:30s} ".format("read lammpstrj"), end = '')
+        if path[-1] != '/':
+            path = path + '/'
+
+        llist = np.array([])
+        for msdfile in os.listdir(path):
+            if msdfile.split('.')[-1] == 'lammpstrj':
+                llist = np.append(llist, [int(msdfile.split('.')[1])])
+        llist.sort()
+        self.start = int(llist[0])
+        self.step = max(int(llist[1] - llist[0]), self.minstep)
+        self.stop = int(llist[-1])
+        del llist
 
     def load_log(self, name):
         """
