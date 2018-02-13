@@ -41,7 +41,7 @@ class pt_diagram(dash_object):
             max_T = max(max_T, max(self.experimental_data[item][0]))
             min_T = max(min_T, min(self.experimental_data[item][0]))
 
-        press = self.data.loc[self.current_index, 'Press']
+        press = self.data.loc[self.current_index, 'Press']/1e9
         traces.append(go.Scatter(
             x = np.linspace(press, press, 100),
             y = np.linspace(min_T, max_T, 100),
