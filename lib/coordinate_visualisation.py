@@ -85,26 +85,6 @@ class coordinate_visualisation(dash_object):
         Here we explain all callback which caused bu internal parametrs changes
         '''
 
-    def _external_callback(self, step_input):
-        '''
-        Here we explain reaction into external step change
-        '''
-        @self.app.callback(
-            dash.dependencies.Output(self.name, 'figure'),
-            [dash.dependencies.Input(step_input, 'value')])
-        def update_figure(selected_Step):
-            print (self.name, selected_Step)
-            self.current_index = self.data[self.data['Step'] == selected_Step].index[0]
-            return self._update_graph()
-
-    def add_app(self, app, step_input):
-        '''
-        Here we add Dash visualisation for our data
-        '''
-        self.app = app
-        self._external_callback(step_input)
-        self._internal_callback()
-
     def get_html(self):
         '''
         Here we describe frontend of our object
