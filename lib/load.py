@@ -46,7 +46,6 @@ class load:
         Read lammpstrj file and apply function
         :param path: path to you lammpstr files
         """
-        print ( "\r{:30s} ".format("read lammpstrj"), end = '')
         if path[-1] != '/':
             path = path + '/'
 
