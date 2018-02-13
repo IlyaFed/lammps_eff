@@ -46,7 +46,7 @@ class system(load):
         load_flag = 0
         for object in objects:
             load_flag += object.load(path=backup_path)
-        print ("\rload: {:30s}      ".format("success"))
+        print ("\rload: {:30s}    ".format("success"))
 
         if load_flag:
             self.load(lammpstrj=lammpstrj, logfile=logfile)

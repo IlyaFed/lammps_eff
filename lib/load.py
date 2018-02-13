@@ -9,7 +9,7 @@ class load:
         Read lammpstrj file and apply function
         :param path: path to you lammpstr files
         """
-        print ( "\rread lammpstrj:", end = '')
+        print ( "\r{:30s} ".format("read lammpstrj", end = '')
         if path[-1] != '/':
             path = path + '/'
 
@@ -24,7 +24,7 @@ class load:
         del llist
 
         for read_step in range(self.start, self.stop + self.step, self.step):
-            print ("\rread lammpstrj: ( {:3d} %)".format(int(100.*(read_step-self.start)/(self.stop-self.start + self.step))), end = '')
+            print ("\r{:30s} {:3d} %".format("read lammpstrj", int(100.*(read_step-self.start)/(self.stop-self.start + self.step))), end = '')
             file_name = "all.{:d}.lammpstrj".format(read_step)
             try:
                 os.stat(path + file_name)
@@ -39,7 +39,7 @@ class load:
                     step_pandas.loc[len(step_pandas)] = [float(word) for word in line]
             for object in self.objects:
                 object.load_step(read_step, step_pandas)
-        print ("\rread lammpstrj: ( 100 %)")
+        print ("\r{:30s} 100 %".format("read lammpstrj"))
 
 
     def load_log(self, name):
@@ -64,12 +64,12 @@ class load:
                 read_flag = 1
                 continue
             if read_flag:
-                print ( "\rread lammps log ({:2d} %)".format(int(num_line/line_in_file * 100)), end = '')
+                print ( "\r{:30s} {:3d} %".format("read lammps log", int(num_line/line_in_file * 100)), end = '')
                 try:
                     data.loc[len(data)] = [float(i) for i in line.split()]
                 except ValueError:
                     read_flag = 0
-        print("\rread lammps log ({:2d} %)".format(100))
+        print("\r{:30s} {:3d} %".format("read lammps log", 100))
         data['Step'] = data['Step'].astype(int)
         for object in self.objects:
             object.load_log(data)
