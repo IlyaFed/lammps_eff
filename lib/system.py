@@ -37,12 +37,13 @@ class system(load):
             object.add_app(app = self.app, step_input = self.step_input)
         
         if self.server:
-            self.app.run_server(port = 8050, host = '0.0.0.0')
+            self.app.run_server(port = self.port, host = '0.0.0.0')
         else:
             self.app.run_server()
 
-    def __init__(self, lammpstrj, logfile, objects, server = 0, minstep = 0, backup_path = "./"):
+    def __init__(self, lammpstrj, logfile, objects, server = 0, minstep = 0, backup_path = "./", port = 8050):
         super(system, self).__init__(objects, minstep=minstep)
+        self.port = port
         load_flag = 0
         for object in self.objects:
             load_flag += object.load(path=backup_path)

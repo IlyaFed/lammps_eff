@@ -11,6 +11,7 @@ class pt_diagram(dash_object):
         if self.load_flag:
             return 0
         self.data = pd.concat([parametrs['Step'], parametrs['Temp'], parametrs['Press']], axis = 1, keys = ['Step', 'Temp', 'Press'])
+
     def __get_scatter_trace(self):
         '''
         Here we create scatter trace for graph
@@ -24,9 +25,22 @@ class pt_diagram(dash_object):
             mode = 'marker',
             name = 'Data'
         ))
+
         # create line in choosen step
         max_T = max(self.data['Temp'].max(), self.data['Temp'].max())
         min_T = min(self.data['Temp'].min(), self.data['Temp'].min())
+
+
+        for item in list(self.experimental_data.keys()):
+            traces.append(go.Scatter(
+            x=self.experimental_data[item][1],
+            y=self.experimental_data[item][0],
+            mode = 'marker',
+            name = item
+            ))
+            max_T = max(max_T, max(self.experimental_data[item][0]))
+            min_T = max(min_T, min(self.experimental_data[item][0]))
+
         press = self.data.loc[self.current_index, 'Press']
         traces.append(go.Scatter(
             x = np.linspace(press, press, 100),
@@ -39,6 +53,7 @@ class pt_diagram(dash_object):
     def __get_trace(self):
         if self.graph_type == 'scatter':
             return self.__get_scatter_trace()
+
     def __get_layout(self):
         return go.Layout(
             showlegend = False,
@@ -50,12 +65,14 @@ class pt_diagram(dash_object):
                 title = 'Pressure, GPa'
             ),
             yaxis=dict(
+                type='log',
                 showgrid=True,
                 zeroline=False,
                 showline=True,
                 title='Temperature, K'
             )
         )
+
     def _update_graph(self):
         '''
         Here we update graph with neccessary parametrs
@@ -73,6 +90,7 @@ class pt_diagram(dash_object):
         Here we explain all callback which caused bu internal parametrs changes
         '''
 
+
     def get_html(self):
         '''
         Here we describe frontend of our object
@@ -85,7 +103,8 @@ class pt_diagram(dash_object):
                     )
         return layout
 
-    def __init__(self):
+    def __init__(self, experimental_data = dict()):
         self.current_index = 0
         self.graph_type = 'scatter'
         self.name = 'PT'
+        self.experimental_data = experimental_data
