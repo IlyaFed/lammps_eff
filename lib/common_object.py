@@ -31,10 +31,31 @@ class dash_object:
         Here we explain all callback wich caused bu internal parametrs changes
         '''
 
+
     def __external_callback(self, step_input):
         '''
         Here we explain reaction into external step change
         '''
+        @self.app.callback(
+            dash.dependencies.Output(self.name, 'figure'),
+            [dash.dependencies.Input(step_input, 'value')])
+        def update_figure(selected_Step):
+            self.current_index = self.data[self.data['Step'] == selected_Step].index[0]
+            return self.__update_graph()
+
+
+    def save(self, path="./"):
+        self.data.to_hdf(path + "." + self.name)
+
+    def load(self, path="./"):
+        try:
+            os.stat(path + "." + self.name)
+        except:
+            self.load_flag = 0
+            return 1
+        self.load_flag = 1
+        self.data.read_hdf(path + "." + self.name)
+        return 0
 
     def get_html(self):
         '''
@@ -43,6 +64,8 @@ class dash_object:
     def __init__(self):
         self.data = pd.DataFrame(columns=["Step", "data"])
         self.current_index = 0
+        self.name = "test"
+        self.load_flag = 1
 
 '''
 k_boltz = 1.3806485279e-23

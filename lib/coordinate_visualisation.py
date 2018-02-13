@@ -9,6 +9,8 @@ class coordinate_visualisation(dash_object):
         Here we upload step data and put it into data structure
         '''
         # read ions coordinates
+        if self.load_flag:
+            return 0
         our_param = parametrs[parametrs['type'] == 1.0]
         n = our_param.shape[0]
         coord_ion = np.zeros((3, n))
@@ -83,20 +85,6 @@ class coordinate_visualisation(dash_object):
         Here we explain all callback which caused bu internal parametrs changes
         '''
 
-
-    def __external_callback(self, step_input):
-        '''
-        Here we explain reaction into external step change
-        '''
-        @self.app.callback(
-            dash.dependencies.Output(self.name, 'figure'),
-            [dash.dependencies.Input(step_input, 'value')])
-        def update_figure(selected_Step):
-            self.current_index = self.data[self.data['Step'] == selected_Step].index[0]
-            return self.__update_graph()
-
-
-
     def add_app(self, app, step_input):
         '''
         Here we add Dash visualisation for our data
@@ -121,6 +109,6 @@ class coordinate_visualisation(dash_object):
         self.data = pd.DataFrame(columns=["Step", "ion", "electron"])
         self.current_index = 0
         self.graph_type = 'scatter'
-        self.name = 'Coordinate visualisation' + str(random.randrange(200)) # it's for not one graph
+        self.name = 'Coordinate visualisation'
 
 

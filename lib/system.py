@@ -41,8 +41,14 @@ class system(load):
         else:
             self.app.run_server()
 
-    def __init__(self, lammpstrj, logfile, objects, server = 0, minstep = 0):
+    def __init__(self, lammpstrj, logfile, objects, server = 0, minstep = 0, backup_path = "./"):
         super(system, self).__init__(objects, minstep=minstep)
-        self.load(lammpstrj=lammpstrj, logfile=logfile)
+        load_flag = 0
+        for object in objects:
+            load_flag += object.load(path=backup_path)
+        if load_flag:
+            self.load(lammpstrj=lammpstrj, logfile=logfile)
+            for object in objects:
+                object.save(path = backup_path)
         self.server = server
         self.set_app()

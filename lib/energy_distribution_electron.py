@@ -6,7 +6,8 @@ class energy_distribution_electron(dash_object):
         '''
         Here we upload step data and put it into data structure
         '''
-
+        if self.load_flag:
+            return 0
         grid = 100
         e_hartry = 27.2113845
 
@@ -99,20 +100,6 @@ class energy_distribution_electron(dash_object):
         Here we explain all callback which caused bu internal parametrs changes
         '''
 
-
-    def __external_callback(self, step_input):
-        '''
-        Here we explain reaction into external step change
-        '''
-        @self.app.callback(
-            dash.dependencies.Output(self.name, 'figure'),
-            [dash.dependencies.Input(step_input, 'value')])
-        def update_figure(selected_Step):
-            self.current_index = self.data[self.data['Step'] == selected_Step].index[0]
-            return self.__update_graph()
-
-
-
     def add_app(self, app, step_input):
         '''
         Here we add Dash visualisation for our data
@@ -138,6 +125,6 @@ class energy_distribution_electron(dash_object):
         self.current_index = 0
         self.energy = energy
         self.graph_type = 'scatter'
-        self.name = 'energy_distribution_electron' + str(random.randrange(200)) # it's for not one graph
+        self.name = 'energy_distribution_electron_{:s}'.format(energy)
 
 

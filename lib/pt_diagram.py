@@ -8,6 +8,8 @@ class pt_diagram(dash_object):
         '''
         Here we upload step data and put it into data structure
         '''
+        if self.load_flag:
+            return 0
         self.data = pd.concat([parametrs['Step'], parametrs['Temp'], parametrs['Press']], axis = 1, keys = ['Step', 'Temp', 'Press'])
 
     def __get_scatter_trace(self):
@@ -73,19 +75,6 @@ class pt_diagram(dash_object):
         '''
 
 
-    def __external_callback(self, step_input):
-        '''
-        Here we explain reaction into external step change
-        '''
-        @self.app.callback(
-            dash.dependencies.Output(self.name, 'figure'),
-            [dash.dependencies.Input(step_input, 'value')])
-        def update_figure(selected_Step):
-            self.current_index = self.data[self.data['Step'] == selected_Step].index[0]
-            return self.__update_graph()
-
-
-
     def add_app(self, app, step_input):
         '''
         Here we add Dash visualisation for our data
@@ -109,4 +98,4 @@ class pt_diagram(dash_object):
     def __init__(self):
         self.current_index = 0
         self.graph_type = 'scatter'
-        self.name = 'PT' + str(random.randrange(200)) # it's for not one graph
+        self.name = 'PT'
