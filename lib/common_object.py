@@ -46,13 +46,17 @@ class dash_object:
 
     def save(self, path="./"):
         self.data.to_hdf(path + "." + self.name)
+        print ("\rsave: {:30s}".format(self.name), end = "")
 
     def load(self, path="./"):
         try:
             os.stat(path + "." + self.name)
         except:
+            print("\rload: {:30s} no ".format(self.name), end="")
             self.load_flag = 0
             return 1
+
+        print("\rload: {:30s} yes".format(self.name), end="")
         self.load_flag = 1
         self.data.read_hdf(path + "." + self.name)
         return 0

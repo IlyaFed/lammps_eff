@@ -18,7 +18,7 @@ class system(load):
             min=self.start,
             max=self.stop,
             value=self.start,
-            step=None,
+            step=self.step*10,
             marks={str(Step): str(Step) for Step in range(self.start, self.stop, self.step)}
         )
 
@@ -46,9 +46,12 @@ class system(load):
         load_flag = 0
         for object in objects:
             load_flag += object.load(path=backup_path)
+        print ("\rload: {:30s} success".format("result"))
+
         if load_flag:
             self.load(lammpstrj=lammpstrj, logfile=logfile)
             for object in objects:
                 object.save(path = backup_path)
+            print("\rsave: {:30s} success".format("result"))
         self.server = server
         self.set_app()
