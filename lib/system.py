@@ -54,6 +54,6 @@ class system(load):
                 object.save(path = backup_path)
             print("save: {:40s}".format("success"))
         else:
-            self.load_step(lammpstrj=lammpstrj)
+            self.load_step(path=lammpstrj)
         self.server = server
         self.set_app()
