@@ -64,7 +64,7 @@ class dash_object:
         if my_file.is_file():
             print("load: {:30s} yes".format(self.name))
             self.load_flag = 1
-            self.data.read_pickle(name)
+            self.data = pd.read_pickle(name)
             return 0
 
         print("load: {:30s} no ".format(self.name))
