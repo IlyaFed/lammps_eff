@@ -24,7 +24,7 @@ class load:
         del llist
 
         for read_step in range(self.start, self.stop + self.step, self.step):
-            print ("\r{:30s} {:3d} %".format("read lammpstrj", int(100.*(read_step-self.start)/(self.stop-self.start + self.step))), end = '')
+            print ("\r{:30s} {:3d} %".format("read lammpstrj", int(100.*(read_step-self.start)/(self.stop-self.start + self.step) )), end = '')
             file_name = "all.{:d}.lammpstrj".format(read_step)
             try:
                 os.stat(path + file_name)

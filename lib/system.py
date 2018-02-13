@@ -41,17 +41,17 @@ class system(load):
         else:
             self.app.run_server()
 
-    def __init__(self, lammpstrj, logfile, objects, server = 0, minstep = 0, backup_path = "./"):
+    def __init__(self, lammpstrj, logfile, objects, server = 0, minstep = 40000, backup_path = "./"):
         super(system, self).__init__(objects, minstep=minstep)
         load_flag = 0
         for object in objects:
             load_flag += object.load(path=backup_path)
-        print ("\rload: {:30s}    ".format("success"))
+        print ("\rload: {:40s}".format("checked"))
 
         if load_flag:
             self.load(lammpstrj=lammpstrj, logfile=logfile)
             for object in objects:
                 object.save(path = backup_path)
-            print("\rsave: {:30s}".format("success"))
+            print("\rsave: {:40s}".format("success"))
         self.server = server
         self.set_app()
