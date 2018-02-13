@@ -74,10 +74,13 @@ class load:
             pass
         p = Popen(["wc", "-l", "{:s}".format(name)], stdout=PIPE)
         line_in_file = int(str(p.stdout.read()).split("b'")[1].split(name)[0])
+        start_flag = 1
         read_flag = 0
         for num_line, line in enumerate( open( name, 'r')):
             if (line[0] == 'S') and  (line.split()[0] == 'Step') and (read_flag == 0):
-                data = pd.DataFrame(columns=line.split())
+                if start_flag:
+                    data = pd.DataFrame(columns=line.split())
+                    start_flag = 0
                 read_flag = 1
                 continue
             if read_flag:

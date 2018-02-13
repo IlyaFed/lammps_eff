@@ -6,20 +6,20 @@ import dash_html_components as html
 class system(load):
 
     def load(self, lammpstrj, logfile):
-        self.load_lammpstrj(path = lammpstrj)
+        #self.load_lammpstrj(path = lammpstrj)
         self.load_log(name = logfile)
 
     def set_app(self):
         self.app = dash.Dash()
         self.step_input = 'Step-slider'
-
+        slider_step = self.step
         slider = dcc.Slider(
             id=self.step_input,
             min=self.start,
             max=self.stop,
             value=self.start,
-            step= int( (self.start - self.step)/100/self.step) * self.step , # int number of step
-            marks={str(Step): str(Step) for Step in range(self.start, self.stop, self.step)}
+            step= slider_step, # int number of step
+            marks={str(Step): str(Step) for Step in range(self.start, self.stop, slider_step)}
         )
 
         children = []
@@ -54,10 +54,6 @@ class system(load):
                 object.save(path = backup_path)
             print("save: {:40s}".format("success"))
         else:
-            #self.load_step(path=lammpstrj) TODO uncomment
-            self.start = 1000
-            self.stop = 161000
-            self.step = 40000
-        print (self.objects[1].data)
+            self.load_step(path=lammpstrj)
         self.server = server
         self.set_app()
