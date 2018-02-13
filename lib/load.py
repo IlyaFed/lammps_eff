@@ -65,8 +65,8 @@ class load:
                 continue
             if read_flag:
                 print ( "\r{:30s} {:3d} %".format("read lammps log", int(num_line/line_in_file * 100)), end = '')
-                if num_line > 300:
-                    break  # TODO DEL IT!
+                #if num_line > 300:
+                #    break  # TODO DEL IT!
                 try:
                     data.loc[len(data)] = [float(i) for i in line.split()]
                 except ValueError:
