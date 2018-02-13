@@ -73,7 +73,7 @@ class temperature(dash_object):
                 title='Temperature, K'
             )
         )
-    def __update_graph(self):
+    def _update_graph(self):
         '''
         Here we update graph with neccessary parametrs
         :return:

@@ -83,7 +83,7 @@ class energy_distribution_electron(dash_object):
                 title='Distribution'
             )
         )
-    def __update_graph(self):
+    def _update_graph(self):
         '''
         Here we update graph with neccessary parametrs
         :return:

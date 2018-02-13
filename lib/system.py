@@ -54,7 +54,10 @@ class system(load):
                 object.save(path = backup_path)
             print("save: {:40s}".format("success"))
         else:
-            self.load_step(path=lammpstrj)
-        print (self.objects[0].data)
+            #self.load_step(path=lammpstrj) TODO uncomment
+            self.start = 1000
+            self.stop = 161000
+            self.step = 40000
+        print (self.objects[1].data)
         self.server = server
         self.set_app()

@@ -68,7 +68,7 @@ class coordinate_visualisation(dash_object):
         if self.graph_type == 'surface':
             return self.__get_surface_trace()
 
-    def __update_graph(self):
+    def _update_graph(self):
         '''
         Here we update graph with neccessary parametrs
         :return:
