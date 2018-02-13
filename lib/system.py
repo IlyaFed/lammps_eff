@@ -18,7 +18,7 @@ class system(load):
             min=self.start,
             max=self.stop,
             value=self.start,
-            step= int( (self.start - self.step)/100) ,
+            step= int( (self.start - self.step)/100/self.step) * self.step , # int number of step
             marks={str(Step): str(Step) for Step in range(self.start, self.stop, self.step)}
         )
 

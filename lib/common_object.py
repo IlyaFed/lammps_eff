@@ -5,6 +5,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
 import random
+from pathlib import Path
 
 class dash_object:
     def load_step(self, Step, parametrs):
@@ -55,21 +56,20 @@ class dash_object:
     def save(self, path="./"):
         name = path + "." + self.name + ".pkl"
         self.data.to_pickle(name)
-        print ("save: {:30s}".format(self.name), end = "")
+        print ("save: {:30s}".format(self.name))
 
     def load(self, path="./"):
         name = path + "." + self.name + ".pkl"
-        try:
-            os.stat(name)
-        except:
-            print("load: {:30s} no ".format(self.name), end="")
-            self.load_flag = 0
-            return 1
+        my_file = Path(name)
+        if my_file.is_file():
+            print("load: {:30s} yes".format(self.name))
+            self.load_flag = 1
+            self.data.read_pickle(name)
+            return 0
 
-        print("load: {:30s} yes".format(self.name), end="")
-        self.load_flag = 1
-        self.data.read_pickle(name)
-        return 0
+        print("load: {:30s} no ".format(self.name))
+        self.load_flag = 0
+        return 1
 
     def get_html(self):
         '''
