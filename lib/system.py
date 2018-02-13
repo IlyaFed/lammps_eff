@@ -46,12 +46,12 @@ class system(load):
         load_flag = 0
         for object in objects:
             load_flag += object.load(path=backup_path)
-        print ("\rload: {:30s} success".format("result"))
+        print ("\rload: {:30s}      ".format("success"))
 
         if load_flag:
             self.load(lammpstrj=lammpstrj, logfile=logfile)
             for object in objects:
                 object.save(path = backup_path)
-            print("\rsave: {:30s} success".format("result"))
+            print("\rsave: {:30s}".format("success"))
         self.server = server
         self.set_app()
