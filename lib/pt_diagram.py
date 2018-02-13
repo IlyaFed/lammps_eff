@@ -11,7 +11,6 @@ class pt_diagram(dash_object):
         if self.load_flag:
             return 0
         self.data = pd.concat([parametrs['Step'], parametrs['Temp'], parametrs['Press']], axis = 1, keys = ['Step', 'Temp', 'Press'])
-
     def __get_scatter_trace(self):
         '''
         Here we create scatter trace for graph
