@@ -53,20 +53,22 @@ class dash_object:
         self._internal_callback()
 
     def save(self, path="./"):
-        self.data.to_pickle(path + "." + self.name + ".pkl")
-        print ("\rsave: {:30s}".format(self.name), end = "")
+        name = path + "." + self.name + ".pkl"
+        self.data.to_pickle(name)
+        print ("save: {:30s}".format(self.name), end = "")
 
     def load(self, path="./"):
+        name = path + "." + self.name + ".pkl"
         try:
-            os.stat(path + "." + self.name + ".pkl")
+            os.stat(name)
         except:
-            print("\rload: {:30s} no ".format(self.name), end="")
+            print("load: {:30s} no ".format(self.name), end="")
             self.load_flag = 0
             return 1
 
-        print("\rload: {:30s} yes".format(self.name), end="")
+        print("load: {:30s} yes".format(self.name), end="")
         self.load_flag = 1
-        self.data.read_pickle(path + "." + self.name + ".pkl")
+        self.data.read_pickle(name)
         return 0
 
     def get_html(self):
