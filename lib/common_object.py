@@ -41,6 +41,7 @@ class dash_object:
             dash.dependencies.Output(self.name, 'figure'),
             [dash.dependencies.Input(step_input, 'value')])
         def update_figure(selected_Step):
+            print (name, selected_Step)
             self.current_index = self.data[self.data['Step'] == selected_Step].index[0]
             return self._update_graph()
 
