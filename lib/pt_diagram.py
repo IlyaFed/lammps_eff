@@ -20,8 +20,8 @@ class pt_diagram(dash_object):
         traces = []
 
         traces.append(go.Scatter(
-            x=self.data['Press'].values/1e9,
-            y=self.data['Temp'].values/1e9,
+            x=self.data['Press'].values/1e9, # GPa
+            y=self.data['Temp'].values,
             mode = 'marker',
             name = 'Data'
         ))
