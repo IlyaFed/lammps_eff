@@ -20,19 +20,19 @@ class dash_object:
         :return:
         '''
 
-    def __update_graph(self):
+    def _update_graph(self):
         '''
         Here we update graph with neccessary parametrs
         :return:
         '''
 
-    def __internal_callback(self):
+    def _internal_callback(self):
         '''
         Here we explain all callback wich caused bu internal parametrs changes
         '''
 
 
-    def __external_callback(self, step_input):
+    def _external_callback(self, step_input):
         '''
         Here we explain reaction into external step change
         '''
@@ -41,8 +41,16 @@ class dash_object:
             [dash.dependencies.Input(step_input, 'value')])
         def update_figure(selected_Step):
             self.current_index = self.data[self.data['Step'] == selected_Step].index[0]
-            return self.__update_graph()
+            return self._update_graph()
 
+
+    def add_app(self, app, step_input):
+        '''
+        Here we add Dash visualisation for our data
+        '''
+        self.app = app
+        self._external_callback(step_input)
+        self._internal_callback()
 
     def save(self, path="./"):
         self.data.to_pickle(path + "." + self.name + ".pkl")
