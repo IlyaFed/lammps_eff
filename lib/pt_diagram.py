@@ -22,7 +22,7 @@ class pt_diagram(dash_object):
         traces.append(go.Scatter(
             x=self.data['Press'].values/1e9, # GPa
             y=self.data['Temp'].values,
-            mode = 'marker',
+            mode = 'markers',
             name = 'Data'
         ))
 
@@ -35,7 +35,7 @@ class pt_diagram(dash_object):
             traces.append(go.Scatter(
             x=self.experimental_data[item][1],
             y=self.experimental_data[item][0],
-            mode = 'marker',
+            mode = 'markers',
             name = item
             ))
             max_T = max(max_T, max(self.experimental_data[item][0]))
