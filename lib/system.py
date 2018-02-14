@@ -6,7 +6,7 @@ import dash_html_components as html
 class system(load):
 
     def load(self, lammpstrj, logfile):
-        #self.load_lammpstrj(path = lammpstrj)
+        self.load_lammpstrj(path = lammpstrj)
         self.load_log(name = logfile)
 
     def set_app(self):
