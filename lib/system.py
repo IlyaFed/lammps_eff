@@ -36,7 +36,7 @@ class system(load):
 
 
         self.app.layout = html.Div([
-            html.Div(self.markdown),
+            html.Div(dcc.Markdown(self.markdown)),
             html.Div(className = 'row', children = children),
             html.Div(children = slider),
             html.Div(input)
