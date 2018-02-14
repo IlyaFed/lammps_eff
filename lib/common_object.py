@@ -33,7 +33,7 @@ class dash_object:
         '''
 
 
-    def _external_callback(self, step_input):
+    def _external_callback(self, step_input, value_input):
         '''
         Here we explain reaction into external step change
         '''
@@ -42,6 +42,14 @@ class dash_object:
             [dash.dependencies.Input(step_input, 'value')])
         def update_figure(selected_Step):
             self.current_index = self.data[self.data['Step'] == selected_Step].index[0]
+            return self._update_graph()
+
+        @self.app.callback(
+            dash.dependencies.Output(self.name, 'figure'),
+            [dash.dependencies.Input(value_input, 'value')])
+        def update_figure(selected_Step):
+            if (selected_Step in self.data['Step'].values):
+                self.current_index = self.data[self.data['Step'] == selected_Step].index[0]
             return self._update_graph()
 
 
