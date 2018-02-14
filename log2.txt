@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "start.py", line 18, in <module>
+    hydrogen = system(lammpstrj = path, logfile = logfile, objects = objects, server = 1, minstep = 40000, backup_path=".backup/")
+  File "/home/ilya/work/science/lammps_eff/lib/system.py", line 59, in __init__
+    self.set_app()
+  File "/home/ilya/work/science/lammps_eff/lib/system.py", line 15, in set_app
+    slider_step = self.step
+AttributeError: 'system' object has no attribute 'step'
