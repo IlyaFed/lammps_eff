@@ -102,7 +102,7 @@ class pt_diagram(dash_object):
         def update_figure(selected_Step, yaxis_type):
             #if selected_Step == 0:
             #    selected_Step = selected_Step_0
-            #self.yaxis_type = yaxis_type
+            self.yaxis_type = yaxis_type
             if (int(selected_Step) in self.data['Step'].values):
                 self.current_index = self.data[self.data['Step'] == int(selected_Step)].index[0]
             return self._update_graph()
@@ -112,16 +112,17 @@ class pt_diagram(dash_object):
         Here we describe frontend of our object
         '''
         layout = html.Div([
-            dcc.RadioItems(
-                id=self.name + 'yaxis_type',
-                options=[{'label': i, 'value': i} for i in ['Linear', 'Log']],
-                value='Linear',
-                labelStyle={'display': 'inline-block'}
-            ),
-            dcc.Graph(
+            html.Div(
+                dcc.RadioItems(
+                    id=self.name + 'yaxis_type',
+                    options=[{'label': i, 'value': i} for i in ['linear', 'log']],
+                    value='Linear',
+                    labelStyle={'display': 'inline-block'}
+                )),
+            html.Div(dcc.Graph(
                 id=self.name,
-            )],
-            style = {'width': '40%', 'display': 'inline-block'}
+            ))],
+            style = {'width': '49%', 'display': 'inline-block'}
         )
         return layout
 
@@ -130,4 +131,4 @@ class pt_diagram(dash_object):
         self.graph_type = 'scatter'
         self.name = 'PT'
         self.experimental_data = experimental_data
-        self.yaxis_type = 'Log'
+        self.yaxis_type = 'log'
