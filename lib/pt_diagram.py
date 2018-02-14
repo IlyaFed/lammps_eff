@@ -98,11 +98,11 @@ class pt_diagram(dash_object):
         @self.app.callback(
             dash.dependencies.Output(self.name, 'figure'),
             [dash.dependencies.Input(step_input, 'value'),
-             dash.dependencies.Input(self.name+'yaxis-type', 'value')])
+             dash.dependencies.Input(self.name+'yaxis_type', 'value')])
         def update_figure(selected_Step, yaxis_type):
             #if selected_Step == 0:
             #    selected_Step = selected_Step_0
-            self.yaxis_type = yaxis_type
+            #self.yaxis_type = yaxis_type
             if (int(selected_Step) in self.data['Step'].values):
                 self.current_index = self.data[self.data['Step'] == int(selected_Step)].index[0]
             return self._update_graph()
@@ -113,7 +113,7 @@ class pt_diagram(dash_object):
         '''
         layout = html.Div([
             dcc.RadioItems(
-                id=self.name + 'yaxis-type',
+                id=self.name + 'yaxis_type',
                 options=[{'label': i, 'value': i} for i in ['Linear', 'Log']],
                 value='Linear',
                 labelStyle={'display': 'inline-block'}
@@ -121,7 +121,7 @@ class pt_diagram(dash_object):
             dcc.Graph(
                 id=self.name,
             )],
-            style = {'width': '49%', 'display': 'inline-block'}
+            style = {'width': '40%', 'display': 'inline-block'}
         )
         return layout
 
