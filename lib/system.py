@@ -51,11 +51,11 @@ class system(load):
         def update_figure(selected_Step):
             return selected_Step
 
-        @self.app.callback(
-            dash.dependencies.Output(self.value_input, 'value'),
-            [dash.dependencies.Input(self.step_input, 'value')])
-        def update_figure(selected_Step):
-            return selected_Step
+        # @self.app.callback(
+        #     dash.dependencies.Output(self.value_input, 'value'),
+        #     [dash.dependencies.Input(self.step_input, 'value')])
+        # def update_figure(selected_Step):
+        #     return selected_Step
 
         for object in self.objects:
             object.add_app(app = self.app, step_input = self.step_input, value_input=self.value_input)
