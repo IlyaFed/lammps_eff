@@ -43,8 +43,8 @@ class dash_object:
         def update_figure(selected_Step):
             #if selected_Step == 0:
             #    selected_Step = selected_Step_0
-            if (selected_Step in self.data['Step'].values):
-                self.current_index = self.data[self.data['Step'] == selected_Step].index[0]
+            if (int(selected_Step) in self.data['Step'].values):
+                self.current_index = self.data[self.data['Step'] == int(selected_Step)].index[0]
             return self._update_graph()
 
     def add_app(self, app, step_input, value_input):
