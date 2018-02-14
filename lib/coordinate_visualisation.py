@@ -52,7 +52,7 @@ class coordinate_visualisation(dash_object):
             z=electrons[2],
             name='electronss',
             mode = 'markers',
-            marker = dict( size = 2)
+            marker = dict( size = 3)
         ))
         return traces
 
