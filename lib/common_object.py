@@ -53,12 +53,12 @@ class dash_object:
             return self._update_graph()
 
 
-    def add_app(self, app, step_input):
+    def add_app(self, app, step_input, value_input):
         '''
         Here we add Dash visualisation for our data
         '''
         self.app = app
-        self._external_callback(step_input)
+        self._external_callback(step_input, value_input)
         self._internal_callback()
 
     def save(self, path="./"):
