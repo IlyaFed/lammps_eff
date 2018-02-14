@@ -66,7 +66,7 @@ class pt_diagram(dash_object):
                 title = 'Pressure, GPa'
             ),
             yaxis=dict(
-                type='log',
+                type=self.yaxis_type,
                 showgrid=True,
                 zeroline=False,
                 showline=True,
@@ -91,17 +91,38 @@ class pt_diagram(dash_object):
         Here we explain all callback which caused bu internal parametrs changes
         '''
 
+    def _external_callback(self, step_input, value_input):
+        '''
+        Here we explain reaction into external step change
+        '''
+        @self.app.callback(
+            dash.dependencies.Output(self.name, 'figure'),
+            [dash.dependencies.Input(step_input, 'value'),
+             dash.dependencies.Input(self.name+'yaxis-type', 'value')])
+        def update_figure(selected_Step, yaxis_type):
+            #if selected_Step == 0:
+            #    selected_Step = selected_Step_0
+            self.yaxis_type = yaxis_type
+            if (int(selected_Step) in self.data['Step'].values):
+                self.current_index = self.data[self.data['Step'] == int(selected_Step)].index[0]
+            return self._update_graph()
 
     def get_html(self):
         '''
         Here we describe frontend of our object
         '''
-        layout = html.Div(
-                    dcc.Graph(
-                        id=self.name,
-                        ),
-                    style = {'width': '49%', 'display': 'inline-block'}
-                    )
+        layout = html.Div([
+            dcc.RadioItems(
+                id=self.name + 'yaxis-type',
+                options=[{'label': i, 'value': i} for i in ['Linear', 'Log']],
+                value='Linear',
+                labelStyle={'display': 'inline-block'}
+            ),
+            dcc.Graph(
+                id=self.name,
+            )],
+            style = {'width': '49%', 'display': 'inline-block'}
+        )
         return layout
 
     def __init__(self, experimental_data = dict()):
@@ -109,3 +130,4 @@ class pt_diagram(dash_object):
         self.graph_type = 'scatter'
         self.name = 'PT'
         self.experimental_data = experimental_data
+        self.yaxis_type = 'Log'

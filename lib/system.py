@@ -37,6 +37,7 @@ class system(load):
 
 
         self.app.layout = html.Div([
+            html.H1(self.title),
             html.Div(dcc.Markdown(self.markdown)),
             html.Div(className = 'row', children = children),
             html.Div(children = slider),
@@ -45,17 +46,17 @@ class system(load):
             # className = 'twelve columns'
             )
 
-        @self.app.callback(
-            dash.dependencies.Output(self.step_input, 'value'),
-            [dash.dependencies.Input(self.value_input, 'value')])
-        def update_figure(selected_Step):
-            return selected_Step
-
         # @self.app.callback(
-        #     dash.dependencies.Output(self.value_input, 'value'),
-        #     [dash.dependencies.Input(self.step_input, 'value')])
+        #     dash.dependencies.Output(self.step_input, 'value'),
+        #     [dash.dependencies.Input(self.value_input, 'value')])
         # def update_figure(selected_Step):
         #     return selected_Step
+
+        @self.app.callback(
+            dash.dependencies.Output(self.value_input, 'value'),
+            [dash.dependencies.Input(self.step_input, 'value')])
+        def update_figure(selected_Step):
+            return selected_Step
 
         for object in self.objects:
             object.add_app(app = self.app, step_input = self.step_input, value_input=self.value_input)
@@ -65,8 +66,10 @@ class system(load):
         else:
             self.app.run_server()
 
-    def __init__(self, lammpstrj, logfile, objects, server = 0, minstep = 0, backup_path = "./", port = 8050, markdown=""):
+    def __init__(self, lammpstrj, logfile, objects, server = 0, minstep = 0, backup_path = "./", port = 8050,
+                 markdown="", title=''):
         super(system, self).__init__(objects, minstep=minstep)
+        self.title = title
         self.markdown = markdown
         self.port = port
         load_flag = 0
