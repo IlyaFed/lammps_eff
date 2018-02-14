@@ -11,6 +11,7 @@ class pt_diagram(dash_object):
         if self.load_flag:
             return 0
         self.data = pd.concat([parametrs['Step'], parametrs['Temp'], parametrs['Press']], axis = 1, keys = ['Step', 'Temp', 'Press'])
+        self.data['Press'] = self.data['Press'] / 1e9 # create GPa
 
     def __get_scatter_trace(self):
         '''
@@ -20,7 +21,7 @@ class pt_diagram(dash_object):
         traces = []
 
         traces.append(go.Scatter(
-            x=self.data['Press'].values/1e9, # GPa
+            x=self.data['Press'].values, # GPa
             y=self.data['Temp'].values,
             mode = 'markers',
             name = 'Data'
@@ -41,7 +42,7 @@ class pt_diagram(dash_object):
             max_T = max(max_T, max(self.experimental_data[item][0]))
             min_T = max(min_T, min(self.experimental_data[item][0]))
 
-        press = self.data.loc[self.current_index, 'Press']/1e9
+        press = self.data.loc[self.current_index, 'Press']
         traces.append(go.Scatter(
             x = np.linspace(press, press, 100),
             y = np.linspace(min_T, max_T, 100),
@@ -56,7 +57,7 @@ class pt_diagram(dash_object):
 
     def __get_layout(self):
         return go.Layout(
-            showlegend = False,
+            showlegend = True,
             title = 'PT diagram',
             xaxis = dict(
                 showgrid = True,

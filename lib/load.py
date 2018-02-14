@@ -93,6 +93,7 @@ class load:
                     read_flag = 0
         print("\r{:30s} {:3d} %".format("read lammps log", 100))
         data['Step'] = data['Step'].astype(int)
+        data = data[ (data['Step'] - self.start) % self.step == 0]
         for object in self.objects:
             object.load_log(data)
         del read_flag, data
