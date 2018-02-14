@@ -55,7 +55,7 @@ class system(load):
         @self.app.callback(
             dash.dependencies.Output(self.value_input, 'value'),
             [dash.dependencies.Input(self.step_input, 'value')])
-        def update_figure(selected_Step):
+        def update_figure_2(selected_Step):
             return selected_Step
 
         for object in self.objects:
