@@ -26,7 +26,7 @@ class system(load):
             id=self.value_input,
             placeholder='Step',
             type='value',
-            value='0'
+            value=self.start
         )
 
 
@@ -46,8 +46,14 @@ class system(load):
             )
 
         @self.app.callback(
-            dash.dependencies.Output(step_input, 'value'),
-            [dash.dependencies.Input(value_input, 'value')])
+            dash.dependencies.Output(self.step_input, 'value'),
+            [dash.dependencies.Input(self.value_input, 'value')])
+        def update_figure(selected_Step):
+            return selected_Step
+
+        @self.app.callback(
+            dash.dependencies.Output(self.value_input, 'value'),
+            [dash.dependencies.Input(self.step_input, 'value')])
         def update_figure(selected_Step):
             return selected_Step
 
