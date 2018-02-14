@@ -93,7 +93,7 @@ class coordinate_visualisation(dash_object):
                     dcc.Graph(
                         id=self.name,
                         ),
-                    style = {'width': '49%', 'display': 'inline-block'}
+                    style = {'width': '45%', 'display': 'inline-block'}
                     )
         return layout
 

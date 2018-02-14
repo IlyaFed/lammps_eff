@@ -117,7 +117,7 @@ class pt_diagram(dash_object):
                     id=self.name + 'yaxis_type',
                     options=[{'label': i, 'value': i} for i in ['linear', 'log']],
                     value='linear',
-                    labelStyle={'display': 'inline-block'}
+                    labelStyle={'float': 'right', 'display': 'inline-block'}
                 )),
             html.Div(dcc.Graph(
                 id=self.name,
