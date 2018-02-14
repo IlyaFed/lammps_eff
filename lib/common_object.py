@@ -39,19 +39,14 @@ class dash_object:
         '''
         @self.app.callback(
             dash.dependencies.Output(self.name, 'figure'),
-            [dash.dependencies.Input(step_input, 'value')])
-        def update_figure(selected_Step):
-            self.current_index = self.data[self.data['Step'] == selected_Step].index[0]
-            return self._update_graph()
-
-        @self.app.callback(
-            dash.dependencies.Output(self.name, 'figure'),
-            [dash.dependencies.Input(value_input, 'value')])
-        def update_figure(selected_Step):
+            [dash.dependencies.Input(step_input, 'value'),
+             dash.dependencies.Input(value_input, 'value')])
+        def update_figure(selected_Step_0, selected_Step):
+            if selected_Step == 0:
+                selected_Step = selected_Step_0
             if (selected_Step in self.data['Step'].values):
                 self.current_index = self.data[self.data['Step'] == selected_Step].index[0]
             return self._update_graph()
-
 
     def add_app(self, app, step_input, value_input):
         '''

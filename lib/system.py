@@ -26,8 +26,9 @@ class system(load):
             id=self.value_input,
             placeholder='Step',
             type='value',
-            value=''
+            value='0'
         )
+
 
 
         children = []
@@ -43,6 +44,13 @@ class system(load):
             ]
             # className = 'twelve columns'
             )
+
+        @self.app.callback(
+            dash.dependencies.Output(step_input, 'value'),
+            [dash.dependencies.Input(value_input, 'value')])
+        def update_figure(selected_Step):
+            return selected_Step
+
         for object in self.objects:
             object.add_app(app = self.app, step_input = self.step_input, value_input=self.value_input)
         
