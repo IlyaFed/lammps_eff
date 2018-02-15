@@ -48,9 +48,9 @@ class coordinate_visualisation(dash_object):
         p_wall = wall.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
 
         n = ctypes.c_int(len(coord_electron[0]))
-        self.grid_N = ctypes.c_int(self.grid_N)
+        grid_n = ctypes.c_int(self.grid_N)
 
-        grid = self.mylib.grid_gauss(p_x, p_y, p_z, p_r, p_wall, n, self.grid_N)
+        grid = self.mylib.grid_gauss(p_x, p_y, p_z, p_r, p_wall, n, grid_n)
         grid_res = np.array(np.fromiter(grid, dtype=np.float64, count=self.grid_N ** 3))
         self.mylib.free_mem.argtypes = [ctypes.POINTER(ctypes.c_double)]
         self.mylib.free_mem(grid)
