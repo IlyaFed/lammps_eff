@@ -33,19 +33,20 @@ class load:
             except:
                 continue
             for num_line, line in enumerate(open(path + file_name, "r")):
-                line = line.split(" ")[:-1]
 
                 if num_line == 5:
-                    self.wall[0] = float( line[1].split("\n")[0] )
+                    self.wall[0] = float( line.split(" ")[1] )
                 if num_line == 6:
-                    self.wall[1] = float( line[1].split("\n")[0] )
+                    self.wall[1] = float( line.split(" ")[1] )
                 if num_line == 7:
-                    self.wall[2] = float( line[1].split("\n")[0] )
+                    self.wall[2] = float( line.split(" ")[1] )
 
                 if num_line == 8:
+                    line = line.split(" ")[:-1]
                     columns_names = line[2:]
                     step_pandas = pd.DataFrame(columns=columns_names)
                 if num_line > 8:
+                    line = line.split(" ")[:-1]
                     step_pandas.loc[len(step_pandas)] = [float(word) for word in line]
             for object in self.objects:
                 object.load_step({'Step': read_step, 'parametrs': step_pandas, 'wall': self.wall})
