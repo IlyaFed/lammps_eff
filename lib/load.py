@@ -36,11 +36,11 @@ class load:
                 line = line.split(" ")[:-1]
 
                 if num_line == 5:
-                    self.wall[0] = float( line[1] )
+                    self.wall[0] = float( line[1].split("\n")[0] )
                 if num_line == 6:
-                    self.wall[1] = float( line[1] )
+                    self.wall[1] = float( line[1].split("\n")[0] )
                 if num_line == 7:
-                    self.wall[2] = float( line[1] )
+                    self.wall[2] = float( line[1].split("\n")[0] )
 
                 if num_line == 8:
                     columns_names = line[2:]
