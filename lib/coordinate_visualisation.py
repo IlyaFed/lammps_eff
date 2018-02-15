@@ -185,7 +185,7 @@ class coordinate_visualisation(dash_object):
     def __init__(self):
         self.data = pd.DataFrame(columns=["Step", "ion", "electron", "surface", "wall"])
         self.current_index = 0
-        self.grid_N
+        self.grid_N = 50
         self.mylib = ctypes.CDLL('lib/grid_gauss.so')
         self.graph_type = 'scatter'
         self.name = 'Coordinate visualisation'
