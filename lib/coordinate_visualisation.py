@@ -121,7 +121,7 @@ class coordinate_visualisation(dash_object):
             plot_edges=False,
             # colormap=colormap,
             simplices=simplices,
-            title="Isosurface")[0])
+            title="Isosurface").data[0])
         return traces
 
     def __get_trace(self):
