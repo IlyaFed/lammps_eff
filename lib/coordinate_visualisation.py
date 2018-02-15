@@ -171,8 +171,8 @@ class coordinate_visualisation(dash_object):
             html.Div(
                 dcc.RadioItems(
                     id=self.name + '_type',
-                    options=[{'label': i, 'value': i} for i in ['scatter', 'scale']],
-                    value='linear',
+                    options=[{'label': i, 'value': i} for i in ['scatter', 'surface']],
+                    value='scatter',
                     labelStyle={'display': 'inline-block'}
                 )),
             html.Div(dcc.Graph(
