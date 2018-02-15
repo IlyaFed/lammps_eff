@@ -16,9 +16,9 @@ class coordinate_visualisation(dash_object):
         # read ions coordinates
         if self.load_flag:
             return 0
-        our_param = parametrs[parametrs['type'] == 1.0, dtype=float]
+        our_param = parametrs[parametrs['type'] == 1.0]
         n = our_param.shape[0]
-        coord_ion = np.zeros((3, n))
+        coord_ion = np.zeros((3, n), dtype=float)
         for i in range(n):
             coord_ion[0][i] = our_param.loc[our_param.index[i], 'x']
             coord_ion[1][i] = our_param.loc[our_param.index[i], 'y']
