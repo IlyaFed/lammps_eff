@@ -21,6 +21,8 @@ class load:
         self.start = int(llist[0])
         self.step = max(int(llist[1] - llist[0]), self.minstep)
         self.stop = int(llist[-1])
+        self.wall = np.array([0, 0, 0], dtype=float)
+
         del llist
 
         for read_step in range(self.start, self.stop + self.step, self.step):
@@ -32,13 +34,21 @@ class load:
                 continue
             for num_line, line in enumerate(open(path + file_name, "r")):
                 line = line.split(" ")[:-1]
+
+                if num_line == 5:
+                    self.wall[0] = float( line.split(" ")[1] )
+                if num_line == 6:
+                    self.wall[1] = float( line.split(" ")[1] )
+                if num_line == 7:
+                    self.wall[2] = float( line.split(" ")[1] )
+
                 if num_line == 8:
                     columns_names = line[2:]
                     step_pandas = pd.DataFrame(columns=columns_names)
                 if num_line > 8:
                     step_pandas.loc[len(step_pandas)] = [float(word) for word in line]
             for object in self.objects:
-                object.load_step(read_step, step_pandas)
+                object.load_step({'Step': read_step, 'parametrs': step_pandas, 'wall': self.wall})
         print ("\r{:30s} 100 %".format("read lammpstrj"))
 
     def load_step(self, path):

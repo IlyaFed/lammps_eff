@@ -1,6 +1,9 @@
 all: dash
 
-dash:
+install:
+	g++ -shared -O3 -Wall -fPIC -o lib/grid_gauss.so lib/grid_gauss.c
+
+dash: install
 	python3 start.py
 
 test_log: test.py

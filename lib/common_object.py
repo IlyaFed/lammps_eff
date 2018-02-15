@@ -8,7 +8,9 @@ import random
 from pathlib import Path
 
 class dash_object:
-    def load_step(self, Step, parametrs):
+    def load_step(self, args):
+        parametrs = args['parametrs']
+        Step = args['Step']
         '''
         Here we upload step data and put it into data structure
         '''
