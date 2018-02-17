@@ -141,7 +141,16 @@ class coordinate_visualisation(dash_object):
             )
         else:
             layout = go.Layout(
-            title = "Visualisation"
+                xaxis=dict(
+                    range=[0.0, self.wall[0]]
+                ),
+                yaxis=dict(
+                    range=[0.0, self.wall[1]]
+                ),
+                zaxis=dict(
+                    range=[0.0, self.wall[2]]
+                ),
+                title = "Visualisation"
             )
         return layout
 
