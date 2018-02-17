@@ -134,18 +134,12 @@ class coordinate_visualisation(dash_object):
         if self.graph_type == 'surface':
             return self.__get_surface_trace()
 
+'''
+range=[0, self.wall[0]]
+'''
     def __get_layout(self):
         if self.graph_type == 'surface':
             layout = go.Layout(
-                xaxis=dict(
-                    range=[0, self.wall[0]]
-                ),
-                yaxis=dict(
-                    range=[0, self.wall[1]]
-                ),
-                zaxis=dict(
-                    range=[0, self.wall[2]]
-                ),
                 title = "Visualisation, isovalue from {:f} to {:f}".format(self.isovalue_maxmin[0], self.isovalue_maxmin[1])
             )
         else:
