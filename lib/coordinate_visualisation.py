@@ -124,7 +124,6 @@ class coordinate_visualisation(dash_object):
             z=z,
             plot_edges=False,
             colormap=colormap,
-            opacity = 0.5,
             simplices=simplices,
             title="Isosurface").data[0])
         return traces
@@ -138,7 +137,16 @@ class coordinate_visualisation(dash_object):
     def __get_layout(self):
         if self.graph_type == 'surface':
             layout = go.Layout(
-            title = "Visualisation, isovalue from {:f} to {:f}".format(self.isovalue_maxmin[0], self.isovalue_maxmin[1])
+                xaxis=dict(
+                    range=[0, self.wall[0]]
+                ),
+                yaxis=dict(
+                    range=[0, self.wall[1]]
+                ),
+                zaxis=dict(
+                    range=[0, self.wall[2]]
+                ),
+                title = "Visualisation, isovalue from {:f} to {:f}".format(self.isovalue_maxmin[0], self.isovalue_maxmin[1])
             )
         else:
             layout = go.Layout(
@@ -180,6 +188,7 @@ class coordinate_visualisation(dash_object):
             self.graph_type = graph_type
             if (int(selected_Step) in self.data['Step'].values):
                 self.current_index = self.data[self.data['Step'] == int(selected_Step)].index[0]
+                self.wall = self.data[self.data['Step'] == int(selected_Step)]['wall']
             return self._update_graph()
 
     def get_html(self):
@@ -216,5 +225,6 @@ class coordinate_visualisation(dash_object):
         self.graph_type = 'scatter'
         self.name = 'Coordinate visualisation'
         self.isovalue_maxmin = [0, 0]
+        self.wall = 20
 
 
