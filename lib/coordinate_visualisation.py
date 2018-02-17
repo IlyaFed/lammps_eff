@@ -226,6 +226,6 @@ class coordinate_visualisation(dash_object):
         self.graph_type = 'scatter'
         self.name = 'Coordinate visualisation'
         self.isovalue_maxmin = [0, 0]
-        self.wall = 20
+        self.wall = [20., 20., 20.]
 
 

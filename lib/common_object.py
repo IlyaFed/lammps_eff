@@ -69,6 +69,7 @@ class dash_object:
             print("load: {:100s} yes".format(self.name))
             self.load_flag = 1
             self.data = pd.read_pickle(name)
+            print ( "x", self.data['wall'].values[0])
             return 0
 
         print("load: {:100s} no ".format(self.name))
