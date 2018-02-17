@@ -61,7 +61,7 @@ class energy_h2(dash_object):
         # create line in choosen step
         max_T = max(self.data['ion'].max(), self.data['electron'].max(), self.data['all'].max())
         min_T = min(self.data['ion'].min(), self.data['electron'].min(), self.data['all'].min())
-        step = self.data.loc[self.current_index, 'Step']
+        step = self.data.loc[self.current_index, 'dist']
         traces.append(go.Scatter(
             x = np.linspace(step, step, 100),
             y = np.linspace(min_T, max_T, 100),
@@ -84,7 +84,7 @@ class energy_h2(dash_object):
                 showgrid = True,
                 zeroline = False,
                 showline = True,
-                title = 'Step'
+                title = 'Distance'
             ),
             yaxis=dict(
                 showgrid=True,
