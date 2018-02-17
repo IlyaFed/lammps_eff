@@ -124,6 +124,7 @@ class coordinate_visualisation(dash_object):
             z=z,
             plot_edges=False,
             colormap=colormap,
+            opacity = 0.5,
             simplices=simplices,
             title="Isosurface").data[0])
         return traces
