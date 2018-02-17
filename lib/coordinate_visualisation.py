@@ -214,5 +214,6 @@ class coordinate_visualisation(dash_object):
         self.mylib = ctypes.CDLL('lib/grid_gauss.so')
         self.graph_type = 'scatter'
         self.name = 'Coordinate visualisation'
+        self.isovalue_maxmin = [0, 0]
 
 
