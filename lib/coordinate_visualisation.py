@@ -140,7 +140,7 @@ class coordinate_visualisation(dash_object):
                 title = "Visualisation, isovalue from {:f} to {:f}".format(self.isovalue_maxmin[0], self.isovalue_maxmin[1])
             )
         else:
-            print (self.wall)
+            print ("x" , self.wall)
             layout = go.Layout(
                 xaxis=dict(
                     range=[0.0, self.wall[0]]
