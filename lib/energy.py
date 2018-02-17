@@ -2,7 +2,6 @@
 from lib.common_object import *
 import numpy as np
 
-
 class energy(dash_object):
     def load_step(self, args):
         parametrs = args['parametrs']
@@ -15,8 +14,16 @@ class energy(dash_object):
         k_boltz = 1.3806485279e-23
         e_hartry = 27.2113845
         # read ions temp
-        def sum_f(x):
-            return (x['c_peatom'] + x['c_keatom']) * e_hartry
+        if self.type == 'kinetic':
+            def sum_f(x):
+                return x['c_keatom'] * e_hartry
+        if self.type == 'potential':
+            def sum_f(x):
+                return x['c_peatom'] * e_hartry
+        if self.type == 'full':
+            def sum_f(x):
+                return (x['c_peatom'] + x['c_keatom']) * e_hartry
+
         ion = parametrs[parametrs['type'] == 1.0].apply(sum_f, axis = 1).sum()
         electron = parametrs[parametrs['type'] == 2.0].apply(sum_f, axis = 1).sum()
         self.data.loc[len(self.data)] = [Step, ion, electron, ion + electron]
@@ -111,7 +118,8 @@ class energy(dash_object):
                     )
         return layout
 
-    def __init__(self):
+    def __init__(self, type = 'full'):
+        self.type = type
         self.data = pd.DataFrame(columns=["Step", "ion", "electron", "all"])
         self.current_index = 0
         self.graph_type = 'scatter'

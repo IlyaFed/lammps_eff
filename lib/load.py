@@ -18,7 +18,10 @@ class load:
             if msdfile.split('.')[-1] == 'lammpstrj':
                 llist = np.append(llist, [int(msdfile.split('.')[1])])
         llist.sort()
-        self.start = int(llist[0])
+        if int(llist[0]) == 0:
+            self.start = int(llist[1])
+        else:
+            self.start = int(llist[0])
         self.step = max(int(llist[1] - llist[0]), self.minstep)
         self.stop = int(llist[-1])
         self.wall = np.array([0, 0, 0], dtype=float)

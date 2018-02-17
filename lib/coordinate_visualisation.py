@@ -5,6 +5,8 @@ from plotly import figure_factory as ff
 from skimage import measure
 import ctypes
 
+# TODO make surface color
+# TODO make wall in visualisation
 class coordinate_visualisation(dash_object):
     def load_step(self, args):
         parametrs = args['parametrs']
@@ -107,7 +109,7 @@ class coordinate_visualisation(dash_object):
         ))
         grid = self.data.loc[self.current_index, 'surface']
         wall = self.data.loc[self.current_index, 'wall']
-        iso_values = (grid.min() + grid.max())/2.0
+        iso_values = (grid.min() + grid.max())*self.isovalue
         vertices, simplices = measure.marching_cubes_classic(self.data.loc[self.current_index, 'surface'], iso_values)
         x, y, z = zip(*vertices)
         x = np.array(x) / self.grid_N * wall[0]
@@ -119,7 +121,7 @@ class coordinate_visualisation(dash_object):
             y=y,
             z=z,
             plot_edges=False,
-            # colormap=colormap,
+            colormap="None",
             simplices=simplices,
             title="Isosurface").data[0])
         return traces
@@ -154,10 +156,12 @@ class coordinate_visualisation(dash_object):
         @self.app.callback(
             dash.dependencies.Output(self.name, 'figure'),
             [dash.dependencies.Input(step_input, 'value'),
-             dash.dependencies.Input(self.name+'_type', 'value')])
-        def update_figure(selected_Step, graph_type):
+             dash.dependencies.Input(self.name+'_type', 'value'),
+             dash.dependencies.Input(self.name+'_isovalues', 'value')])
+        def update_figure(selected_Step, graph_type, isovalue):
             #if selected_Step == 0:
             #    selected_Step = selected_Step_0
+            self.isovalue = isovalue
             self.graph_type = graph_type
             if (int(selected_Step) in self.data['Step'].values):
                 self.current_index = self.data[self.data['Step'] == int(selected_Step)].index[0]
@@ -175,6 +179,13 @@ class coordinate_visualisation(dash_object):
                     value='scatter',
                     labelStyle={'display': 'inline-block'}
                 )),
+            html.Div(
+                dcc.Input(
+                    id=self.name + '_isovalues',
+                    placeholder='Isovalue',
+                    type='value',
+                    value=0.5
+            )),
             html.Div(dcc.Graph(
                 id=self.name,
             ))],
