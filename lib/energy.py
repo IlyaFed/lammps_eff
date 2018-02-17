@@ -75,7 +75,7 @@ class energy(dash_object):
             showlegend = True,
             width=500,
             height=300,
-            title = 'Energy of system',
+            title = self.type + ' energy of system',
             xaxis = dict(
                 showgrid = True,
                 zeroline = False,
