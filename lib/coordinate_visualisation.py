@@ -135,9 +135,15 @@ class coordinate_visualisation(dash_object):
             return self.__get_surface_trace()
 
     def __get_layout(self):
-        return go.Layout(
+        if self.graph_type == 'surface':
+            layout = go.Layout(
             title = "Visualisation, isovalue from {:f} to {:f}".format(self.isovalue_maxmin[0], self.isovalue_maxmin[1])
-        )
+            )
+        else:
+            layout = go.Layout(
+            title = "Visualisation"
+            )
+        return layout
 
     def _update_graph(self):
         '''
