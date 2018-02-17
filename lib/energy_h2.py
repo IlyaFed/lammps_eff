@@ -128,4 +128,4 @@ class energy_h2(dash_object):
         self.data = pd.DataFrame(columns=["Step", "dist", "ion", "electron", "all"])
         self.current_index = 0
         self.graph_type = 'scatter'
-        self.name = 'energy' + self.type
+        self.name = 'energy_dist' + self.type
