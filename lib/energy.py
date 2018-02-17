@@ -119,28 +119,9 @@ class energy(dash_object):
         return layout
 
 
-
-    def save(self, path="./"):
-        name = path + "." + self.name + self.type  + ".pkl"
-        self.data.to_pickle(name)
-        print ("save: {:100s}".format(self.name))
-
-    def load(self, path="./"):
-        name = path + "." + self.name + self.type + ".pkl"
-        my_file = Path(name)
-        if my_file.is_file():
-            print("load: {:100s} yes".format(self.name))
-            self.load_flag = 1
-            self.data = pd.read_pickle(name)
-            return 0
-
-        print("load: {:100s} no ".format(self.name))
-        self.load_flag = 0
-        return 1
-
     def __init__(self, type = 'full'):
         self.type = type
         self.data = pd.DataFrame(columns=["Step", "ion", "electron", "all"])
         self.current_index = 0
         self.graph_type = 'scatter'
-        self.name = 'energy'
+        self.name = 'energy' + self.type
