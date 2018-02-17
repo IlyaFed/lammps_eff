@@ -109,19 +109,21 @@ class coordinate_visualisation(dash_object):
         ))
         grid = self.data.loc[self.current_index, 'surface']
         wall = self.data.loc[self.current_index, 'wall']
-        iso_values = (grid.min() + grid.max())*self.isovalue
+        iso_values = self.isovalue
+        self.isovalue_maxmin = [grid.min(), grid.max()]
         vertices, simplices = measure.marching_cubes_classic(self.data.loc[self.current_index, 'surface'], iso_values)
         x, y, z = zip(*vertices)
         x = np.array(x) / self.grid_N * wall[0]
         y = np.array(y) / self.grid_N * wall[1]
         z = np.array(z) / self.grid_N * wall[2]
 
+        colormap = ['rgb(255,105,180)', 'rgb(255,105,180)', 'rgb(255,105,180)']
         traces.append( ff.create_trisurf(
             x=x,
             y=y,
             z=z,
             plot_edges=False,
-            colormap="None",
+            colormap=colormap,
             simplices=simplices,
             title="Isosurface").data[0])
         return traces
@@ -132,17 +134,23 @@ class coordinate_visualisation(dash_object):
         if self.graph_type == 'surface':
             return self.__get_surface_trace()
 
+    def __get_layout(self):
+        return go.Layout(
+            title = "Visualisation, isovalue from {:f} to {:f}".format(self.isovalue_maxmin[0], self.isovalue_maxmin[1])
+        )
+
     def _update_graph(self):
         '''
         Here we update graph with neccessary parametrs
         :return:
         '''
         traces = self.__get_trace()
-
+        layout = self.__get_layout()
         return {
             'data': traces,
-            'layout': go.Layout()
+            'layout': layout
         }
+
 
     def _internal_callback(self):
         '''
