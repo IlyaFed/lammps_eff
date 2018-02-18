@@ -125,6 +125,7 @@ class coordinate_visualisation(dash_object):
             plot_edges=False,
             colormap=colormap,
             simplices=simplices,
+            aspectratio=dict(x=1, y=1, z=1),
             title="Isosurface").data[0])
         return traces
 
@@ -142,15 +143,7 @@ class coordinate_visualisation(dash_object):
         else:
             print ("x" , self.wall)
             layout = go.Layout(
-                xaxis=dict(
-                    range=[0.0, self.wall[0]]
-                ),
-                yaxis=dict(
-                    range=[0.0, self.wall[1]]
-                ),
-                zaxis=dict(
-                    range=[0.0, self.wall[2]]
-                ),
+                range=[0.0, self.wall[0]],
                 title = "Visualisation"
             )
         return layout
