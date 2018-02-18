@@ -143,7 +143,14 @@ class coordinate_visualisation(dash_object):
         else:
             print ("x" , self.wall)
             layout = go.Layout(
-                range=[0.0, self.wall[0]],
+                shapes = dict(
+                    x0=0.0,
+                    x1=self.wall[0],
+                    y0=0.0,
+                    y1=self.wall[0],
+                    z0=0.0,
+                    z1=self.wall[0],
+                ),
                 title = "Visualisation"
             )
         return layout
