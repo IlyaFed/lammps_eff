@@ -59,6 +59,8 @@ class neighbour_distribution(dash_object):
 
         p_list = self.mylib.neighbour_list_two(p_x, p_y, p_z, p_x_2, p_y_2, p_z_2, p_type, p_wall, p_cut, p_n)
         print ("coord = ", coord)
+        print ("p_list = ", p_list)
+        print ("numpy = ", np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0]) * 2 + 7)))
         list_dist = list(np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0]) * 2 + 7)))
         self.mylib.free_mem.argtypes = [ctypes.POINTER(ctypes.c_int)]
         self.mylib.free_mem(p_list)
