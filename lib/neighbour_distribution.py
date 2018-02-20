@@ -136,6 +136,6 @@ class neighbour_distribution(dash_object):
         self.data = pd.DataFrame(columns=["Step", "e", "H+", "H", "H2+", "H2", "H3+", "H3"])
         self.current_index = 0
         self.graph_type = 'scatter'
-        self.cut = 1.0
+        self.cut = 1.8
         self.mylib = ctypes.CDLL('lib/neighbour.so')
         self.name = 'neigbour_distribution'
