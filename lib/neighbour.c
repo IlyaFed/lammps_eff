@@ -163,7 +163,7 @@ int* neighbour_list_two( double* x, double* y, double* z, double* x_2, double* y
     }
 
     for (int i = 0; i < 2*n+7; i++)
-        std::cerr << list[i] << " "
+        std::cerr << list[i] << " ";
 
     return list;
 }
