@@ -6,6 +6,7 @@ class neighbour_distribution(dash_object):
     def load_step(self, args):
         parametrs = args['parametrs']
         Step = args['Step']
+        print ("Step", Step)
         wall = args['wall']
         '''
         Here we upload step data and put it into data structure
