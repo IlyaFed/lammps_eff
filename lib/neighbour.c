@@ -32,9 +32,9 @@ int* neighbour_list( double* x, double* y, double* z, double* type, double* wall
         if (list[i] == 0){
             list[i] = k;
             k++;
-            if (type[j] == 1)
+            if (type[i] == 1)
                 k_list_ion[list[j]] ++;
-            if (type[j] == 2)
+            if (type[i] == 2)
                 k_list_el[list[j]] ++;
         }
         for (int j = i+1; j < n; j++){
