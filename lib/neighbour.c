@@ -22,9 +22,10 @@ int* neighbour_list( double* x, double* y, double* z, double* type, double* wall
     for (int l = 0; l < n*2 + 7; l ++)
         list[l] = 0;
 
-    for (int l = 0; l < n; l ++)
+    for (int l = 0; l < n; l ++){
         k_list_el[l] = 0;
         k_list_ion[l] = 0;
+    }
 
     double dist;
     int k = 1;
