@@ -32,6 +32,7 @@ int* neighbour_list( double* x, double* y, double* z, double* type, double* wall
         std::cerr << "i = " << i << "\n";
         if (list[i] == 0){
             list[i] = k;
+            std::cerr << "list = " << list[i] << "\n";
             k++;
             if (type[i] == 1)
                 k_list_ion[list[i]] ++;
