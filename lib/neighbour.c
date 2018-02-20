@@ -29,6 +29,7 @@ int* neighbour_list( double* x, double* y, double* z, double* type, double* wall
     double dist;
     int k = 1;
     for (int i = 0; i < n; i ++){
+        std::cerr << "i = "<< i << "\n";
         if (list[i] == 0){
             list[i] = k;
             k++;
