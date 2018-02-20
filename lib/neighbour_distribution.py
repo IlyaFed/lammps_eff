@@ -21,22 +21,21 @@ class neighbour_distribution(dash_object):
             coord[0][i] = parametrs.loc[parametrs.index[i], 'x']
             coord[1][i] = parametrs.loc[parametrs.index[i], 'y']
             coord[2][i] = parametrs.loc[parametrs.index[i], 'z']
-            coord[3][i] = int(parametrs.loc[parametrs.index[i], 'type'])
+            coord[3][i] = parametrs.loc[parametrs.index[i], 'type']
 
         self.mylib.neighbour_list.restype = ctypes.POINTER(ctypes.c_int)
         self.mylib.neighbour_list.argtypes = [
             ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), # x, y, z
-            ctypes.POINTER(ctypes.c_int), # type
+            ctypes.POINTER(ctypes.c_double), # type
             ctypes.POINTER(ctypes.c_double), # wall
             ctypes.c_double, # cut
             ctypes.c_int, # n
             ]
 
-
         p_x = coord[0].ctypes.data_as(ctypes.POINTER(ctypes.c_double))
         p_y = coord[1].ctypes.data_as(ctypes.POINTER(ctypes.c_double))
         p_z = coord[2].ctypes.data_as(ctypes.POINTER(ctypes.c_double))
-        p_type = coord[3].ctypes.data_as(ctypes.POINTER(ctypes.c_int))
+        p_type = coord[3].ctypes.data_as(ctypes.POINTER(ctypes.c_double))
         p_wall = wall.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
 
         p_n = ctypes.c_int(len(coord[0]))

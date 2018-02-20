@@ -15,7 +15,7 @@ double get_r(double x, double y, double z, double x_g, double y_g, double z_g, d
     return dz*dz + dy*dy + dx*dx;
 }
 
-int* neighbour_list( double* x, double* y, double* z, int* type, double* wall, double cut, int n){
+int* neighbour_list( double* x, double* y, double* z, double* type, double* wall, double cut, int n){
     int* list = new int[n*2 + 7]; // here we will return bonding molecules[n], types of every particle[n], distribution[7 (e, H+, H, H2+, H2, H3+, H3]
     int* k_list_ion = new int[n];
     int* k_list_el = new int[n];
@@ -35,12 +35,12 @@ int* neighbour_list( double* x, double* y, double* z, int* type, double* wall, d
             //std::cerr << "list = " << list[i] << "\n";
             k++;
             std::cerr << "type = " << type[i] << "\n";
-            if (type[i] == 1){
+            if (type[i] == 1.0){
                 k_list_ion[list[i]] ++;
                 std::cerr << "1 = " << k_list_ion[list[i]] << "\n";
             }
 
-            if (type[i] == 2)
+            if (type[i] == 2.0)
                 k_list_el[list[i]] ++;
                 //std::cerr << "2 = " << k_list_el[list[i]] << "\n";
         }
