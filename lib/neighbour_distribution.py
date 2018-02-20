@@ -22,8 +22,8 @@ class neighbour_distribution(dash_object):
             coord[2][i] = parametrs.loc[parametrs.index[i], 'z']
             coord[3][i] = int(parametrs.loc[parametrs.index[i], 'type'])
 
-        self.mylib.grid_gauss.restype = ctypes.POINTER(ctypes.c_int)
-        self.mylib.grid_gauss.argtypes = [
+        self.mylib.neighbour_list.restype = ctypes.POINTER(ctypes.c_int)
+        self.mylib.neighbour_list.argtypes = [
             ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), # x, y, z
             ctypes.POINTER(ctypes.c_int), # type
             ctypes.POINTER(ctypes.c_double), # wall
@@ -42,7 +42,7 @@ class neighbour_distribution(dash_object):
 
         p_cut = ctypes.c_double(self.cut)
 
-        p_list = self.mylib.grid_gauss(p_x, p_y, p_z, p_type, p_wall, p_cut, p_n)
+        p_list = self.mylib.neighbour_list(p_x, p_y, p_z, p_type, p_wall, p_cut, p_n)
         list = np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0])*2 + 7))
         self.mylib.free_mem.argtypes = [ctypes.POINTER(ctypes.c_int)]
         self.mylib.free_mem(p_list)
