@@ -48,6 +48,7 @@ class neighbour_distribution(dash_object):
         self.mylib.free_mem(p_list)
 
         distribution = list[len(coord[0])*2:]
+        print distribution
         self.data.loc[len(self.data)] = [Step] + distribution
 
     def __get_scatter_trace(self):
