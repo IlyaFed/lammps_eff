@@ -39,10 +39,11 @@ int* neighbour_list( double* x, double* y, double* z, int* type, double* wall, d
                 //std::cerr << "1 = " << k_list_ion[list[i]] << "\n";
 
             if (type[i] == 2)
+                k_list_el[list[i]] ++;
                 //std::cerr << "2 = " << k_list_el[list[i]] << "\n";
         }
         for (int j = i+1; j < n; j++){
-            //std::cerr << "j = " << j << "\n";
+            std::cerr << "j = " << j << "\n";
             dist = get_r(x[i], y[i], z[i], x[j], y[j], z[j],  wall);
             if (dist < cut){
                 list[j] = list[i];
