@@ -42,14 +42,14 @@ class neighbour_distribution(dash_object):
         p_cut = ctypes.c_double(self.cut)
 
         p_list = self.mylib.neighbour_list(p_x, p_y, p_z, p_type, p_wall, p_cut, p_n)
-        list = np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0])*2 + 7))
+        list_dist = list(np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0])*2 + 7)))
         self.mylib.free_mem.argtypes = [ctypes.POINTER(ctypes.c_int)]
         self.mylib.free_mem(p_list)
 
-        distribution = list[len(coord[0])*2:]
-        print ([Step] + list(distribution))
+        distribution = list_dist[len(coord[0])*2:]
+        print ([Step] + distribution)
         print (len(distribution))
-        self.data.loc[len(self.data)] = [Step] + list(distribution)
+        self.data.loc[len(self.data)] = [Step] + distribution
 
     def __get_scatter_trace(self):
         '''
