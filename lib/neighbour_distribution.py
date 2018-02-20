@@ -6,7 +6,6 @@ class neighbour_distribution(dash_object):
     def load_step(self, args):
         parametrs = args['parametrs']
         Step = args['Step']
-        print ("Step", Step)
         wall = args['wall']
         '''
         Here we upload step data and put it into data structure
@@ -48,7 +47,8 @@ class neighbour_distribution(dash_object):
         self.mylib.free_mem(p_list)
 
         distribution = list[len(coord[0])*2:]
-        print (distribution)
+        print ([Step] + distribution)
+        print (len(distribution))
         self.data.loc[len(self.data)] = [Step] + distribution
 
     def __get_scatter_trace(self):
