@@ -28,7 +28,7 @@ int* neighbour_list( double* x, double* y, double* z, int* type, double* wall, d
 
     double dist;
     int k = 1;
-    for (int i = 0; i < n-1; i ++){
+    for (int i = 0; i < n; i ++){
         //std::cerr << "i = " << i << "\n";
         if (list[i] == 0){
             list[i] = k;
@@ -43,7 +43,7 @@ int* neighbour_list( double* x, double* y, double* z, int* type, double* wall, d
                 //std::cerr << "2 = " << k_list_el[list[i]] << "\n";
         }
         for (int j = i+1; j < n; j++){
-            std::cerr << "j = " << j << "\n";
+            //std::cerr << "j = " << j << "\n";
             dist = get_r(x[i], y[i], z[i], x[j], y[j], z[j],  wall);
             if (dist < cut){
                 list[j] = list[i];
@@ -55,6 +55,7 @@ int* neighbour_list( double* x, double* y, double* z, int* type, double* wall, d
         }
     }
     for (int i = 0; i < n; i++)
+        std::cerr << "list_i = " << list[i] << "\n";
         list[i+n] = k_list_ion[list[i]];
 
     int el, ion;
