@@ -33,13 +33,13 @@ int* neighbour_list( double* x, double* y, double* z, double* type, double* wall
             list[i] = k;
             k++;
             if (type[i] == 1)
-                k_list_ion[list[j]] ++;
+                k_list_ion[list[i]] ++;
             if (type[i] == 2)
-                k_list_el[list[j]] ++;
+                k_list_el[list[i]] ++;
         }
         for (int j = i+1; j < n; j++){
             dist = get_r(x[i], y[i], z[i], x[j], y[j], z[j],  wall);
-            if dist(cut){
+            if (dist < cut){
                 list[j] = list[i];
                 if (type[j] == 1)
                     k_list_ion[list[j]] ++;
