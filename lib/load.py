@@ -51,7 +51,7 @@ class load:
                 if num_line > 8:
                     line = line.split(" ")[:-1]
                     step_pandas.loc[len(step_pandas)] = [float(word) for word in line]
-
+            step_pandas.sort_values(by='id', inplace=True)
             for object in self.objects:
                 object.load_step({'Step': read_step, 'parametrs': step_pandas, 'wall': self.wall})
         print ("\r{:30s} 100 %".format("read lammpstrj"))
