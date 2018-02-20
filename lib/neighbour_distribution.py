@@ -58,6 +58,7 @@ class neighbour_distribution(dash_object):
         p_cut = ctypes.c_double(self.cut)
 
         p_list = self.mylib.neighbour_list_two(p_x, p_y, p_z, p_x_2, p_y_2, p_z_2, p_type, p_wall, p_cut, p_n)
+        print ("coord = ", coord)
         list_dist = list(np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0]) * 2 + 7)))
         self.mylib.free_mem.argtypes = [ctypes.POINTER(ctypes.c_int)]
         self.mylib.free_mem(p_list)
@@ -86,6 +87,7 @@ class neighbour_distribution(dash_object):
             coord[3][i] = parametrs.loc[parametrs.index[i], 'type']
 
         if self.data.shape[0] == 0:
+            print ("first")
             self._load_first_step(Step=Step, coord=coord, wall=wall)
         else:
             self._load_next_step(Step=Step, coord=coord, wall=wall)
