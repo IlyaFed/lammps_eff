@@ -54,9 +54,10 @@ int* neighbour_list( double* x, double* y, double* z, int* type, double* wall, d
             }
         }
     }
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < n; i++){
         std::cerr << "list_i = " << list[i] << "\n";
         list[i+n] = k_list_ion[list[i]];
+    }
 
     int el, ion;
     for (int j = 0; j < k; j++){
