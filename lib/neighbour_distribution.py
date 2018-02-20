@@ -35,8 +35,8 @@ class neighbour_distribution(dash_object):
 
     def _load_next_step(self, Step, coord, wall):
         coord_2 = self.data.loc[self.data.index[-1], 'coord']
-        self.mylib.neighbour_list.restype = ctypes.POINTER(ctypes.c_int)
-        self.mylib.neighbour_list.argtypes = [
+        self.mylib.neighbour_list_two.restype = ctypes.POINTER(ctypes.c_int)
+        self.mylib.neighbour_list_two.argtypes = [
             ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), # x, y, z
             ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), # x_2, y_2, z_2
             ctypes.POINTER(ctypes.c_double),  # type
@@ -58,9 +58,9 @@ class neighbour_distribution(dash_object):
         p_cut = ctypes.c_double(self.cut)
 
         p_list = self.mylib.neighbour_list_two(p_x, p_y, p_z, p_x_2, p_y_2, p_z_2, p_type, p_wall, p_cut, p_n)
-        print ("coord = ", coord)
-        print ("p_list = ", p_list)
-        print ("numpy = ", np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0]) * 2 + 7)))
+        # print ("coord = ", coord)
+        # print ("p_list = ", p_list)
+        # print ("numpy = ", np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0]) * 2 + 7)))
         list_dist = list(np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0]) * 2 + 7)))
         self.mylib.free_mem.argtypes = [ctypes.POINTER(ctypes.c_int)]
         self.mylib.free_mem(p_list)
