@@ -183,6 +183,6 @@ class neighbour_distribution(dash_object):
         self.data_items = self.data.columns[3:]
         self.current_index = 0
         self.graph_type = 'scatter'
-        self.cut = 1.8
+        self.cut = 1.0
         self.mylib = ctypes.CDLL('lib/neighbour.so')
         self.name = 'neigbour_distribution'
