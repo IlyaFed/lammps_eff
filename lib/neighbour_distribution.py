@@ -88,11 +88,11 @@ class neighbour_distribution(dash_object):
             coord[3][i] = parametrs.loc[parametrs.index[i], 'type']
 
         #print ("type", coord[3])
-        if self.data.shape[0] < 10:
+        if self.data.shape[0] < 1:
             #print ("first")
             self._load_first_step(Step=Step, coord=coord, wall=wall)
         else:
-            coord_2 = self.data.loc[self.data.index[-10], 'coord']
+            coord_2 = self.data.loc[self.data.index[-1], 'coord']
             self._load_next_step(Step=Step, coord=coord, coord_2=coord_2, wall=wall)
 
 
@@ -184,6 +184,6 @@ class neighbour_distribution(dash_object):
         self.data_items = self.data.columns[3:]
         self.current_index = 0
         self.graph_type = 'scatter'
-        self.cut = 1.5
+        self.cut = 0.6
         self.mylib = ctypes.CDLL('lib/neighbour.so')
         self.name = 'neigbour_distribution'
