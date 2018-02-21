@@ -33,8 +33,7 @@ class neighbour_distribution(dash_object):
         distribution = list_dist[len(coord[0]) * 2:]
         self.data.loc[len(self.data)] = [Step, coord, wall] + distribution
 
-    def _load_next_step(self, Step, coord, wall):
-        coord_2 = self.data.loc[self.data.index[-1], 'coord']
+    def _load_next_step(self, Step, coord, coord_2, wall):
         self.mylib.neighbour_list_two.restype = ctypes.POINTER(ctypes.c_int)
         self.mylib.neighbour_list_two.argtypes = [
             ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double), # x, y, z
@@ -89,11 +88,12 @@ class neighbour_distribution(dash_object):
             coord[3][i] = parametrs.loc[parametrs.index[i], 'type']
 
         print ("type", coord[3])
-        if self.data.shape[0] == 0:
+        if self.data.shape[0] < 3:
             #print ("first")
             self._load_first_step(Step=Step, coord=coord, wall=wall)
         else:
-            self._load_next_step(Step=Step, coord=coord, wall=wall)
+            coord_2 = self.data.loc[self.data.index[-3], 'coord']
+            self._load_next_step(Step=Step, coord=coord, coord_2=coord_2, wall=wall)
 
 
     def __get_scatter_trace(self):
