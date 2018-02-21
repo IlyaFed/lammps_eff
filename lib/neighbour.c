@@ -84,7 +84,97 @@ int* neighbour_list( double* x, double* y, double* z, double* type, double* wall
     return list;
 }
 
-int* neighbour_list_two( double* x, double* y, double* z, double* x_2, double* y_2, double* z_2, double* type, double* wall, double cut, int n){
+int find_neighbour( int* list, int* k_list_ion, int* k_list_el,
+    double* x, double* y, double* z,
+    double* x_2, double* y_2, double* z_2,
+    double* type, double* wall, double cut, int n,
+    int i_initial, int k){
+    // recursive algorithm to find all neigbour
+    for (int i = 0; i < n; i++){
+        if ( list[i] != 0 )
+            continue;
+        dist = get_r(x[i_initial], y[i_initial], z[i_initial], x[j], y[j], z[j],  wall);
+        dist_2 = get_r(x_2[i_initial], y_2[i_initial], z_2[i_initial], x_2[j], y_2[j], z_2[j],  wall);
+        if ( (dist < cut) && (dist_2 < cut) ){
+            list[i] = k;
+
+            if (type[i] == 1.0)
+                k_list_ion[k] ++;
+
+            if (type[i] == 2.0)
+                k_list_el[k] ++;
+
+            find_neighbour(list, x, y, z, x_2, y_2, z_2, type, wall, cut, n, i, k);
+        }
+    }
+}
+
+int* neighbour_list_two( double* x, double* y, double* z,
+    double* x_2, double* y_2, double* z_2,
+    double* type, double* wall, double cut, int n){
+
+    int* list = new int[n*2 + 7]; // here we will return bonding molecules[n], types of every particle[n], distribution[7 (e, H+, H, H2+, H2, H3+, H3]
+    int* k_list_ion = new int[n];
+    int* k_list_el = new int[n];
+    cut = cut*cut; // we will compare dist^2
+
+    for (int l = 0; l < n*2 + 7; l ++)
+        list[l] = 0;
+
+    for (int l = 0; l < n; l ++){
+        k_list_el[l] = 0;
+        k_list_ion[l] = 0;
+    }
+
+    int k = 1;
+    for (int i = 0; i < n; i ++){
+        if (list[i] == 0){
+            find_neighbour(list, x, y, z, x_2, y_2, z_2, type, wall, cut, n, i, k);
+            k++;
+        }
+    }
+
+    for (int i = 0; i < n; i++){
+        list[i+n] = k_list_ion[list[i]];
+    }
+
+    int el, ion;
+    for (int j = 0; j < k; j++){
+        el = k_list_el[j];
+        ion = k_list_ion[j];
+        // e
+        if ( (el == 1) && (ion == 0))
+            list[n*2 + 0] ++;
+        // H+
+        if ( (el == 0) && (ion == 1))
+            list[n*2 + 1] ++;
+        // H
+        if ( (el == 1) && (ion == 1))
+            list[n*2 + 2] ++;
+        // H2+
+        if ( (el == 1) && (ion == 2))
+            list[n*2 + 3] ++;
+        // H2
+        if ( (el == 2) && (ion == 2))
+            list[n*2 + 4] ++;
+        // H3+
+        if ( (el == 2) && (ion == 3))
+            list[n*2 + 5] ++;
+        // H3
+        if ( (el == 3) && (ion == 3))
+            list[n*2 + 6] ++;
+    }
+
+    for (int i = 0; i < k; i++)
+        std::cerr << k_list_ion[i] << " "<< k_list_el[i] << "\n";
+    delete[] k_list_el;
+    delete[] k_list_ion;
+    return list;
+}
+
+
+// TODO
+int* neighbour_list_two_better_one( double* x, double* y, double* z, double* x_2, double* y_2, double* z_2, double* type, double* wall, double cut, int n){
     int* list = new int[n*2 + 7]; // here we will return bonding molecules[n], types of every particle[n], distribution[7 (e, H+, H, H2+, H2, H3+, H3]
     int* k_list_ion = new int[n];
     int* k_list_el = new int[n];
