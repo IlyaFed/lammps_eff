@@ -137,16 +137,16 @@ class coordinate_visualisation(dash_object):
 
         grid = self.data.loc[self.current_index, 'surface']
         #wall = self.data.loc[self.current_index, 'wall']
+        print ("iso ", self.isovalue, "grid ", self.grid_N)
+        item = int(self.isovalue * self.grid_N)
+
         if section == 'x':
-            item = int( self.isovalue * self.grid_N)
             grid_new = grid[item]
 
         if section == 'y':
-            item = int( self.isovalue * self.grid_N)
             grid_new = np.transpose(grid, (1, 2, 0))[item]
 
         if section == 'z':
-            item = int( self.isovalue * self.grid_N)
             grid_new = np.transpose(grid, (2, 0, 1))[item]
 
         traces.append( go.Surface(
@@ -250,7 +250,7 @@ class coordinate_visualisation(dash_object):
         self.mylib = ctypes.CDLL('lib/grid_gauss.so')
         self.graph_type = 'scatter'
         self.name = 'Coordinate visualisation'
-        self.isovalue = 0
+        self.isovalue = 0.01
         self.isovalue_maxmin = [0, 0]
         self.wall = [20., 20., 20.]
 
