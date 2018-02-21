@@ -108,6 +108,7 @@ class coordinate_visualisation(dash_object):
         grid = self.data.loc[self.current_index, 'surface']
         wall = self.data.loc[self.current_index, 'wall']
         iso_values = self.isovalue
+
         self.isovalue_maxmin = [grid.min(), grid.max()]
         vertices, simplices = measure.marching_cubes_classic(self.data.loc[self.current_index, 'surface'], iso_values)
         x, y, z = zip(*vertices)
@@ -127,11 +128,44 @@ class coordinate_visualisation(dash_object):
             title="Isosurface").data[0])
         return traces
 
+    def __get_surface_section(self, section):
+        '''
+        Create surfaace graph trace
+        :return:
+        '''
+        traces = []
+
+        grid = self.data.loc[self.current_index, 'surface']
+        #wall = self.data.loc[self.current_index, 'wall']
+        if section == 'x':
+            item = int( self.isovalue * grid.shape[0])
+            grid = grid[item]
+
+        if section == 'y':
+            item = int( self.isovalue * grid.shape[1])
+            grid = np.transpose(grid, (1, 2, 0))[item]
+
+        if section == 'z':
+            item = int( self.isovalue * grid.shape[2])
+            grid = np.transpose(grid, (2, 0, 1))[item]
+
+        colormap = ['rgb(255,105,180)', 'rgb(255,105,180)', 'rgb(255,105,180)']
+        traces.append( go.Surface(
+            z=grid,
+            title="Surface"))
+        return traces
+
     def __get_trace(self):
         if self.graph_type == 'scatter':
             return self.__get_scatter_trace()
         if self.graph_type == 'surface':
             return self.__get_surface_trace()
+        if self.graph_type == 'section_x':
+            return self.__get_surface_section(section='x')
+        if self.graph_type == 'section_y':
+            return self.__get_surface_section(section='y')
+        if self.graph_type == 'section_z':
+            return self.__get_surface_section(section='z')
 
     def __get_layout(self):
         if self.graph_type == 'surface':
@@ -193,14 +227,14 @@ class coordinate_visualisation(dash_object):
             html.Div(
                 dcc.RadioItems(
                     id=self.name + '_type',
-                    options=[{'label': i, 'value': i} for i in ['scatter', 'surface']],
+                    options=[{'label': i, 'value': i} for i in ['scatter', 'surface', 'section x', 'section y', 'section z']],
                     value='scatter',
                     labelStyle={'display': 'inline-block'}
                 )),
             html.Div(
                 dcc.Input(
                     id=self.name + '_isovalues',
-                    placeholder='Isovalue',
+                    placeholder='Value',
                     type='value',
                     value=0.5
             )),
@@ -218,6 +252,7 @@ class coordinate_visualisation(dash_object):
         self.mylib = ctypes.CDLL('lib/grid_gauss.so')
         self.graph_type = 'scatter'
         self.name = 'Coordinate visualisation'
+        self.isovalue = 0
         self.isovalue_maxmin = [0, 0]
         self.wall = [20., 20., 20.]
 
