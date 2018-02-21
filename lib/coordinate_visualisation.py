@@ -112,9 +112,9 @@ class coordinate_visualisation(dash_object):
         self.isovalue_maxmin = [grid.min(), grid.max()]
         vertices, simplices = measure.marching_cubes_classic(self.data.loc[self.current_index, 'surface'], iso_values)
         x, y, z = zip(*vertices)
-        x = np.array(x) / self.grid_N * wall[0]
-        y = np.array(y) / self.grid_N * wall[1]
-        z = np.array(z) / self.grid_N * wall[2]
+        #x = np.array(x) / self.grid_N * wall[0]
+        #y = np.array(y) / self.grid_N * wall[1]
+        #z = np.array(z) / self.grid_N * wall[2]
 
         colormap = ['rgb(255,105,180)', 'rgb(255,105,180)', 'rgb(255,105,180)']
         traces.append( ff.create_trisurf(
@@ -124,7 +124,7 @@ class coordinate_visualisation(dash_object):
             plot_edges=False,
             colormap=colormap,
             simplices=simplices,
-            aspectratio=dict(x=1, y=1, z=1),
+            #aspectratio=dict(x=1, y=1, z=1),
             title="Isosurface").data[0])
         return traces
 
@@ -138,20 +138,20 @@ class coordinate_visualisation(dash_object):
         grid = self.data.loc[self.current_index, 'surface']
         #wall = self.data.loc[self.current_index, 'wall']
         if section == 'x':
-            item = int( self.isovalue * grid.shape[0])
-            grid = grid[item]
+            item = int( self.isovalue * self.grid_N)
+            grid_new = grid[item]
 
         if section == 'y':
-            item = int( self.isovalue * grid.shape[1])
-            grid = np.transpose(grid, (1, 2, 0))[item]
+            item = int( self.isovalue * self.grid_N)
+            grid_new = np.transpose(grid, (1, 2, 0))[item]
 
         if section == 'z':
-            item = int( self.isovalue * grid.shape[2])
-            grid = np.transpose(grid, (2, 0, 1))[item]
+            item = int( self.isovalue * self.grid_N)
+            grid_new = np.transpose(grid, (2, 0, 1))[item]
 
         colormap = ['rgb(255,105,180)', 'rgb(255,105,180)', 'rgb(255,105,180)']
         traces.append( go.Surface(
-            z=grid
+            z=grid_new
         ))
         return traces
 
@@ -173,7 +173,6 @@ class coordinate_visualisation(dash_object):
                 title = "Visualisation, isovalue from {:f} to {:f}".format(self.isovalue_maxmin[0], self.isovalue_maxmin[1])
             )
         else:
-            print ("x" , self.wall)
             layout = go.Layout(
                 scene = dict(
                     aspectratio=dict(x=1, y=1, z=1)
