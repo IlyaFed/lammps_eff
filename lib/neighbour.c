@@ -88,6 +88,7 @@ int* neighbour_list_two( double* x, double* y, double* z, double* x_2, double* y
     int* list = new int[n*2 + 7]; // here we will return bonding molecules[n], types of every particle[n], distribution[7 (e, H+, H, H2+, H2, H3+, H3]
     int* k_list_ion = new int[n];
     int* k_list_el = new int[n];
+    int* list_2 = new int[n*2 + 7]
     for (int l = 0; l < n*2 + 7; l ++)
         list[l] = 0;
 
@@ -120,13 +121,26 @@ int* neighbour_list_two( double* x, double* y, double* z, double* x_2, double* y
         }
     }
 
+    int k_2 = 1
     for (int i = 0; i < n; i ++){
+        if (list_2[i] == 0){
+            list_2[i] = k_2;
+            k++;
+        }
         for (int j = i+1; j < n; j++){
             dist = get_r(x_2[i], y_2[i], z_2[i], x_2[j], y_2[j], z_2[j],  wall);
-            if (dist > cut){
-                if (list[j] == list[i]){
-                    k_list_ion[list[j]] = 0;
-                    k_list_el[list[j]] = 0;
+            if (dist < cut){
+                list_2[j] = list_2[i];
+            }
+        }
+    }
+
+    for (int i = 0; i < n; i ++){
+        for (int j = i+1; j < n; j ++){
+            if ( list[i] == list[j] ){
+                if ( list_2[i] != list_2[j] ){
+                    k_list_el[list[i]] = 0;
+                    k_list_ion[list[i]] = 0;
                 }
             }
         }
