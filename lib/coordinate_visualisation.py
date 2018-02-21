@@ -152,6 +152,17 @@ class coordinate_visualisation(dash_object):
         traces.append( go.Surface(
             z=grid_new
         ))
+
+        ions = self.data.loc[self.current_index, 'ion']
+        traces.append(go.Scatter3d(
+            x=ions[0]/self.wall[0]*self.grid_N,
+            y=ions[1]/self.wall[1]*self.grid_N,
+            z= (grid_new.min() + grid_new.max()) * 0.5,
+            name='ions',
+            mode='markers',
+            marker=dict(size=5)
+        ))
+
         return traces
 
     def __get_trace(self):
