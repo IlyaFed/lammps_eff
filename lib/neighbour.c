@@ -95,8 +95,8 @@ int find_neighbour( int* list, int* k_list_ion, int* k_list_el,
     for (int i = 0; i < n; i++){
         if ( list[i] != 0 )
             continue;
-        dist = get_r(x[i_initial], y[i_initial], z[i_initial], x[j], y[j], z[j],  wall);
-        dist_2 = get_r(x_2[i_initial], y_2[i_initial], z_2[i_initial], x_2[j], y_2[j], z_2[j],  wall);
+        dist = get_r(x[i_initial], y[i_initial], z[i_initial], x[i], y[i], z[i],  wall);
+        dist_2 = get_r(x_2[i_initial], y_2[i_initial], z_2[i_initial], x_2[i], y_2[i], z_2[i],  wall);
         if ( (dist < cut) && (dist_2 < cut) ){
             list[i] = k;
 
