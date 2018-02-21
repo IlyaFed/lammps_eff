@@ -28,7 +28,8 @@ class energy_h2(dash_object):
         dist_x = parametrs[parametrs['type'] == 1.0]['x'].values[0] - parametrs[parametrs['type'] == 1.0]['x'].values[1]
         dist_y = parametrs[parametrs['type'] == 1.0]['y'].values[0] - parametrs[parametrs['type'] == 1.0]['y'].values[1]
         dist_z = parametrs[parametrs['type'] == 1.0]['z'].values[0] - parametrs[parametrs['type'] == 1.0]['z'].values[1]
-        dist = dist_x**2 + dist_y**2 + dist_z**2
+        dist = np.sqrt(dist_x**2 + dist_y**2 + dist_z**2)
+
         electron = parametrs[parametrs['type'] == 2.0].apply(sum_f, axis = 1).sum()
         self.data.loc[len(self.data)] = [Step, dist, ion, electron, ion + electron]
 
