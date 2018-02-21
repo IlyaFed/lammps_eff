@@ -160,11 +160,11 @@ class coordinate_visualisation(dash_object):
             return self.__get_scatter_trace()
         if self.graph_type == 'surface':
             return self.__get_surface_trace()
-        if self.graph_type == 'section_x':
+        if self.graph_type == 'section x':
             return self.__get_surface_section(section='x')
-        if self.graph_type == 'section_y':
+        if self.graph_type == 'section y':
             return self.__get_surface_section(section='y')
-        if self.graph_type == 'section_z':
+        if self.graph_type == 'section z':
             return self.__get_surface_section(section='z')
 
     def __get_layout(self):
