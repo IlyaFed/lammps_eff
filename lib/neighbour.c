@@ -122,7 +122,6 @@ int* neighbour_list_two( double* x, double* y, double* z, double* x_2, double* y
             }
         }
     }
-    /*
     int k_2 = 1;
     for (int i = 0; i < n; i ++){
         if (list_2[i] == 0){
@@ -147,7 +146,7 @@ int* neighbour_list_two( double* x, double* y, double* z, double* x_2, double* y
             }
         }
     }
-    */
+
     for (int i = 0; i < n; i++){
         list[i+n] = k_list_ion[list[i]];
     }
