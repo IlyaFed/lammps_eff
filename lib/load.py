@@ -24,7 +24,7 @@ class load:
             self.start = int(llist[0])
         self.step = max(int(llist[1] - llist[0]), self.minstep)
         self.stop = int(llist[-1])
-        self.start = self.stop - 10* self.step # TODO !!!!!!
+        self.start = self.stop - 3* self.step # TODO !!!!!!
         self.wall = np.array([0, 0, 0], dtype=float)
 
         del llist

@@ -5,8 +5,6 @@ from plotly import figure_factory as ff
 from skimage import measure
 import ctypes
 
-# TODO make surface color
-# TODO make wall in visualisation
 class coordinate_visualisation(dash_object):
     def load_step(self, args):
         parametrs = args['parametrs']

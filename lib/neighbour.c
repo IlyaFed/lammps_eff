@@ -89,7 +89,7 @@ int* neighbour_list_two( double* x, double* y, double* z, double* x_2, double* y
     int* k_list_ion = new int[n];
     int* k_list_el = new int[n];
     int* list_2 = new int[n];
-
+    cut = cut*cut; // we will compare dist^2
     for (int l = 0; l < n*2 + 7; l ++)
         list[l] = 0;
 
