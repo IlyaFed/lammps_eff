@@ -163,7 +163,7 @@ int* neighbour_list_two( double* x, double* y, double* z, double* x_2, double* y
     }
 
     for (int i = 0; i < k; i++)
-        std::cerr << k_list_ion[i] << " "<< k_list_el << "\n";
+        std::cerr << k_list_ion[i] << " "<< k_list_el[i] << "\n";
 
     return list;
 }
