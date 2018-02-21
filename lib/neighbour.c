@@ -104,7 +104,7 @@ int find_neighbour( int* list, int* k_list_ion, int* k_list_el,
             if (type[i] == 2.0)
                 k_list_el[k] ++;
 
-            find_neighbour(list, x, y, z, x_2, y_2, z_2, type, wall, cut, n, i, k);
+            find_neighbour(list, k_list_ion, k_list_el, x, y, z, x_2, y_2, z_2, type, wall, cut, n, i, k);
         }
     }
 }
@@ -129,7 +129,7 @@ int* neighbour_list_two( double* x, double* y, double* z,
     int k = 1;
     for (int i = 0; i < n; i ++){
         if (list[i] == 0){
-            find_neighbour(list, x, y, z, x_2, y_2, z_2, type, wall, cut, n, i, k);
+            find_neighbour(list, k_list_ion, k_list_el, x, y, z, x_2, y_2, z_2, type, wall, cut, n, i, k);
             k++;
         }
     }
