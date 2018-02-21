@@ -94,6 +94,7 @@ int* neighbour_list_two( double* x, double* y, double* z, double* x_2, double* y
         list[l] = 0;
 
     for (int l = 0; l < n; l ++){
+        list_2[l] = 0;
         k_list_el[l] = 0;
         k_list_ion[l] = 0;
     }

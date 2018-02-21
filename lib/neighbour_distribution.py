@@ -87,7 +87,7 @@ class neighbour_distribution(dash_object):
             coord[2][i] = parametrs.loc[parametrs.index[i], 'z']
             coord[3][i] = parametrs.loc[parametrs.index[i], 'type']
 
-        print ("type", coord[3])
+        #print ("type", coord[3])
         if self.data.shape[0] < 3:
             #print ("first")
             self._load_first_step(Step=Step, coord=coord, wall=wall)
