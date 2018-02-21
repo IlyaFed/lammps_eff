@@ -90,6 +90,8 @@ int find_neighbour( int* list, int* k_list_ion, int* k_list_el,
     double* type, double* wall, double cut, int n,
     int i_initial, int k){
     // recursive algorithm to find all neigbour
+
+    double dist, dist_2;
     for (int i = 0; i < n; i++){
         if ( list[i] != 0 )
             continue;
