@@ -127,7 +127,7 @@ int* neighbour_list_two( double* x, double* y, double* z, double* x_2, double* y
     for (int i = 0; i < n; i ++){
         if (list_2[i] == 0){
             list_2[i] = k_2;
-            k++;
+            k_2++;
         }
         for (int j = i+1; j < n; j++){
             dist = get_r(x_2[i], y_2[i], z_2[i], x_2[j], y_2[j], z_2[j],  wall);
