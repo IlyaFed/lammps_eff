@@ -115,9 +115,9 @@ int* neighbour_list_two( double* x, double* y, double* z, double* x_2, double* y
             dist = get_r(x[i], y[i], z[i], x[j], y[j], z[j],  wall);
             if (dist < cut){
                 list[j] = list[i];
-                if (type[j] == 1)
+                if (type[j] == 1.0)
                     k_list_ion[list[j]] ++;
-                if (type[j] == 2)
+                if (type[j] == 2.0)
                     k_list_el[list[j]] ++;
             }
         }
