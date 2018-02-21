@@ -112,9 +112,9 @@ class coordinate_visualisation(dash_object):
         self.isovalue_maxmin = [grid.min(), grid.max()]
         vertices, simplices = measure.marching_cubes_classic(self.data.loc[self.current_index, 'surface'], iso_values)
         x, y, z = zip(*vertices)
-        #x = np.array(x) / self.grid_N * wall[0]
-        #y = np.array(y) / self.grid_N * wall[1]
-        #z = np.array(z) / self.grid_N * wall[2]
+        x = np.array(x) / self.grid_N * wall[0]
+        y = np.array(y) / self.grid_N * wall[1]
+        z = np.array(z) / self.grid_N * wall[2]
 
         colormap = ['rgb(255,105,180)', 'rgb(255,105,180)', 'rgb(255,105,180)']
         traces.append( ff.create_trisurf(
@@ -124,7 +124,7 @@ class coordinate_visualisation(dash_object):
             plot_edges=False,
             colormap=colormap,
             simplices=simplices,
-            #aspectratio=dict(x=1, y=1, z=1),
+            aspectratio=dict(x=1, y=1, z=1),
             title="Isosurface").data[0])
         return traces
 
@@ -149,7 +149,6 @@ class coordinate_visualisation(dash_object):
             item = int( self.isovalue * self.grid_N)
             grid_new = np.transpose(grid, (2, 0, 1))[item]
 
-        colormap = ['rgb(255,105,180)', 'rgb(255,105,180)', 'rgb(255,105,180)']
         traces.append( go.Surface(
             z=grid_new
         ))
