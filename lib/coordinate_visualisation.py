@@ -151,8 +151,8 @@ class coordinate_visualisation(dash_object):
 
         colormap = ['rgb(255,105,180)', 'rgb(255,105,180)', 'rgb(255,105,180)']
         traces.append( go.Surface(
-            z=grid,
-            title="Surface"))
+            z=grid
+        ))
         return traces
 
     def __get_trace(self):
