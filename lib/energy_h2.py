@@ -4,11 +4,11 @@ import numpy as np
 
 class energy_h2(dash_object):
     def load_step(self, args):
-        parametrs = args['parametrs']
-        Step = args['Step']
         '''
         Here we upload step data and put it into data structure
         '''
+        parametrs = args['parametrs']
+        Step = args['Step']
         if self.load_flag:
             return 0
         k_boltz = 1.3806485279e-23
@@ -22,7 +22,7 @@ class energy_h2(dash_object):
                 return x['c_peatom'] * e_hartry
         if self.type == 'full':
             def sum_f(x):
-                return (x['c_peatom'] + x['c_keatom']) * e_hartry
+                return ( x['c_peatom'] + x['c_keatom'] ) * e_hartry
 
         ion = parametrs[parametrs['type'] == 1.0].apply(sum_f, axis = 1).sum()
         dist_x = parametrs[parametrs['type'] == 1.0]['x'].values[0] - parametrs[parametrs['type'] == 1.0]['x'].values[1]
@@ -49,7 +49,7 @@ class energy_h2(dash_object):
         traces.append(go.Scatter(
             x=self.data['dist'].values,
             y=self.data['electron'].values,
-            name='electrons',
+            name = 'electrons',
             mode = 'line',
         ))
 

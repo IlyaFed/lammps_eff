@@ -22,13 +22,14 @@ class energy_distribution_electron(dash_object):
         e_max = energy.max()
         e_min = energy.min()
         e = np.zeros((2, grid + 1))
-        for i in range(grid + 1):
-            e[0][i] = e_min + (e_max - e_min) / grid * i
+        if e_max != e_min:
+            for i in range(grid + 1):
+                e[0][i] = e_min + (e_max - e_min) / grid * i
 
-        def f_e_dist(x):
-            e[1][int((x - e_min) / (e_max - e_min) * grid)] += 1
+            def f_e_dist(x):
+                e[1][int((x - e_min) / (e_max - e_min) * grid)] += 1
 
-        energy.apply(f_e_dist)
+            energy.apply(f_e_dist)
         '''
         Temperature = 2. / 3. / (parametrs[parametrs['type'] == 1.0]['c_keatom'].mean() * e_hartry)
         if self.energy == 'potential':

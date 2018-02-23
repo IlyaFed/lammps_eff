@@ -23,27 +23,27 @@ class energy_distribution_ion(dash_object):
         e_max = energy.max()
         e_min = energy.min()
         e = np.zeros((2, grid + 1))
-        for i in range(grid + 1):
-            e[0][i] = e_min + (e_max - e_min) / grid * i
-
-        def f_e_dist(x):
-            e[1][int((x - e_min) / (e_max - e_min) * grid)] += 1
-
-        energy.apply(f_e_dist)
-
-        Temperature = 2. / 3. / (parametrs[parametrs['type'] == 1.0]['c_keatom'].mean() * e_hartry)
-        if self.energy == 'potential':
-            theory = e.copy()
+        theory = e.copy()
+        if e_max != e_min:
             for i in range(grid + 1):
-                theory[1][i] = np.exp(- theory[0][i] / Temperature )
+                e[0][i] = e_min + (e_max - e_min) / grid * i
 
-            theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
-        else:
-            theory = e.copy()
-            for i in range(grid + 1):
-                theory[1][i] = theory[0][i] ** 0.5 * np.exp(- theory[0][i] / Temperature)
+            def f_e_dist(x):
+                e[1][int((x - e_min) / (e_max - e_min) * grid)] += 1
 
-            theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
+            energy.apply(f_e_dist)
+
+            Temperature = 2. / 3. / (parametrs[parametrs['type'] == 1.0]['c_keatom'].mean() * e_hartry)
+            if self.energy == 'potential':
+                for i in range(grid + 1):
+                    theory[1][i] = np.exp(- theory[0][i] / Temperature )
+
+                theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
+            else:
+                for i in range(grid + 1):
+                    theory[1][i] = theory[0][i] ** 0.5 * np.exp(- theory[0][i] / Temperature)
+
+                theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
 
         self.data.loc[len(self.data)] = [Step, e, theory]
 

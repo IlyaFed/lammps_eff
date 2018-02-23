@@ -153,6 +153,7 @@ class coordinate_visualisation(dash_object):
             z=grid_new
         ))
 
+        '''
         ions = self.data.loc[self.current_index, 'ion']
         traces.append(go.Scatter3d(
             x=ions[0]/self.wall[0]*self.grid_N,
@@ -162,6 +163,7 @@ class coordinate_visualisation(dash_object):
             mode='markers',
             marker=dict(size=5)
         ))
+        '''
 
         return traces
 
