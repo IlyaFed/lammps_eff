@@ -34,30 +34,35 @@ class energy(dash_object):
         :return:
         '''
         traces = []
+        if self.timestep == 0:
+            x_step = self.data['Step'].values
+            step = self.data.loc[self.current_index, 'Step']
+        else:
+            x_step = self.data['Step'].values * self.timestep
+            step = self.data.loc[self.current_index, 'Step'] * self.timestep
 
         traces.append(go.Scatter(
-            x = self.data['Step'].values,
-            y = self.data['ion'].values,
-            name = 'ions',
-            mode = 'line'
+            x=x_step,
+            y=self.data['ion'].values,
+            name='ions',
+            mode='line'
         ))
         traces.append(go.Scatter(
-            x=self.data['Step'].values,
+            x=x_step,
             y=self.data['electron'].values,
             name='electrons',
-            mode = 'line',
+            mode='line',
         ))
 
         traces.append(go.Scatter(
-            x=self.data['Step'].values,
+            x=x_step,
             y=self.data['all'].values,
             name='full',
-            mode = 'line'
+            mode='line'
         ))
         # create line in choosen step
         max_T = max(self.data['ion'].max(), self.data['electron'].max(), self.data['all'].max())
         min_T = min(self.data['ion'].min(), self.data['electron'].min(), self.data['all'].min())
-        step = self.data.loc[self.current_index, 'Step']
         traces.append(go.Scatter(
             x = np.linspace(step, step, 100),
             y = np.linspace(min_T, max_T, 100),
@@ -119,7 +124,8 @@ class energy(dash_object):
         return layout
 
 
-    def __init__(self, type = 'full'):
+    def __init__(self, type = 'full', timestep=0):
+        self.timestep = timestep
         self.type = type
         self.data = pd.DataFrame(columns=["Step", "ion", "electron", "all"])
         self.current_index = 0
