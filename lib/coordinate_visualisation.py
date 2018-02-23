@@ -107,9 +107,9 @@ class coordinate_visualisation(dash_object):
         ))
         grid = self.data.loc[self.current_index, 'surface']
         wall = self.data.loc[self.current_index, 'wall']
-        iso_values = self.isovalue
-
-        self.isovalue_maxmin = [grid.min(), grid.max()]
+        self.isovalue_maxmin = [grid.max(), grid.min()]
+        iso_value = min(self.isovalue, self.isovalue_maxmin[0])
+        iso_value = max( iso_value, self.isovalue_maxmin[1])
         vertices, simplices = measure.marching_cubes_classic(self.data.loc[self.current_index, 'surface'], iso_values)
         x, y, z = zip(*vertices)
         x = np.array(x) / self.grid_N * wall[0]
@@ -182,7 +182,7 @@ class coordinate_visualisation(dash_object):
     def __get_layout(self):
         if self.graph_type == 'surface':
             layout = go.Layout(
-                title = "Visualisation, isovalue from {:f} to {:f}".format(self.isovalue_maxmin[0], self.isovalue_maxmin[1])
+                title = "Visualisation, isovalue from {:f} to {:f}".format(self.isovalue_maxmin[1], self.isovalue_maxmin[0])
             )
         else:
             layout = go.Layout(
