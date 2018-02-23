@@ -64,7 +64,6 @@ class coordinate_visualisation(dash_object):
         wall[1] -= wall[4]
         wall[2] -= wall[5]
         wall = wall[ :3]
-        print ("wall new ", wall)
         self.data.loc[len(self.data)] = [Step, coord_ion, coord_electron, grid, wall]
         del grid
 
@@ -111,11 +110,11 @@ class coordinate_visualisation(dash_object):
             marker=dict(size=3)
         ))
         grid = self.data.loc[self.current_index, 'surface']
-        wall = self.data.loc[self.current_index, 'wall']
+        wall = self.wall
         print ("wall ", wall)
         self.isovalue_maxmin = [grid.max(), grid.min()]
-        iso_value = min(self.isovalue, self.isovalue_maxmin[0])
-        iso_value = max( iso_value, self.isovalue_maxmin[1])
+        iso_value = min(self.isovalue, self.isovalue_maxmin[0] - 1e-10)
+        iso_value = max( iso_value, self.isovalue_maxmin[1] + 1e-10)
         vertices, simplices = measure.marching_cubes_classic(self.data.loc[self.current_index, 'surface'], iso_value)
         x, y, z = zip(*vertices)
         x = np.array(x) / self.grid_N * wall[0]
