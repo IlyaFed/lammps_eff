@@ -76,6 +76,10 @@ class energy(dash_object):
         if self.graph_type == 'scatter':
             return self.__get_scatter_trace()
     def __get_layout(self):
+        if self.timestep == 0:
+            x_title = "Step"
+        else:
+            x_title = "Time, fs"
         return go.Layout(
             showlegend = True,
             width=500,
@@ -85,7 +89,7 @@ class energy(dash_object):
                 showgrid = True,
                 zeroline = False,
                 showline = True,
-                title = 'Step'
+                title = x_title
             ),
             yaxis=dict(
                 showgrid=True,
