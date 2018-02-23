@@ -110,7 +110,7 @@ class coordinate_visualisation(dash_object):
             marker=dict(size=3)
         ))
         grid = self.data.loc[self.current_index, 'surface']
-        wall = self.wall
+        wall = self.data.loc[self.current_index, 'wall']
         print ("wall ", wall)
         self.isovalue_maxmin = [grid.max(), grid.min()]
         iso_value = min(self.isovalue, self.isovalue_maxmin[0] - 1e-10)
@@ -232,7 +232,7 @@ class coordinate_visualisation(dash_object):
             self.graph_type = graph_type
             if (int(selected_Step) in self.data['Step'].values):
                 self.current_index = self.data[self.data['Step'] == int(selected_Step)].index[0]
-                self.wall = self.data[self.data['Step'] == int(selected_Step)]['wall'].values[0]
+                #self.wall = self.data[self.data['Step'] == int(selected_Step)]['wall'].values[0]
             return self._update_graph()
 
     def get_html(self):
