@@ -38,6 +38,7 @@ class energy(dash_object):
             x_step = self.data['Step'].values
             step = self.data.loc[self.current_index, 'Step']
         else:
+            print ("with timestep")
             x_step = self.data['Step'].values * self.timestep
             step = self.data.loc[self.current_index, 'Step'] * self.timestep
 
@@ -130,6 +131,7 @@ class energy(dash_object):
 
     def __init__(self, type = 'full', timestep=0):
         self.timestep = timestep
+        print ("timestep = ", timestep)
         self.type = type
         self.data = pd.DataFrame(columns=["Step", "ion", "electron", "all"])
         self.current_index = 0
