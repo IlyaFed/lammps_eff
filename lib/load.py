@@ -24,7 +24,7 @@ class load:
             self.start = int(llist[0])
         self.step = max(int(llist[1] - llist[0]), self.minstep)
         self.stop = int(llist[-1])
-        self.wall = np.array([0, 0, 0], dtype=float)
+        self.wall = np.array([0, 0, 0, 0, 0, 0], dtype=float)
 
         del llist
 
@@ -39,10 +39,13 @@ class load:
 
                 if num_line == 5:
                     self.wall[0] = float( line.split(" ")[1] )
+                    self.wall[3] = float( line.split(" ")[2] )
                 if num_line == 6:
                     self.wall[1] = float( line.split(" ")[1] )
+                    self.wall[4] = float( line.split(" ")[2] )
                 if num_line == 7:
                     self.wall[2] = float( line.split(" ")[1] )
+                    self.wall[5] = float( line.split(" ")[2] )
 
                 if num_line == 8:
                     line = line.split(" ")[:-1]

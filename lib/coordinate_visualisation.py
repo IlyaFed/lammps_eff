@@ -20,18 +20,18 @@ class coordinate_visualisation(dash_object):
         n = our_param.shape[0]
         coord_ion = np.zeros((3, n), dtype=float)
         for i in range(n):
-            coord_ion[0][i] = our_param.loc[our_param.index[i], 'x']
-            coord_ion[1][i] = our_param.loc[our_param.index[i], 'y']
-            coord_ion[2][i] = our_param.loc[our_param.index[i], 'z']
+            coord_ion[0][i] = our_param.loc[our_param.index[i], 'x'] + wall[3]
+            coord_ion[1][i] = our_param.loc[our_param.index[i], 'y'] + wall[4]
+            coord_ion[2][i] = our_param.loc[our_param.index[i], 'z'] + wall[5]
 
         # read electron coordinates
         our_param = parametrs[parametrs['type'] == 2.0]
         n = our_param.shape[0]
         coord_electron = np.zeros((4, n), dtype=float)
         for i in range(n):
-            coord_electron[0][i] = our_param.loc[our_param.index[i], 'x']
-            coord_electron[1][i] = our_param.loc[our_param.index[i], 'y']
-            coord_electron[2][i] = our_param.loc[our_param.index[i], 'z']
+            coord_electron[0][i] = our_param.loc[our_param.index[i], 'x'] + wall[3]
+            coord_electron[1][i] = our_param.loc[our_param.index[i], 'y'] + wall[4]
+            coord_electron[2][i] = our_param.loc[our_param.index[i], 'z'] + wall[5]
             coord_electron[3][i] = our_param.loc[our_param.index[i], 'c_1a[2]']
 
         self.mylib.grid_gauss.restype = ctypes.POINTER(ctypes.c_double)
@@ -60,6 +60,8 @@ class coordinate_visualisation(dash_object):
             for j in range(self.grid_N):
                 for k in range(self.grid_N):
                     grid[i][j][k] = grid_res[i * self.grid_N * self.grid_N + j * self.grid_N + k]
+        wall = wall[:3]
+        print ("wall new ", wall)
         self.data.loc[len(self.data)] = [Step, coord_ion, coord_electron, grid, wall]
         del grid
 
@@ -107,6 +109,7 @@ class coordinate_visualisation(dash_object):
         ))
         grid = self.data.loc[self.current_index, 'surface']
         wall = self.data.loc[self.current_index, 'wall']
+        print ("wall ", wall)
         self.isovalue_maxmin = [grid.max(), grid.min()]
         iso_value = min(self.isovalue, self.isovalue_maxmin[0])
         iso_value = max( iso_value, self.isovalue_maxmin[1])
