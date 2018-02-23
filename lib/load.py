@@ -39,13 +39,13 @@ class load:
 
                 if num_line == 5:
                     self.wall[0] = float( line.split(" ")[1] )
-                    self.wall[3] = float( line.split(" ")[2] )
+                    self.wall[3] = float( line.split(" ")[0] )
                 if num_line == 6:
                     self.wall[1] = float( line.split(" ")[1] )
-                    self.wall[4] = float( line.split(" ")[2] )
+                    self.wall[4] = float( line.split(" ")[0] )
                 if num_line == 7:
                     self.wall[2] = float( line.split(" ")[1] )
-                    self.wall[5] = float( line.split(" ")[2] )
+                    self.wall[5] = float( line.split(" ")[0] )
 
                 if num_line == 8:
                     line = line.split(" ")[:-1]
