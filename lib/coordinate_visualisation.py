@@ -64,7 +64,7 @@ class coordinate_visualisation(dash_object):
         wall[1] -= wall[4]
         wall[2] -= wall[5]
         wall = wall[ :3]
-        print ("wall new ", wall)g
+        print ("wall new ", wall)
         self.data.loc[len(self.data)] = [Step, coord_ion, coord_electron, grid, wall]
         del grid
 
