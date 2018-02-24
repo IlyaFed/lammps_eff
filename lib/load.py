@@ -33,8 +33,10 @@ class load:
                 os.stat(path + file_name)
             except:
                 continue
+            n = 0
             for num_line, line in enumerate(open(path + file_name, "r")):
-
+                if num_line == 4:
+                    n = float( line )
                 if num_line == 5:
                     self.wall[0] = float( line.split(" ")[1] )
                     self.wall[3] = float( line.split(" ")[0] )
@@ -49,7 +51,7 @@ class load:
                     line = line.split(" ")[:-1]
                     columns_names = line[2:]
                     step_pandas = pd.DataFrame(columns=columns_names)
-                if num_line > 8:
+                if ( (num_line > 8) && (num_line < 9 + n) ):
                     line = line.split(" ")[:-1]
                     step_pandas.loc[len(step_pandas)] = [float(word) for word in line]
             step_pandas.sort_values(by='id', inplace=True)
