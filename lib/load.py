@@ -51,7 +51,7 @@ class load:
                     line = line.split(" ")[:-1]
                     columns_names = line[2:]
                     step_pandas = pd.DataFrame(columns=columns_names)
-                if ( (num_line > 8) && (num_line < 9 + n) ):
+                if ( (num_line > 8) & (num_line < 9 + n) ):
                     line = line.split(" ")[:-1]
                     step_pandas.loc[len(step_pandas)] = [float(word) for word in line]
             step_pandas.sort_values(by='id', inplace=True)
