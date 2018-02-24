@@ -111,7 +111,6 @@ class coordinate_visualisation(dash_object):
         ))
         grid = self.data.loc[self.current_index, 'surface']
         wall = self.data.loc[self.current_index, 'wall']
-        print ("wall ", wall)
         self.isovalue_maxmin = [grid.max(), grid.min()]
         iso_value = min(self.isovalue, self.isovalue_maxmin[0] - 0.001)
         iso_value = max( iso_value, self.isovalue_maxmin[1] + 0.001)
@@ -142,7 +141,6 @@ class coordinate_visualisation(dash_object):
 
         grid = self.data.loc[self.current_index, 'surface']
         #wall = self.data.loc[self.current_index, 'wall']
-        print ("iso ", self.isovalue, "grid ", self.grid_N)
         item = int(self.isovalue * self.grid_N)
 
         if section == 'x':
@@ -229,7 +227,6 @@ class coordinate_visualisation(dash_object):
             #if selected_Step == 0:
             #    selected_Step = selected_Step_0
             self.isovalue = float(isovalue)
-            print (self.isovalue)
             self.graph_type = graph_type
             if (int(selected_Step) in self.data['Step'].values):
                 self.current_index = self.data[self.data['Step'] == int(selected_Step)].index[0]
