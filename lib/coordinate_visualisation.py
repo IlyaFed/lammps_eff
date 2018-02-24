@@ -114,8 +114,8 @@ class coordinate_visualisation(dash_object):
         wall = self.data.loc[self.current_index, 'wall']
         print ("wall ", wall)
         self.isovalue_maxmin = [grid.max(), grid.min()]
-        iso_value = min(self.isovalue, self.isovalue_maxmin[0] - 1e-10)
-        iso_value = max( iso_value, self.isovalue_maxmin[1] + 1e-10)
+        iso_value = min(self.isovalue, self.isovalue_maxmin[0] - 0.001)
+        iso_value = max( iso_value, self.isovalue_maxmin[1] + 0.001)
         vertices, simplices = measure.marching_cubes_classic(self.data.loc[self.current_index, 'surface'], iso_value)
         x, y, z = zip(*vertices)
         x = np.array(x) / self.grid_N * wall[0]
@@ -230,6 +230,7 @@ class coordinate_visualisation(dash_object):
             #if selected_Step == 0:
             #    selected_Step = selected_Step_0
             self.isovalue = isovalue
+            print (self.isovalue)
             self.graph_type = graph_type
             if (int(selected_Step) in self.data['Step'].values):
                 self.current_index = self.data[self.data['Step'] == int(selected_Step)].index[0]
@@ -265,7 +266,7 @@ class coordinate_visualisation(dash_object):
     def __init__(self):
         self.data = pd.DataFrame(columns=["Step", "ion", "electron", "surface", "wall"])
         self.current_index = 0
-        self.grid_N = 50
+        self.grid_N = 100
         self.mylib = ctypes.CDLL('lib/grid_gauss.so')
         self.graph_type = 'scatter'
         self.name = 'Coordinate visualisation'
