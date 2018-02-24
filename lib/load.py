@@ -35,7 +35,7 @@ class load:
                 continue
             n = 0
             for num_line, line in enumerate(open(path + file_name, "r")):
-                if num_line == 4:
+                if num_line == 3:
                     n = float( line )
                 if num_line == 5:
                     self.wall[0] = float( line.split(" ")[1] )
