@@ -230,7 +230,7 @@ class coordinate_visualisation(dash_object):
         def update_figure(selected_Step, graph_type, isovalue):
             #if selected_Step == 0:
             #    selected_Step = selected_Step_0
-            self.isovalue = isovalue
+            self.isovalue = float(isovalue)
             print (self.isovalue)
             self.graph_type = graph_type
             if (int(selected_Step) in self.data['Step'].values):
