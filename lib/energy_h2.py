@@ -25,7 +25,7 @@ class energy_h2(dash_object):
                 return ( x['c_peatom'] + x['c_keatom'] ) * e_hartry
 
         ion = parametrs[parametrs['type'] == 1.0].apply(sum_f, axis = 1).sum()
-        print (parametrs[parametrs['type'] == 1.0]['z'].values, "dist")
+        #print (parametrs[parametrs['type'] == 1.0]['z'].values, "dist")
         dist_x = parametrs[parametrs['type'] == 1.0]['x'].values[0] - parametrs[parametrs['type'] == 1.0]['x'].values[1]
         dist_y = parametrs[parametrs['type'] == 1.0]['y'].values[0] - parametrs[parametrs['type'] == 1.0]['y'].values[1]
         dist_z = parametrs[parametrs['type'] == 1.0]['z'].values[0] - parametrs[parametrs['type'] == 1.0]['z'].values[1]
