@@ -114,6 +114,7 @@ class coordinate_visualisation(dash_object):
         wall = self.data.loc[self.current_index, 'wall']
         print ("wall ", wall)
         self.isovalue_maxmin = [grid.max(), grid.min()]
+        print ( "iso" , self.isovalue, self.isovalue_maxmin[0])
         iso_value = min(self.isovalue, self.isovalue_maxmin[0] - 0.001)
         iso_value = max( iso_value, self.isovalue_maxmin[1] + 0.001)
         vertices, simplices = measure.marching_cubes_classic(self.data.loc[self.current_index, 'surface'], iso_value)
