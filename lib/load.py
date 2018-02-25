@@ -91,7 +91,11 @@ class load:
             print ("\nError (file not found)")
             pass
         p = Popen(["wc", "-l", "{:s}".format(name)], stdout=PIPE)
-        line_in_file = int(str(p.stdout.read()).split("b'")[1].split(name)[0])
+        try:
+            line_in_file = int(str(p.stdout.read()).split("b'")[1].split(name)[0])
+        except:
+            print ("error get number of lines in file")
+            line_in_file = 100
         start_flag = 1
         read_flag = 0
         for num_line, line in enumerate( open( name, 'r')):
