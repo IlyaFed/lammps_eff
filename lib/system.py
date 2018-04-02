@@ -67,8 +67,8 @@ class system(load):
             self.app.run_server()
 
     def __init__(self, lammpstrj, logfile, objects, server = 0, minstep = 0, backup_path = "./", port = 8050,
-                 markdown="", title=''):
-        super(system, self).__init__(objects, minstep=minstep)
+                 markdown="", title='', custom_steps = []):
+        super(system, self).__init__(objects, minstep=minstep, custom_steps = custom_steps)
         self.title = title
         self.markdown = markdown
         self.port = port

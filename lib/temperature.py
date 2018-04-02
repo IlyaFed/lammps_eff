@@ -7,11 +7,21 @@ class temperature(dash_object):
     def load_step(self, args):
         parametrs = args['parametrs']
         Step = args['Step']
+        mass = args['mass']
         '''
         Here we upload step data and put it into data structure
         '''
         if self.load_flag:
             return 0
+        if 'c_keatom' in parametrs.columns:
+            self.fast_load(Step, parametrs)
+        else:
+            self.slow_load(Step, parametrs, mass)
+    
+    def fast_load(self, Step, parametrs):
+        '''
+        We analyse kinetic energy of particle to introduce temperature
+        '''
         k_boltz = 1.3806485279e-23
         e_harty = 4.35974417e-18
         # read ions temp
@@ -20,6 +30,32 @@ class temperature(dash_object):
         # read electron temp
         our_param = parametrs[parametrs['type'] == 2.0]
         electron = 2. / 4. / k_boltz * (our_param['c_keatom'].mean() * e_harty)
+        self.data.loc[len(self.data)] = [Step, ion, electron]
+    
+    def slow_load(self, Step, parametrs, mass):
+        '''
+        We analyse velosity of particles to introduce temperature
+        '''
+        k_boltz = 1.3806485279 # e-23
+        bohr = 0.5291772
+        Avogadro = 6.022141
+        atu = 1.0
+        # electron part
+        our_param = parametrs[parametrs['type'] == 2.0]
+        def f_T_electron(param):
+            v2 = param['vx']**2 + param['vy']**2 + param['vz']**2
+            rad_v2 = param['c_1a[3]']**2
+            return v2 + 0.75 * rad_v2
+        v2_mean = our_param.apply(f_T_electron, axis=1).mean()
+        electron = 2. / 4. / k_boltz /Avogadro * mass[1] / 2 * ((atu/bohr)**2 * v2_mean)
+
+        # ion part
+        our_param = parametrs[parametrs['type'] == 1.0]
+        def f_T_ion(param):
+            v2 = param['vx']**2 + param['vy']**2 + param['vz']**2
+            return v2
+        v2_mean = our_param.apply(f_T_ion, axis=1).mean()
+        ion =  2. / 3. / k_boltz /Avogadro * mass[1] / 2 * ((atu/bohr)**2 * v2_mean)
         self.data.loc[len(self.data)] = [Step, ion, electron]
 
     def __get_scatter_trace(self):

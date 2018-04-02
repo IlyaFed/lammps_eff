@@ -17,22 +17,32 @@ class load:
         for msdfile in os.listdir(path):
             if msdfile.split('.')[-1] == 'lammpstrj':
                 llist = np.append(llist, [int(msdfile.split('.')[1])])
-        llist.sort()
 
-        self.start = int(llist[0])
-        self.step = max(int(llist[1] - llist[0]), self.minstep)
-        self.stop = int(llist[-1])
+
+        # Here we choose lammpstrj file which we will reads
+        if len(self.steps):
+            for i in range(len(self.steps)):
+                if not self.steps[i] in llist:
+                    self.steps.del(i) # TODO need to delete this element
+        else:
+            llist.sort()
+            start = int(llist[0])
+            step = max(int(llist[1] - llist[0]), self.minstep)
+            stop = int(llist[-1])
+            self.steps = np.arange(start, stop+1, step)
+            del start, stop, step
+
         self.wall = np.array([0, 0, 0, 0, 0, 0], dtype=float)
 
         del llist
 
-        for read_step in range(self.start, self.stop + self.step, self.step):
-            print ("\r{:30s} {:3d} %".format("read lammpstrj", int(100.*(read_step-self.start)/(self.stop-self.start + self.step) )), end = '')
+        iteration_number = 0
+        iteration_len = len(self.steps)
+
+        for read_step in self.steps:
+            print ("\r{:30s} {:3d} %".format("read lammpstrj", int(100.* iteration_number/iteration_len )), end = '')
+            iteration_number += 1
             file_name = "all.{:d}.lammpstrj".format(read_step)
-            try:
-                os.stat(path + file_name)
-            except:
-                continue
             n = 0
             for num_line, line in enumerate(open(path + file_name, "r")):
                 if num_line == 3:
@@ -58,6 +68,7 @@ class load:
             for object in self.objects:
                 object.load_step({'Step': read_step, 'parametrs': step_pandas, 'wall': self.wall})
         print ("\r{:30s} 100 %".format("read lammpstrj"))
+
 
     def load_step(self, path):
         """
@@ -119,7 +130,13 @@ class load:
         del read_flag, data
         print ( "\ncomplete" )
 
-    def __init__(self, objects, minstep):
+    def __init__(self, objects, minstep, custom_steps):
         self.objects = objects
         self.minstep = minstep
+        if len(custom_steps):
+            self.steps = custom_steps
+        else:
+            self.steps = []
+
+
 
