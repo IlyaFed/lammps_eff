@@ -21,14 +21,14 @@ class pt_diagram(dash_object):
 
         traces.append(go.Scatter(
             x=self.data['Press'].values, # GPa
-            y=self.data['Temp'].values,
+            y=self.data['temp_ion'].values,
             mode = 'markers',
             name = 'Data'
         ))
 
         # create line in choosen step
-        max_T = max(self.data['Temp'].max(), self.data['Temp'].max())
-        min_T = min(self.data['Temp'].min(), self.data['Temp'].min())
+        max_T = max(self.data['temp_ion'].max(), self.data['temp_ion'].max())
+        min_T = min(self.data['temp_ion'].min(), self.data['temp_ion'].min())
 
 
         for item in list(self.experimental_data.keys()):
