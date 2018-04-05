@@ -158,6 +158,7 @@ int* neighbour_list_two( double* x, double* y, double* z,
             list[n*2 + 3] ++;
         // H2
         if ( (el == 2) && (ion == 2))
+            //std::cerr << "H2  n=" << n<< "\n";
             list[n*2 + 4] ++;
         // H3+
         if ( (el == 2) && (ion == 3))
@@ -166,9 +167,11 @@ int* neighbour_list_two( double* x, double* y, double* z,
         if ( (el == 3) && (ion == 3))
             list[n*2 + 6] ++;
     }
-
+//    for (  int i = 0; i < n*2 + 7; i++)
+//        std::cerr << list[i] << " ";
+//    std::cerr << "\nH2 = " << list[n*2 + 4] << "\n";
 //    for (int i = 0; i < k; i++)
-//        std::cerr << k_list_ion[i] << " "<< k_list_el[i] << "\n";
+//       std::cerr << k_list_ion[i] << " "<< k_list_el[i] << "\n";
     delete[] k_list_el;
     delete[] k_list_ion;
     return list;

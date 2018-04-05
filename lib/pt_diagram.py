@@ -4,14 +4,13 @@ import numpy as np
 
 
 class pt_diagram(dash_object):
-    def load_log(self, parametrs):
+    def analyse(self, data, gen_info):
+        self.data = data
+        self.gen_info = gen_info
         '''
         Here we upload step data and put it into data structure
         '''
-        if self.load_flag:
-            return 0
-        self.data = pd.concat([parametrs['Step'], parametrs['Temp'], parametrs['Press']], axis = 1, keys = ['Step', 'Temp', 'Press'])
-        self.data['Press'] = self.data['Press'] / 1e9 # create GPa
+        return 0
 
     def __get_scatter_trace(self):
         '''
@@ -103,8 +102,8 @@ class pt_diagram(dash_object):
             #if selected_Step == 0:
             #    selected_Step = selected_Step_0
             self.yaxis_type = yaxis_type
-            if (int(selected_Step) in self.data['Step'].values):
-                self.current_index = self.data[self.data['Step'] == int(selected_Step)].index[0]
+            if (int(selected_Step) in self.data.index):
+                self.current_index = int(selected_Step)
             return self._update_graph()
 
     def get_html(self):
@@ -132,3 +131,4 @@ class pt_diagram(dash_object):
         self.name = 'PT'
         self.experimental_data = experimental_data
         self.yaxis_type = 'log'
+        self.load_flag = 0

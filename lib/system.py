@@ -5,9 +5,7 @@ import dash_html_components as html
 
 class system(load):
 
-    def load(self, lammpstrj, logfile):
-        self.load_lammpstrj(path = lammpstrj)
-        self.load_log(name = logfile)
+    
 
     def set_app(self):
         self.app = dash.Dash()
@@ -35,6 +33,9 @@ class system(load):
         for object in self.objects:
             children.append( object.get_html())
 
+        self.title = self.general_info['title']
+        self.markdown = "data_file:\n{:s}\n".format(self.general_info['data_description']) 
+        self.markdown += "describtion_file:\n{:s}".format(self.general_info['description'])
 
         self.app.layout = html.Div([
             html.H1(self.title),
@@ -66,23 +67,34 @@ class system(load):
         else:
             self.app.run_server()
 
-    def __init__(self, lammpstrj, logfile, objects, server = 0, minstep = 0, backup_path = "./", port = 8050,
-                 markdown="", title='', custom_steps = []):
+    def __init__(self, path, objects, server = 0, minstep = 0, port = 8050, custom_steps = []):
         super(system, self).__init__(objects, minstep=minstep, custom_steps = custom_steps)
-        self.title = title
-        self.markdown = markdown
         self.port = port
         load_flag = 0
-        for object in self.objects:
-            load_flag += object.load(path=backup_path)
-        print ("load: {:40s}".format("checked"))
+        # find backup path 
+        try:
+            backup_file =  glob.glob(path + '/**/**/.backup', recursive=True)[0]
+        except IndexError:
+            load_flag = 1
+        
+        if load_flag:
+            self.load(path = path)
+            self.upload_backup(filename = path + "/.backup")
+        else:
+            self.load_backup(filename = backup_file)
+        '''
+        if load_flag == 0:
+            for object in self.objects:
+                load_flag += object.load(path=backup_path)
+            print ("load: {:40s}".format("checked"))
 
         if load_flag:
-            self.load(lammpstrj=lammpstrj, logfile=logfile)
+            self.load(path = path)
             for object in self.objects:
                 object.save(path = backup_path)
             print("save: {:40s}".format("success"))
         else:
             self.load_step(path=lammpstrj)
+        '''
         self.server = server
         self.set_app()

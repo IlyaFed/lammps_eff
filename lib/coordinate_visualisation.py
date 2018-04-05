@@ -6,16 +6,32 @@ from skimage import measure
 import ctypes
 
 class coordinate_visualisation(dash_object):
-    def load_step(self, args):
-        parametrs = args['parametrs']
-        Step = args['Step']
-        wall = np.copy(args['wall'])
+    def analyse(self, data, gen_info):
+        self.data = data
+        self.gen_info = gen_info
+        # create coord_ion and coord_electron columns
+        n = self.gen_info['n']
+        # read ions coordinates
+        load_flag = 1
+        for item in self.index_list:
+            if not item in self.data.columns:
+                load_flag = 0
+        if load_flag:
+            return 0
+        for item in self.index_list:
+            self.data[item] = pd.Series([np.zeros((4,n), dtype=float)]*self.data.shape[0])
+
+        for Step in self.data.index:
+            self.load_step(Step)
+        return 1
+        
+    def load_step(self, Step):
+        parametrs = self.data.loc[Step, 'every']
+        #print ("parametrs", parametrs)
+        wall = self.data.loc[Step, 'wall']
         '''
         Here we upload step data and put it into data structure
         '''
-        # read ions coordinates
-        if self.load_flag:
-            return 0
         our_param = parametrs[parametrs['type'] == 1.0]
         n = our_param.shape[0]
         coord_ion = np.zeros((3, n), dtype=float)
@@ -24,6 +40,7 @@ class coordinate_visualisation(dash_object):
             coord_ion[1][i] = our_param.loc[our_param.index[i], 'y'] - wall[4]
             coord_ion[2][i] = our_param.loc[our_param.index[i], 'z'] - wall[5]
 
+        self.data.at[Step, 'coord_ion'] = coord_ion
         # read electron coordinates
         our_param = parametrs[parametrs['type'] == 2.0]
         n = our_param.shape[0]
@@ -33,6 +50,9 @@ class coordinate_visualisation(dash_object):
             coord_electron[1][i] = our_param.loc[our_param.index[i], 'y'] - wall[4]
             coord_electron[2][i] = our_param.loc[our_param.index[i], 'z'] - wall[5]
             coord_electron[3][i] = our_param.loc[our_param.index[i], 'c_1a[2]']
+
+
+        self.data.at[Step, 'coord_electron'] = coord_electron
 
         self.mylib.grid_gauss.restype = ctypes.POINTER(ctypes.c_double)
         self.mylib.grid_gauss.argtypes = [ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double),
@@ -64,8 +84,9 @@ class coordinate_visualisation(dash_object):
         wall[1] -= wall[4]
         wall[2] -= wall[5]
         wall = wall[ :3]
-        self.data.loc[len(self.data)] = [Step, coord_ion, coord_electron, grid, wall]
-        del grid
+        
+        self.data.at[Step, 'coord_wall'] = wall
+        self.data.at[Step, 'surface'] = grid
 
 
     def __get_scatter_trace(self):
@@ -74,7 +95,7 @@ class coordinate_visualisation(dash_object):
         :return:
         '''
         traces = []
-        ions = self.data.loc[self.current_index, 'ion']
+        ions = self.data.loc[self.current_index, 'coord_ion']
         traces.append(go.Scatter3d(
             x = ions[0],
             y = ions[1],
@@ -83,12 +104,12 @@ class coordinate_visualisation(dash_object):
             mode = 'markers',
             marker = dict( size = 2)
         ))
-        electrons = self.data.loc[self.current_index, 'electron']
+        electrons = self.data.loc[self.current_index, 'coord_electron']
         traces.append(go.Scatter3d(
             x=electrons[0],
             y=electrons[1],
             z=electrons[2],
-            name='electronss',
+            name='electrons',
             mode = 'markers',
             marker = dict( size = 3)
         ))
@@ -100,7 +121,7 @@ class coordinate_visualisation(dash_object):
         :return:
         '''
         traces = []
-        ions = self.data.loc[self.current_index, 'ion']
+        ions = self.data.loc[self.current_index, 'coord_ion']
         traces.append(go.Scatter3d(
             x=ions[0],
             y=ions[1],
@@ -110,7 +131,7 @@ class coordinate_visualisation(dash_object):
             marker=dict(size=3)
         ))
         grid = self.data.loc[self.current_index, 'surface']
-        wall = self.data.loc[self.current_index, 'wall']
+        wall = self.data.loc[self.current_index, 'coord_wall']
         self.isovalue_maxmin = [grid.max(), grid.min()]
         iso_value = min(self.isovalue, self.isovalue_maxmin[0] - 0.001)
         iso_value = max( iso_value, self.isovalue_maxmin[1] + 0.001)
@@ -228,8 +249,8 @@ class coordinate_visualisation(dash_object):
             #    selected_Step = selected_Step_0
             self.isovalue = float(isovalue)
             self.graph_type = graph_type
-            if (int(selected_Step) in self.data['Step'].values):
-                self.current_index = self.data[self.data['Step'] == int(selected_Step)].index[0]
+            if (int(selected_Step) in self.data.index):
+                self.current_index = int(selected_Step)
                 #self.wall = self.data[self.data['Step'] == int(selected_Step)]['wall'].values[0]
             return self._update_graph()
 
@@ -260,7 +281,6 @@ class coordinate_visualisation(dash_object):
         return layout
 
     def __init__(self):
-        self.data = pd.DataFrame(columns=["Step", "ion", "electron", "surface", "wall"])
         self.current_index = 0
         self.grid_N = 50
         self.mylib = ctypes.CDLL('lib/grid_gauss.so')
@@ -269,5 +289,5 @@ class coordinate_visualisation(dash_object):
         self.isovalue = 0.01
         self.isovalue_maxmin = [0, 0]
         self.wall = [20., 20., 20.]
-
+        self.index_list = ['coord_ion', 'coord_electron', 'coord_wall', 'surface']
 

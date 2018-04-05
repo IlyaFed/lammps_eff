@@ -3,14 +3,27 @@ from lib.common_object import *
 import numpy as np
 
 class energy(dash_object):
-    def load_step(self, args):
-        parametrs = args['parametrs']
-        Step = args['Step']
+    def analyse(self, data, gen_info):
+        self.data = data
+        self.gen_info = gen_info
+        self.timestep = self.gen_info['timestep']
+
+        load_flag = 1
+        for item in self.index_list:
+            if not item in self.data.columns:
+                load_flag = 0
+
+        if load_flag:
+            return 0
+        for Step in self.data.index:
+            self.load_step(Step)
+        return 1
+
+    def load_step(self, Step):
+        parametrs = self.data.loc[Step, 'every']
         '''
         Here we upload step data and put it into data structure
         '''
-        if self.load_flag:
-            return 0
         k_boltz = 1.3806485279e-23
         e_hartry = 27.2113845
         # read ions temp
@@ -26,7 +39,9 @@ class energy(dash_object):
 
         ion = parametrs[parametrs['type'] == 1.0].apply(sum_f, axis = 1).sum()
         electron = parametrs[parametrs['type'] == 2.0].apply(sum_f, axis = 1).sum()
-        self.data.loc[len(self.data)] = [Step, ion, electron, ion + electron]
+        self.data.at[Step, self.type + "_ion"] = ion
+        self.data.at[Step, self.type + "_electron"] = electron
+        self.data.at[Step, self.type + "_all"] = ion + electron
 
     def __get_scatter_trace(self):
         '''
@@ -35,34 +50,34 @@ class energy(dash_object):
         '''
         traces = []
         if self.timestep == 0:
-            x_step = self.data['Step'].values
-            step = self.data.loc[self.current_index, 'Step']
+            x_step = self.data.index
+            step = self.current_index
         else:
-            x_step = self.data['Step'].values * self.timestep
-            step = self.data.loc[self.current_index, 'Step'] * self.timestep
+            x_step = self.data.index * self.timestep
+            step = self.current_index * self.timestep
 
         traces.append(go.Scatter(
             x=x_step,
-            y=self.data['ion'].values,
+            y=self.data[self.type + "_ion"].values,
             name='ions',
             mode='line'
         ))
         traces.append(go.Scatter(
             x=x_step,
-            y=self.data['electron'].values,
+            y=self.data[self.type + '_electron'].values,
             name='electrons',
             mode='line',
         ))
 
         traces.append(go.Scatter(
             x=x_step,
-            y=self.data['all'].values,
+            y=self.data[self.type + '_all'].values,
             name='full',
             mode='line'
         ))
         # create line in choosen step
-        max_T = max(self.data['ion'].max(), self.data['electron'].max(), self.data['all'].max())
-        min_T = min(self.data['ion'].min(), self.data['electron'].min(), self.data['all'].min())
+        max_T = max(self.data[self.type + '_ion'].max(), self.data[self.type + '_electron'].max(), self.data[self.type + '_all'].max())
+        min_T = min(self.data[self.type + '_ion'].min(), self.data[self.type + '_electron'].min(), self.data[self.type + '_all'].min())
         traces.append(go.Scatter(
             x = np.linspace(step, step, 100),
             y = np.linspace(min_T, max_T, 100),
@@ -128,10 +143,9 @@ class energy(dash_object):
         return layout
 
 
-    def __init__(self, type = 'full', timestep=0):
-        self.timestep = timestep
+    def __init__(self, type = 'full'):
         self.type = type
-        self.data = pd.DataFrame(columns=["Step", "ion", "electron", "all"])
         self.current_index = 0
         self.graph_type = 'scatter'
         self.name = 'energy' + self.type
+        self.index_list = [self.type + "_ion", self.type + "_electron", self.type + "_all"]

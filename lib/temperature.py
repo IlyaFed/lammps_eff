@@ -4,21 +4,32 @@ import numpy as np
 
 
 class temperature(dash_object):
-    def load_step(self, args):
-        parametrs = args['parametrs']
-        Step = args['Step']
-        mass = args['mass']
+    def analyse(self, data, gen_info):
+        self.data = data
+        self.gen_info = gen_info
+        self.timestep = self.gen_info['timestep']
+        self.mass = self.gen_info['mass']
+
+
+        if self.load_flag:
+            return 0
+
+        for Step in self.data.index:
+            self.load_step(Step)
+        return 1
+
+
+    def load_step(self, Step):
+        parametrs = self.data.loc[Step, 'every']
         '''
         Here we upload step data and put it into data structure
         '''
-        if self.load_flag:
-            return 0
         if 'c_keatom' in parametrs.columns:
             self.fast_load(Step, parametrs)
         else:
             self.slow_load(Step, parametrs, mass)
     
-    def fast_load(self, Step, parametrs):
+    def fast_load(self, ind, parametrs):
         '''
         We analyse kinetic energy of particle to introduce temperature
         '''
@@ -30,9 +41,10 @@ class temperature(dash_object):
         # read electron temp
         our_param = parametrs[parametrs['type'] == 2.0]
         electron = 2. / 4. / k_boltz * (our_param['c_keatom'].mean() * e_harty)
-        self.data.loc[len(self.data)] = [Step, ion, electron]
+        self.data.at[ind, 'temp_ion'] = ion
+        self.data.at[ind, 'temp_electron'] = electron
     
-    def slow_load(self, Step, parametrs, mass):
+    def slow_load(self, ind, parametrs, mass):
         '''
         We analyse velosity of particles to introduce temperature
         '''
@@ -56,7 +68,10 @@ class temperature(dash_object):
             return v2
         v2_mean = our_param.apply(f_T_ion, axis=1).mean()
         ion =  2. / 3. / k_boltz /Avogadro * mass[1] / 2 * ((atu/bohr)**2 * v2_mean)
-        self.data.loc[len(self.data)] = [Step, ion, electron]
+
+
+        self.data.at[ind, 'temp_ion'] = ion
+        self.data.at[ind, 'temp_electron'] = electron
 
     def __get_scatter_trace(self):
         '''
@@ -66,21 +81,21 @@ class temperature(dash_object):
         traces = []
 
         traces.append(go.Scatter(
-            x = self.data['Step'].values,
-            y = self.data['ion'].values,
+            x = self.data.index,
+            y = self.data['temp_ion'].values,
             name = 'ions',
             mode = 'line'
         ))
         traces.append(go.Scatter(
-            x=self.data['Step'].values,
-            y=self.data['electron'].values,
+            x=self.data.index,
+            y=self.data['temp_electron'].values,
             name='electrons',
             mode = 'line'
         ))
         # create line in choosen step
-        max_T = max(self.data['ion'].max(), self.data['electron'].max())
-        min_T = min(self.data['ion'].min(), self.data['electron'].min())
-        step = self.data.loc[self.current_index, 'Step']
+        max_T = max(self.data['temp_ion'].max(), self.data['temp_electron'].max())
+        min_T = min(self.data['temp_ion'].min(), self.data['temp_electron'].min())
+        step = self.current_index
         traces.append(go.Scatter(
             x = np.linspace(step, step, 100),
             y = np.linspace(min_T, max_T, 100),
@@ -141,28 +156,7 @@ class temperature(dash_object):
         return layout
 
     def __init__(self):
-        self.data = pd.DataFrame(columns=["Step", "ion", "electron"])
         self.current_index = 0
         self.graph_type = 'scatter'
         self.name = 'temperature'
-
-
-'''
-def T_electron_slow(parametrs):
-    our_param = parametrs[parametrs['type'] == 2.0]
-    def f_T_electron(param):
-        v2 = param['vx']**2 + param['vy']**2 + param['vz']**2
-        rad_v2 = param['c_1a[3]']**2
-        return v2 + 0.75 * rad_v2
-    v2_mean = our_param.apply(f_T_electron, axis=1).mean()
-    return 2. / 4. / self.k_boltz * (self.m_electron * self.aem) / 2 * (self.ab_atu**2 * v2_mean)
-
-def T_ion_slow(parametrs):
-    our_param = parametrs[parametrs['type'] == 1.0]
-    def f_T_ion(param):
-        v2 = param['vx']**2 + param['vy']**2 + param['vz']**2
-        return v2
-    v2_mean = our_param.apply(f_T_ion, axis=1).mean()
-    return 2. / 3. / self.k_boltz * (self.m_ion * self.aem) / 2 * (self.ab_atu**2 * v2_mean)
-
-'''
+        self.load_flag = 0

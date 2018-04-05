@@ -1,4 +1,6 @@
 # it's a common class of all system object
+# TODO this function don't work
+'''
 from lib.common_object import *
 import numpy as np
 
@@ -131,3 +133,4 @@ class energy_h2(dash_object):
         self.current_index = 0
         self.graph_type = 'scatter'
         self.name = 'energy_dist' + self.type
+'''

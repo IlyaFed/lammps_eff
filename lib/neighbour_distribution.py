@@ -29,9 +29,11 @@ class neighbour_distribution(dash_object):
         list_dist = list(np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0]) * 2 + 7)))
         self.mylib.free_mem.argtypes = [ctypes.POINTER(ctypes.c_int)]
         self.mylib.free_mem(p_list)
-
+        #print ("list_dist " , list_dist)
         distribution = list_dist[len(coord[0]) * 2:]
-        self.data.loc[len(self.data)] = [Step, coord, wall] + distribution
+        for i in range( len(self.particle_types)):
+            self.data.at[Step, self.particle_types[i]] = distribution[i]
+        
 
     def _load_next_step(self, Step, coord, coord_2, wall):
         self.mylib.neighbour_list_two.restype = ctypes.POINTER(ctypes.c_int)
@@ -63,21 +65,38 @@ class neighbour_distribution(dash_object):
         list_dist = list(np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0]) * 2 + 7)))
         self.mylib.free_mem.argtypes = [ctypes.POINTER(ctypes.c_int)]
         self.mylib.free_mem(p_list)
-
+        #print ("list_dist " , list_dist)
+        
         distribution = list_dist[len(coord[0]) * 2:]
-        self.data.loc[len(self.data)] = [Step, coord, wall] + distribution
+        for i in range( len(self.particle_types)):
+            #print ("name = ", self.particle_types[i], ": ", distribution[i])
+            self.data.at[Step, self.particle_types[i]] = distribution[i]
+    
+    def analyse(self, data, gen_info):
+        self.data = data
+        self.gen_info = gen_info
+        n = self.gen_info['n']
+        load_flag = 1
+        for item in self.index_list:
+            if not item in self.data.columns:
+                load_flag = 0
+        if load_flag:
+            return 0
 
+        self.data['coord_neighboard'] = pd.Series([np.zeros((4,n), dtype=float)]*self.data.shape[0])
 
-    def load_step(self, args):
-        parametrs = args['parametrs']
-        Step = args['Step']
-        wall = args['wall']
+        for Step in self.data.index:
+            self.load_step(Step)
+        
+        return 1
+
+    def load_step(self, Step):
+        parametrs = self.data.loc[Step, 'every']
+        wall = self.data.loc[Step, 'wall']
         '''
         Here we upload step data and put it into data structure
         '''
         # read ions coordinates
-        if self.load_flag:
-            return 0
         our_param = parametrs[parametrs['type'] == 1.0]
         n = parametrs.shape[0]
         coord = np.zeros((4, n), dtype=float)
@@ -87,12 +106,15 @@ class neighbour_distribution(dash_object):
             coord[2][i] = parametrs.loc[parametrs.index[i], 'z']
             coord[3][i] = parametrs.loc[parametrs.index[i], 'type']
 
+        self.data.at[Step, 'coord_neighboard'] = coord
+        previous_index = self.data.index[ list(self.data.index).index(Step) - 1] 
         #print ("type", coord[3])
-        if self.data.shape[0] < 1:
+        if Step == 0:
             #print ("first")
             self._load_first_step(Step=Step, coord=coord, wall=wall)
         else:
-            coord_2 = self.data.loc[self.data.index[-1], 'coord']
+            coord_2 = self.data.loc[previous_index, 'coord_neighboard']
+            #print( "coord = ", coord, " \ncoord_2 = ", coord_2)
             self._load_next_step(Step=Step, coord=coord, coord_2=coord_2, wall=wall)
 
 
@@ -106,9 +128,9 @@ class neighbour_distribution(dash_object):
         min_T = self.data['e'].min()
         max_T = self.data['e'].max()
 
-        for item in self.data_items:
+        for item in self.particle_types:
             traces.append(go.Scatter(
-                x = self.data['Step'].values,
+                x = self.data.index,
                 y = self.data[item].values,
                 name = item,
                 mode = 'line'
@@ -116,7 +138,7 @@ class neighbour_distribution(dash_object):
             min_T = min( min_T, self.data[item].min())
             max_T = max( max_T, self.data[item].max())
 
-        step = self.data.loc[self.current_index, 'Step']
+        step = self.current_index
         traces.append(go.Scatter(
             x = np.linspace(step, step, 100),
             y = np.linspace(min_T, max_T, 100),
@@ -180,8 +202,8 @@ class neighbour_distribution(dash_object):
 
     def __init__(self):
         self.type = type
-        self.data = pd.DataFrame(columns=["Step", "coord", "wall", "e", "H+", "H", "H2+", "H2", "H3+", "H3"])
-        self.data_items = self.data.columns[3:]
+        self.particle_types = ["e", "H+", "H", "H2+", "H2", "H3+", "H3"]
+        self.index_list = self.particle_types
         self.current_index = 0
         self.graph_type = 'scatter'
         self.cut = 1.5

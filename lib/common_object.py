@@ -5,16 +5,16 @@ import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
 import random
+import os
 from pathlib import Path
 
 class dash_object:
-    def load_step(self, args):
-        parametrs = args['parametrs']
-        Step = args['Step']
+    def analyse(self, data, gen_info):
         '''
-        Here we upload step data and put it into data structure
+        Here we upload step data and put it into data structure back
         '''
-
+        return 0
+        
     def load_log(self, parametrs):
         '''
         Here we get data from log lammps file
@@ -45,8 +45,8 @@ class dash_object:
         def update_figure(selected_Step):
             #if selected_Step == 0:
             #    selected_Step = selected_Step_0
-            if (int(selected_Step) in self.data['Step'].values):
-                self.current_index = self.data[self.data['Step'] == int(selected_Step)].index[0]
+            if (int(selected_Step) in self.data.index):
+                self.current_index = int(selected_Step)
             return self._update_graph()
 
     def add_app(self, app, step_input, value_input):
@@ -57,11 +57,16 @@ class dash_object:
         self._external_callback(step_input, value_input)
         self._internal_callback()
 
+    '''
     def save(self, path="./"):
+        try:
+            os.stat(path)
+        except:
+            os.mkdir(path)
         name = path + "." + self.name + ".pkl"
         self.data.to_pickle(name)
         print ("save: {:100s}".format(self.name))
-
+    
     def load(self, path="./"):
         name = path + "." + self.name + ".pkl"
         my_file = Path(name)
@@ -74,13 +79,13 @@ class dash_object:
         print("load: {:100s} no ".format(self.name))
         self.load_flag = 0
         return 1
-
+    '''
     def get_html(self):
         '''
         Here we describe frontend of our object
         '''
     def __init__(self):
-        self.data = pd.DataFrame(columns=["Step", "data"])
+        self.data = pd.DataFrame()
         self.current_index = 0
         self.name = "test"
-        self.load_flag = 1
+        self.load_flag = 0
