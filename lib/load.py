@@ -12,36 +12,58 @@ class load:
         :param path: path to you lammpstr files
         """
         print ( "\r{:30s} ".format("read lammpstrj"), end = '')
-        if path[-1] != '/':
-            path = path + '/'
+        try:
+            lammpstrj_path_tmp = glob.glob(path + '/**/**/all.0.lammpstrj', recursive=True)[0].split('/')[:-1]
+        except IndexError:
+            print ("error: must be all.0.lammpstrj file")
+            pass
 
-        llist = np.array([])
-        for msdfile in os.listdir(path):
-            if msdfile.split('.')[-1] == 'lammpstrj':
-                llist = np.append(llist, [int(msdfile.split('.')[1])])
+        lammpstrj_path = ''
+        for item in lammpstrj_path_tmp:
+            lammpstrj_path += item + '/'
 
+        path = lammpstrj_path
 
-        # Here we choose lammpstrj file which we will reads
-        if len(self.steps):
-            for step in self.steps:
-                if not step in llist:
-                    self.steps.remove(step) 
-                    self.start = self.steps[0]
-                    self.stop = self.steps[-1]
-                    self.step = self.steps[1] - self.steps[0]
+        if self.load_log_flag:
+            self.start = self.data.index[0]
+            self.step = self.data.index[1] - self.data.index[0]
+            self.stop = self.data.index[-1]
+            self.steps = self.data.index
         else:
-            llist.sort()
-            self.start = int(llist[0])
-            self.step = max(int(llist[1] - llist[0]), self.minstep)
-            self.stop = int(llist[-1])
-            self.steps = np.arange(self.start, self.stop+1, self.step)
+            llist = np.array([])
+            for msdfile in os.listdir(path):
+                if msdfile.split('.')[-1] == 'lammpstrj':
+                    llist = np.append(llist, [int(msdfile.split('.')[1])])
 
+
+            # Here we choose lammpstrj file which we will reads
+            if len(self.steps):
+                for step in self.steps:
+                    if not step in llist:
+                        self.steps.remove(step) 
+                        self.start = self.steps[0]
+                        self.stop = self.steps[-1]
+                        self.step = self.steps[1] - self.steps[0]
+            else:
+                llist.sort()
+                self.start = int(llist[0])
+                self.step = max(int(llist[1] - llist[0]), self.minstep)
+                self.stop = int(llist[-1])
+                self.steps = np.arange(self.start, self.stop+1, self.step)
+                for step in self.steps:
+                    if not step in llist:
+                        self.steps.remove(step) 
+                        self.start = self.steps[0]
+                        self.stop = self.steps[-1]
+                        self.step = self.steps[1] - self.steps[0]
+            del llist
+            self.data = pd.DataFrame(columns=['every', 'wall'], index = self.steps)
         self.wall = np.array([0, 0, 0, 0, 0, 0], dtype=float)
 
-        del llist
+        
 
         # create pandas
-        self.data = pd.DataFrame(columns=['every', 'wall'], index = self.steps)
+        
         iteration_number = 0
         iteration_len = len(self.steps)
 
@@ -102,24 +124,21 @@ class load:
         self.stop = int(llist[-1])
         del llist
 
-    def load_log(self, name):
+    def load_log(self, path):
         """
         Read date from lammps log
         :param name: full name of you log
         :return: pandas of date
         """
         print ( "\rread lammps log ... ", end = '')
-
         try:
-            os.stat(name)
-        except:
-            print ("\nError (file not found)")
+            name =  glob.glob(path + '/**/**/log.lammps', recursive=True)[0]
+        except IndexError:
+            print ("error: must be log.lammps file")
             pass
 
-        # check that load_lammpstrj already finished
-        if self.load_lammpstrj_flag == False:
-            print ("error: need to load_lammpstrj")
-            pass
+        if not self.load_lammpstrj_flag:
+            self.data = pd.DataFrame(columns=['every', 'wall']) # TODO check available step in lammps and log
         
         p = Popen(["wc", "-l", "{:s}".format(name)], stdout=PIPE)
         try:
@@ -144,9 +163,13 @@ class load:
                 try:
                     line_data = [float(i) for i in line.split()[1:]]
                     Step = int( line.split()[0])
-                    if Step in self.data.index:
+                    if (self.load_lammpstrj_flag) and (Step in self.data.index):
                         for item in range( len(columns) ):
                             self.data.at[Step, columns[item]] = line_data[item]
+                    if not self.load_lammpstrj_flag:
+                        for item in range( len(columns) ):
+                            self.data.at[Step, columns[item]] = line_data[item]
+
                 except ValueError:
                     read_flag = 0
         
@@ -156,21 +179,20 @@ class load:
         del read_flag, columns
 
         self.load_log_flag = True
-        print ( "\ncomplete" )
 
-    def load_data(self, name):
+    def load_data(self, path):
         """
         Read date from lammps log
         :param name: full name of you log
         :return: pandas of date
         """
         print ( "\rread data ...", end = '')
-
         try:
-            os.stat(name)
-        except:
-            print ("\nError (file not found)")
+            name =  glob.glob(path + '/**/**/data.lammps', recursive=True)[0]
+        except IndexError:
+            print ("warning: must be data.lammps file, no timestep")
             pass
+            
 
         mass_flag = 0
         for num_line, line in enumerate( open( name, 'r')):
@@ -193,7 +215,15 @@ class load:
 
         self.load_data_flag = True
 
-    def load_discription(self, filename):
+    def load_discription(self, path):
+        try:
+            filename =  glob.glob(path + '/**/**/description.txt', recursive=True)[0]
+        except IndexError:
+            print ("warning: no description.txt file")
+            self.general_info['title'] = path
+            self.general_info['description'] = 'no description file'
+            pass
+
         with open(filename, 'r') as myfile:
             data_from_file = myfile.readlines()
         self.general_info['title'] = data_from_file[0]
@@ -210,38 +240,12 @@ class load:
         
         Then start reading this files
         '''
-        try:
-            data_file =  glob.glob(path + '/**/**/data.lammps', recursive=True)[0]
-        except IndexError:
-            print ("warning: must be data.lammps file, no timestep")
-        try:
-            discription_file =  glob.glob(path + '/**/**/description.txt', recursive=True)[0]
-        except IndexError:
-            print ("warning: no description.txt file")
-            self.general_info['title'] = path
-            self.general_info['description'] = 'no description file'
-            discription_file = 0
-        try:
-            log_file =  glob.glob(path + '/**/**/log.lammps', recursive=True)[0]
-        except IndexError:
-            print ("error: must be log.lammps file")
-            pass
-        try:
-            lammpstrj_path_tmp = glob.glob(path + '/**/**/all.0.lammpstrj', recursive=True)[0].split('/')[:-1]
-        except IndexError:
-            print ("error: must be all.0.lammpstrj file")
-            pass
-
-        lammpstrj_path = ''
-        for item in lammpstrj_path_tmp:
-            lammpstrj_path += item + '/'
-
-        if discription_file:
-            self.load_discription(discription_file)
-        self.load_data(name = data_file)
-        self.load_lammpstrj(path = lammpstrj_path)
-        self.load_log(name = log_file)    
-
+        
+        self.load_discription(path)
+        self.load_data(path)
+        self.load_log(path)    
+        self.load_lammpstrj(path)
+        
         self.load_objects()
 
     def load_objects(self):

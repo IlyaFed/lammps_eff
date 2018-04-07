@@ -107,12 +107,13 @@ class neighbour_distribution(dash_object):
             coord[3][i] = parametrs.loc[parametrs.index[i], 'type']
 
         self.data.at[Step, 'coord_neighboard'] = coord
-        previous_index = self.data.index[ list(self.data.index).index(Step) - 1] 
+        
         #print ("type", coord[3])
-        if Step == 0:
+        if Step == self.data.index[0]:
             #print ("first")
             self._load_first_step(Step=Step, coord=coord, wall=wall)
         else:
+            previous_index = self.data.index[ list(self.data.index).index(Step) - 1] 
             coord_2 = self.data.loc[previous_index, 'coord_neighboard']
             #print( "coord = ", coord, " \ncoord_2 = ", coord_2)
             self._load_next_step(Step=Step, coord=coord, coord_2=coord_2, wall=wall)

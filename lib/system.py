@@ -35,7 +35,7 @@ class system(load):
 
         self.title = self.general_info['title']
         self.markdown = "data_file:\n{:s}\n".format(self.general_info['data_description']) 
-        self.markdown += "describtion_file:\n{:s}".format(self.general_info['description'])
+        self.markdown += "description_file:\n{:s}".format(self.general_info['description'])
 
         self.app.layout = html.Div([
             html.H1(self.title),
