@@ -16,7 +16,7 @@ class load:
             lammpstrj_path_tmp = glob.glob(path + '/**/**/all.0.lammpstrj', recursive=True)[0].split('/')[:-1]
         except IndexError:
             print ("error: must be all.0.lammpstrj file")
-            pass
+            return
 
         lammpstrj_path = ''
         for item in lammpstrj_path_tmp:
@@ -135,7 +135,7 @@ class load:
             name =  glob.glob(path + '/**/**/log.lammps', recursive=True)[0]
         except IndexError:
             print ("error: must be log.lammps file")
-            pass
+            return
 
         if not self.load_lammpstrj_flag:
             self.data = pd.DataFrame(columns=['every', 'wall']) # TODO check available step in lammps and log
@@ -191,7 +191,7 @@ class load:
             name =  glob.glob(path + '/**/**/data.lammps', recursive=True)[0]
         except IndexError:
             print ("warning: must be data.lammps file, no timestep")
-            pass
+            return
             
 
         mass_flag = 0
@@ -222,7 +222,7 @@ class load:
             print ("warning: no description.txt file")
             self.general_info['title'] = path
             self.general_info['description'] = 'no description file'
-            pass
+            return
 
         with open(filename, 'r') as myfile:
             data_from_file = myfile.readlines()
