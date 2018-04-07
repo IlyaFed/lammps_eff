@@ -6,3 +6,6 @@ install:
 
 test: test.py
 	python3 test.py
+
+clean_backup:
+	rm -f ./test_data/.backup

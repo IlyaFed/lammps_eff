@@ -115,6 +115,69 @@ class coordinate_visualisation(dash_object):
         ))
         return traces
 
+    def __get_types_trace(self):
+        '''
+        Here we create scatter trace for graph
+        :return:
+        '''
+        coord_full = self.data.loc[self.current_index, 'coord_neighboard'] # TODO check that it's exist
+        types = self.gen_info['particles_types'] # real name of every type ( 1 - e, 2 - H+)
+        coord_type = self.data.loc[self.current_index, 'particle_type'] # type of every partice
+        n = len(coord_full[0]) # number of particles
+        #print ("n = ", n)
+        #print ("coord_type: ", coord_type)
+        #print ("types: ", types)
+
+
+        traces = []
+
+        # add not free electrons
+        coord_x = []
+        coord_y = []
+        coord_z = []
+        for i in range(n): # TODO make it faster!
+            if (not coord_type[i] == 'e') and (coord_full[3][i] == 2):
+                coord_x.append(coord_full[0][i])
+                coord_y.append(coord_full[1][i])
+                coord_z.append(coord_full[2][i])
+        
+        traces.append(go.Scatter3d(
+            x = coord_x,
+            y = coord_y,
+            z = coord_z,
+            name = 'busy electron',
+            mode = 'markers',
+            marker = dict( size = 2)
+        ))  
+
+        for type_n in types:
+            type_name = types[type_n]
+            #print ("type_name" , type_name)
+            coord_x = []
+            coord_y = []
+            coord_z = []
+            for i in range(n): # TODO make it faster!
+                if (coord_type[i] == type_n):
+                    if type_name == 'e':
+                        coord_x.append(coord_full[0][i])
+                        coord_y.append(coord_full[1][i])
+                        coord_z.append(coord_full[2][i])
+                    elif coord_full[3][i] == 1:
+                        coord_x.append(coord_full[0][i])
+                        coord_y.append(coord_full[1][i])
+                        coord_z.append(coord_full[2][i])
+            #if len(coord_x):
+            traces.append(go.Scatter3d(
+                x = coord_x,
+                y = coord_y,
+                z = coord_z,
+                name = type_name,
+                mode = 'markers',
+                marker = dict( size = 3)
+            ))
+        
+        return traces
+
     def __get_surface_trace(self):
         '''
         Create surfaace graph trace
@@ -202,6 +265,9 @@ class coordinate_visualisation(dash_object):
             return self.__get_surface_section(section='y')
         if self.graph_type == 'section z':
             return self.__get_surface_section(section='z')
+        if self.graph_type == 'types':
+            return self.__get_types_trace()
+        
 
     def __get_layout(self):
         if self.graph_type == 'surface':
@@ -213,6 +279,7 @@ class coordinate_visualisation(dash_object):
                 scene = dict(
                     aspectratio=dict(x=1, y=1, z=1)
                 ),
+                showlegend=True,
                 title = "Visualisation"
             )
         return layout
@@ -262,8 +329,8 @@ class coordinate_visualisation(dash_object):
             html.Div(
                 dcc.RadioItems(
                     id=self.name + '_type',
-                    options=[{'label': i, 'value': i} for i in ['scatter', 'surface', 'section x', 'section y', 'section z']],
-                    value='scatter',
+                    options=[{'label': i, 'value': i} for i in ['scatter', 'surface', 'section x', 'section y', 'section z', 'types']],
+                    value='types',
                     labelStyle={'display': 'inline-block'}
                 )),
             html.Div(

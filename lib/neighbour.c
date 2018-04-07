@@ -136,37 +136,68 @@ int* neighbour_list_two( double* x, double* y, double* z,
         }
     }
 
-    for (int i = 0; i < n; i++){
-        list[i+n] = k_list_ion[list[i]];
-    }
+    
+    
+    /* we will sign molecules with their type
+    e - 1
+    H+ - 2
+    H - 3
+    H2+ - 4
+    H2 - 5
+    H3+ - 6
+    H3 - 7
+    other - 0
+    */
+    // create a list of k-types
+    int* k_types = new int[k];
 
     int el, ion;
     for (int j = 0; j < k; j++){
         el = k_list_el[j];
         ion = k_list_ion[j];
+        k_types[j] = 0;
         // e
-        if ( (el == 1) && (ion == 0))
+        if ( (el == 1) && (ion == 0) ){
             list[n*2 + 0] ++;
+            k_types[j] = 1;
+        }
         // H+
-        if ( (el == 0) && (ion == 1))
+        if ( (el == 0) && (ion == 1) ){
             list[n*2 + 1] ++;
+            k_types[j] = 2;
+        }
         // H
-        if ( (el == 1) && (ion == 1))
+        if ( (el == 1) && (ion == 1) ){
             list[n*2 + 2] ++;
+            k_types[j] = 3;
+        }
         // H2+
-        if ( (el == 1) && (ion == 2))
+        if ( (el == 1) && (ion == 2) ){
             list[n*2 + 3] ++;
+            k_types[j] = 4;
+        }
         // H2
-        if ( (el == 2) && (ion == 2))
-            //std::cerr << "H2  n=" << n<< "\n";
+        if ( (el == 2) && (ion == 2) ){
             list[n*2 + 4] ++;
+            k_types[j] = 5;
+        }
         // H3+
-        if ( (el == 2) && (ion == 3))
+        if ( (el == 2) && (ion == 3) ){
             list[n*2 + 5] ++;
+            k_types[j] = 6;
+        }
         // H3
-        if ( (el == 3) && (ion == 3))
+        if ( (el == 3) && (ion == 3) ){
             list[n*2 + 6] ++;
+            k_types[j] = 7;
+        }
     }
+
+    // names particles with their type to list[n+i]
+    for (int i = 0; i < n; i++){
+        list[i+n] = k_types[list[i]];
+    }
+    delete[] k_types;
 //    for (  int i = 0; i < n*2 + 7; i++)
 //        std::cerr << list[i] << " ";
 //    std::cerr << "\nH2 = " << list[n*2 + 4] << "\n";

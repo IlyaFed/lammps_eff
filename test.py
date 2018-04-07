@@ -14,7 +14,7 @@ experimental_data = {
     'Silvera': np.array([[1100, 1300, 1400, 1600, 1750], [160, 150, 140, 120, 110]])
 }
 
-path = './test/'
+path = './test_data/'
 
 objects = [coordinate_visualisation(),
            pt_diagram(experimental_data),

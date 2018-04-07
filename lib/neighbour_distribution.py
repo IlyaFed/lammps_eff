@@ -29,7 +29,10 @@ class neighbour_distribution(dash_object):
         list_dist = list(np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0]) * 2 + 7)))
         self.mylib.free_mem.argtypes = [ctypes.POINTER(ctypes.c_int)]
         self.mylib.free_mem(p_list)
-        #print ("list_dist " , list_dist)
+        
+        types_of_every_particles = np.array(list_dist[len(coord[0]):len(coord[0])*2])
+        self.data.at[Step, 'particle_type'] = types_of_every_particles
+
         distribution = list_dist[len(coord[0]) * 2:]
         for i in range( len(self.particle_types)):
             self.data.at[Step, self.particle_types[i]] = distribution[i]
@@ -65,8 +68,10 @@ class neighbour_distribution(dash_object):
         list_dist = list(np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0]) * 2 + 7)))
         self.mylib.free_mem.argtypes = [ctypes.POINTER(ctypes.c_int)]
         self.mylib.free_mem(p_list)
-        #print ("list_dist " , list_dist)
         
+        types_of_every_particles = np.array(list_dist[len(coord[0]):len(coord[0])*2])
+        self.data.at[Step, 'particle_type'] = types_of_every_particles
+
         distribution = list_dist[len(coord[0]) * 2:]
         for i in range( len(self.particle_types)):
             #print ("name = ", self.particle_types[i], ": ", distribution[i])
@@ -82,7 +87,11 @@ class neighbour_distribution(dash_object):
                 load_flag = 0
         if load_flag:
             return 0
-
+            
+        # reserve space to particle type massives
+        self.data['particle_type'] = pd.Series([np.zeros(n, dtype=float)]*self.data.shape[0])
+        self.gen_info['particles_types'] = {1: 'e', 2: 'H', 3: 'H+', 4: 'H2+', 5: 'H2', 6: 'H3+', 7: 'H3', 0: 'other'}
+        
         self.data['coord_neighboard'] = pd.Series([np.zeros((4,n), dtype=float)]*self.data.shape[0])
 
         for Step in self.data.index:
