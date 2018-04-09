@@ -62,11 +62,8 @@ class system(load):
         for object in self.objects:
             object.add_app(app = self.app, step_input = self.step_input, value_input=self.value_input)
         
-        if self.server:
-            self.app.run_server(port = self.port, host = '0.0.0.0')
-        else:
-            self.app.run_server()
-
+        self.app.run_server(port = self.port, host = '0.0.0.0')
+        
     def __init__(self, path, objects, server = 0, minstep = 0, port = 8050, custom_steps = []):
         super(system, self).__init__(objects, minstep=minstep, custom_steps = custom_steps)
         self.port = port
