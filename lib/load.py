@@ -8,6 +8,7 @@ import pickle
 min_timeperiod = 100 # 100 fs
 
 class load:
+
     def load_lammpstrj(self):
         """
         Read lammpstrj file and apply function
@@ -110,7 +111,6 @@ class load:
         print ("\r{:30s} ({:s}) 100 %".format("read lammpstrj", self.path))
         self.load_lammpstrj_flag = True
 
-
     def load_step(self): # TODO maybe remove load_step?
         """
         Read lammpstrj file and apply function
@@ -169,11 +169,13 @@ class load:
                     if Step % 1000:
                         continue
                     if (self.load_lammpstrj_flag) and (Step in self.data.index):
-                        for item in range( len(columns) ):
-                            self.data.at[Step, columns[item]] = line_data[item]
+                        if len(columns) == len(line_data): # check that all data exists
+                            for item in range( len(columns) ):
+                                self.data.at[Step, columns[item]] = line_data[item]
                     if not self.load_lammpstrj_flag:
-                        for item in range( len(columns) ):
-                            self.data.at[Step, columns[item]] = line_data[item]
+                        if len(columns) == len(line_data):
+                            for item in range( len(columns) ):
+                                self.data.at[Step, columns[item]] = line_data[item]
 
                 except ValueError:
                     read_flag = 0
@@ -319,7 +321,6 @@ class load:
             self.upload_backup(filename)
         print ("backup has loaded")
 
-
     def __init__(self, objects, minstep, custom_steps):
         self.objects = objects
         self.minstep = minstep
@@ -332,6 +333,3 @@ class load:
             self.steps = custom_steps
         else:
             self.steps = []
-
-
-
