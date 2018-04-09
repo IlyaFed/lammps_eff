@@ -8,6 +8,7 @@ import ctypes
 class coordinate_visualisation(dash_object):
     def analyse(self, data, gen_info):
         self.data = data
+        #print ("data: ", self.data)
         self.gen_info = gen_info
         # create coord_ion and coord_electron columns
         n = self.gen_info['n']
@@ -27,7 +28,9 @@ class coordinate_visualisation(dash_object):
         
     def load_step(self, Step):
         parametrs = self.data.loc[Step, 'every']
-        #print ("parametrs", parametrs)
+        #print ("Step: ", Step)
+        #if Step == 350000:
+        #    print ("parametrs:\n", parametrs)
         wall = self.data.loc[Step, 'wall']
         '''
         Here we upload step data and put it into data structure

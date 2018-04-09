@@ -4,7 +4,7 @@ install:
 	g++ -shared -O3 -Wall -fPIC -o lib/grid_gauss.so lib/grid_gauss.c
 	g++ -shared -O3 -Wall -fPIC -o lib/neighbour.so lib/neighbour.c
 
-test: test.py
+test: test.py clean_backup
 	python3 test.py
 
 clean_backup:

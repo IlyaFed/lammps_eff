@@ -5,6 +5,8 @@ import glob # to recursive find files
 from subprocess import Popen, PIPE
 import pickle
 
+min_timeperiod = 100 # 100 fs
+
 class load:
     def load_lammpstrj(self, path):
         """
@@ -24,67 +26,74 @@ class load:
 
         path = lammpstrj_path
 
-        if self.load_log_flag:
-            self.start = self.data.index[0]
-            self.step = self.data.index[1] - self.data.index[0]
-            self.stop = self.data.index[-1]
-            self.steps = self.data.index
+        available_lammpstrj = np.array([])
+        for msdfile in os.listdir(path):
+            if msdfile.split('.')[-1] == 'lammpstrj':
+                available_lammpstrj = np.append(available_lammpstrj, [int(msdfile.split('.')[1])])
+
+        if self.load_log_flag: 
+            # if self.data exist, clear step which we can't load from lammpstrj
+            to_remove = []
+            for i in self.data.index:
+                if not i in available_lammpstrj:
+                    to_remove.append(i)
+            self.data.drop(to_remove, inplace=True)
+            # TODO remove self.step self.start ...
+            self.start = self.steps[0]
+            self.stop = self.steps[-1]
+            self.step = self.steps[1] - self.steps[0]
         else:
-            llist = np.array([])
-            for msdfile in os.listdir(path):
-                if msdfile.split('.')[-1] == 'lammpstrj':
-                    llist = np.append(llist, [int(msdfile.split('.')[1])])
-
-
-            # Here we choose lammpstrj file which we will reads
-            if len(self.steps):
-                for step in self.steps:
-                    if not step in llist:
-                        self.steps.remove(step) 
-                        self.start = self.steps[0]
-                        self.stop = self.steps[-1]
-                        self.step = self.steps[1] - self.steps[0]
-            else:
-                llist.sort()
-                self.start = int(llist[0])
-                self.step = max(int(llist[1] - llist[0]), self.minstep)
-                self.stop = int(llist[-1])
-                self.steps = np.arange(self.start, self.stop+1, self.step)
-                for step in self.steps:
-                    if not step in llist:
-                        self.steps.remove(step) 
-                        self.start = self.steps[0]
-                        self.stop = self.steps[-1]
-                        self.step = self.steps[1] - self.steps[0]
-            del llist
-            self.data = pd.DataFrame(columns=['every', 'wall'], index = self.steps)
-        self.wall = np.array([0, 0, 0, 0, 0, 0], dtype=float)
-
+            # reduce number of steps
+            min_step = int(min_timeperiod / 0.005 /1000) * 1000 # step equal 100 fs and must diveded into 1000, approximate step as 0.005 fs
+            self.steps = []
+            indexes = available_lammpstrj
+            buf_step = indexes[0]
+            max_step = max(indexes)
+            while (buf_step <= max_step):
+                previous_step = buf_step - min_step
+                next_step = buf_step + min_step
+                buf_step_next = buf_step,
+                buf_step_prev = buf_step-1
+                while (buf_step_next < next_step) and (buf_step_prev > previous_step):
+                    if buf_step_next in indexes:
+                        self.steps.append(buf_step_next)
+                        break
+                    if buf_step_prev in indexes:
+                        self.steps.append(buf_step_prev)
+                        break
+                buf_step = next_step
+            if len(self.steps) < 2:
+                print ("Number of steps in load lammpstrj too small: {:d}, step of analysis: {:d}".format(len(self.steps), min_step))
+                exit()
+            self.start = self.steps[0]
+            self.stop = self.steps[-1]
+            self.step = self.steps[1] - self.steps[0]
         
-
+            self.data = pd.DataFrame(columns=['every', 'wall'], index = self.steps)
+        
         # create pandas
         
         iteration_number = 0
         iteration_len = len(self.steps)
-
         for read_step in self.steps:
             print ("\r{:30s} {:3d} %".format("read lammpstrj", int(100.* iteration_number/iteration_len )), end = '')
             iteration_number += 1
             file_name = "all.{:d}.lammpstrj".format(read_step)
             n = 0
+            wall = np.zeros(6)
             for num_line, line in enumerate(open(path + file_name, "r")):
                 if num_line == 3:
                     n = int( line )
                     self.general_info['n'] = n
                 if num_line == 5:
-                    self.wall[0] = float( line.split(" ")[1] )
-                    self.wall[3] = float( line.split(" ")[0] )
+                    wall[0] = float( line.split(" ")[1] )
+                    wall[3] = float( line.split(" ")[0] )
                 if num_line == 6:
-                    self.wall[1] = float( line.split(" ")[1] )
-                    self.wall[4] = float( line.split(" ")[0] )
+                    wall[1] = float( line.split(" ")[1] )
+                    wall[4] = float( line.split(" ")[0] )
                 if num_line == 7:
-                    self.wall[2] = float( line.split(" ")[1] )
-                    self.wall[5] = float( line.split(" ")[0] )
+                    wall[2] = float( line.split(" ")[1] )
+                    wall[5] = float( line.split(" ")[0] )
 
                 if num_line == 8:
                     line = line.split(" ")[:-1]
@@ -93,20 +102,18 @@ class load:
                 if ( (num_line > 8) & (num_line < 9 + n) ):
                     line = line.split(" ")[:-1]
                     step_pandas.loc[len(step_pandas)] = [float(word) for word in line]
+            #print ("read_step:", read_step)
 
             step_pandas.sort_values(by='id', inplace=True)
-            if not (read_step in self.data.index):
-                self.data.at[read_step, 'wall'] = self.wall
-                self.data.at[read_step,'every'] = step_pandas
-            else:
-                self.data.at[read_step, 'every'] = step_pandas
-                self.data.at[read_step, 'wall'] = self.wall
+            #print ("step_pandas: ", step_pandas)
+            self.data.at[read_step, 'every'] = step_pandas
+            self.data.at[read_step, 'wall'] = wall
             
         print ("\r{:30s} 100 %".format("read lammpstrj"))
         self.load_lammpstrj_flag = True
 
 
-    def load_step(self, path):
+    def load_step(self, path): # TODO maybe remove load_step?
         """
         Read lammpstrj file and apply function
         :param path: path to you lammpstr files
@@ -163,6 +170,8 @@ class load:
                 try:
                     line_data = [float(i) for i in line.split()[1:]]
                     Step = int( line.split()[0])
+                    if Step % 1000:
+                        continue
                     if (self.load_lammpstrj_flag) and (Step in self.data.index):
                         for item in range( len(columns) ):
                             self.data.at[Step, columns[item]] = line_data[item]
@@ -172,7 +181,46 @@ class load:
 
                 except ValueError:
                     read_flag = 0
-        
+        if not self.load_lammpstrj_flag:
+            # reduce number of steps
+            min_step = int(min_timeperiod / self.general_info['timestep'] /1000) * 1000 # step equal 100 fs and must diveded into 1000
+            self.steps = []
+            indexes = self.data.index
+            buf_step = indexes[0]
+            max_steps = max(indexes)
+            while (buf_step <= max_steps):
+                previous_step = buf_step - min_step
+                next_step = buf_step + min_step
+                buf_step_next = buf_step
+                buf_step_prev = buf_step-1000
+                while (buf_step_next < next_step) and (buf_step_prev > previous_step):
+                    if buf_step_next in indexes:
+                        self.steps.append(buf_step_next)
+                        break
+                    if buf_step_prev in indexes:
+                        self.steps.append(buf_step_prev)
+                        break
+                    buf_step_next += 1000
+                    buf_step_prev -= 1000
+                buf_step = next_step
+
+            if len(self.steps) < 2:
+                print ("Number of steps in load log too small: {:d}, step of analysis: {:d}".format(len(self.steps), min_step))
+                exit()
+            # remove useless
+
+            to_remove = []
+            for i in self.data.index:
+                if not i in self.steps:
+                    to_remove.append(i)
+
+            self.data.drop(to_remove, inplace=True)
+            self.start = self.steps[0]
+            self.stop = self.steps[-1]
+            self.step = self.steps[1] - self.steps[0]
+
+
+
         self.data['Press'] = self.data['Press'] / 1e9 # create GPa
 
         print("\r{:30s} {:3d} %".format("read lammps log", 100))

@@ -8,7 +8,7 @@ class pressure(dash_object):
         self.data = data
         self.gen_info = gen_info
         self.timestep = self.gen_info['timestep']
-        
+        return 0
   
 
     def __get_scatter_trace(self):

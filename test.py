@@ -1,6 +1,7 @@
 from lib.system import system
 from lib.coordinate_visualisation import coordinate_visualisation
 from lib.temperature import temperature
+from lib.pressure import pressure
 from lib.energy_distribution_ion import energy_distribution_ion
 from lib.energy_distribution_electron import energy_distribution_electron
 from lib.energy import energy
@@ -19,6 +20,7 @@ path = './test_data/'
 objects = [coordinate_visualisation(),
            pt_diagram(experimental_data),
            temperature(),
+           pressure(),
            energy_distribution_ion('potential'), energy_distribution_ion('kinetic'),
            energy_distribution_electron('potential'), energy_distribution_electron('kinetic'),
            energy(),
