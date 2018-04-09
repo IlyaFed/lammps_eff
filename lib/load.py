@@ -8,14 +8,13 @@ import pickle
 min_timeperiod = 100 # 100 fs
 
 class load:
-    def load_lammpstrj(self, path):
+    def load_lammpstrj(self):
         """
         Read lammpstrj file and apply function
-        :param path: path to you lammpstr files
         """
-        print ( "\r{:30s} ".format("read lammpstrj"), end = '')
+        print ( "\r{:30s} ({:s}) ...".format("read lammpstrj", self.path), end = '')
         try:
-            lammpstrj_path_tmp = glob.glob(path + '/**/**/all.0.lammpstrj', recursive=True)[0].split('/')[:-1]
+            lammpstrj_path_tmp = glob.glob(self.path + '/**/**/all.0.lammpstrj', recursive=True)[0].split('/')[:-1]
         except IndexError:
             print ("error: must be all.0.lammpstrj file")
             return
@@ -24,10 +23,9 @@ class load:
         for item in lammpstrj_path_tmp:
             lammpstrj_path += item + '/'
 
-        path = lammpstrj_path
 
         available_lammpstrj = np.array([])
-        for msdfile in os.listdir(path):
+        for msdfile in os.listdir(lammpstrj_path):
             if msdfile.split('.')[-1] == 'lammpstrj':
                 available_lammpstrj = np.append(available_lammpstrj, [int(msdfile.split('.')[1])])
 
@@ -76,12 +74,12 @@ class load:
         iteration_number = 0
         iteration_len = len(self.steps)
         for read_step in self.steps:
-            print ("\r{:30s} {:3d} %".format("read lammpstrj", int(100.* iteration_number/iteration_len )), end = '')
+            print ("\r{:30s} ({:s}) {:3d} %".format("read lammpstrj", self.path, int(100.* iteration_number/iteration_len )), end = '')
             iteration_number += 1
             file_name = "all.{:d}.lammpstrj".format(read_step)
             n = 0
             wall = np.zeros(6)
-            for num_line, line in enumerate(open(path + file_name, "r")):
+            for num_line, line in enumerate(open(lammpstrj_path + file_name, "r")):
                 if num_line == 3:
                     n = int( line )
                     self.general_info['n'] = n
@@ -109,20 +107,18 @@ class load:
             self.data.at[read_step, 'every'] = step_pandas
             self.data.at[read_step, 'wall'] = wall
             
-        print ("\r{:30s} 100 %".format("read lammpstrj"))
+        print ("\r{:30s} ({:s}) 100 %".format("read lammpstrj", self.path))
         self.load_lammpstrj_flag = True
 
 
-    def load_step(self, path): # TODO maybe remove load_step?
+    def load_step(self): # TODO maybe remove load_step?
         """
         Read lammpstrj file and apply function
         :param path: path to you lammpstr files
         """
-        if path[-1] != '/':
-            path = path + '/'
 
         llist = np.array([])
-        for msdfile in os.listdir(path):
+        for msdfile in os.listdir(self.path):
             if msdfile.split('.')[-1] == 'lammpstrj':
                 llist = np.append(llist, [int(msdfile.split('.')[1])])
         llist.sort()
@@ -131,15 +127,15 @@ class load:
         self.stop = int(llist[-1])
         del llist
 
-    def load_log(self, path):
+    def load_log(self):
         """
         Read date from lammps log
         :param name: full name of you log
         :return: pandas of date
         """
-        print ( "\rread lammps log ... ", end = '')
+        print ( "\rread lammps log ({:s}) ... ".format(self.path), end = '')
         try:
-            name =  glob.glob(path + '/**/**/log.lammps', recursive=True)[0]
+            name =  glob.glob(self.path + '/**/**/log.lammps', recursive=True)[0]
         except IndexError:
             print ("error: must be log.lammps file")
             return
@@ -166,7 +162,7 @@ class load:
                 read_flag = 1
                 continue
             if read_flag:
-                print ( "\r{:30s} {:3d} %".format("read lammps log", int(num_line/line_in_file * 100)), end = '')
+                print ( "\r{:30s} ({:s}) {:3d} %".format("read lammps log", self.path, int(num_line/line_in_file * 100)), end = '')
                 try:
                     line_data = [float(i) for i in line.split()[1:]]
                     Step = int( line.split()[0])
@@ -223,20 +219,20 @@ class load:
 
         self.data['Press'] = self.data['Press'] / 1e9 # create GPa
 
-        print("\r{:30s} {:3d} %".format("read lammps log", 100))
+        print("\r{:30s} ({:s}) {:3d} %".format("read lammps log",self.path,  100))
         del read_flag, columns
 
         self.load_log_flag = True
 
-    def load_data(self, path):
+    def load_data(self):
         """
         Read date from lammps log
         :param name: full name of you log
         :return: pandas of date
         """
-        print ( "\rread data ...", end = '')
+        print ( "\rread data ({:s}) ...".format(self.path), end = '')
         try:
-            name =  glob.glob(path + '/**/**/data.lammps', recursive=True)[0]
+            name =  glob.glob(self.path + '/**/**/data.lammps', recursive=True)[0]
         except IndexError:
             print ("warning: must be data.lammps file, no timestep")
             return
@@ -259,16 +255,16 @@ class load:
                 self.general_info['mass'][1] = float(line.split()[1])
                 break
             
-        print("\rread data success")
+        print("\rread data ({:s}) success".format(self.path))
 
         self.load_data_flag = True
 
-    def load_discription(self, path):
+    def load_discription(self):
         try:
-            filename =  glob.glob(path + '/**/**/description.txt', recursive=True)[0]
+            filename =  glob.glob(self.path + '/**/**/description.txt', recursive=True)[0]
         except IndexError:
             print ("warning: no description.txt file")
-            self.general_info['title'] = path
+            self.general_info['title'] = self.path
             self.general_info['description'] = 'no description file'
             return
 
@@ -288,11 +284,11 @@ class load:
         
         Then start reading this files
         '''
-        
-        self.load_discription(path)
-        self.load_data(path)
-        self.load_log(path)    
-        self.load_lammpstrj(path)
+        self.path = path
+        self.load_discription()
+        self.load_data()
+        self.load_log()    
+        self.load_lammpstrj()
         
         self.load_objects()
 

@@ -10,5 +10,5 @@ main:
 silence:
 	python3 main.py > log.log 2>>log.log &
 
-clean_backup:
+clean:
 	rm -f ./test_data/.backup
