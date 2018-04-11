@@ -34,7 +34,7 @@ class energy_distribution_ion(dash_object):
 
         if not col_name in parametrs.columns:
             print ("error: no {:s} in data".format(col_name))
-            pass
+            return
 
         energy = parametrs[parametrs['type'] == 1.0][col_name].apply(lambda x: x*e_hartry)
         e_max = energy.max()
