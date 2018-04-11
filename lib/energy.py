@@ -30,30 +30,30 @@ class energy(dash_object):
         
         #TODO make energy for slow temparature
         if self.type == 'kinetic':
-            if not 'c_keatom' in parametrs.columns:
+            if 'c_keatom' in parametrs.columns:
+                def sum_f(x):
+                    return x['c_keatom'] * e_hartry
+            else:
                 print ("error: no {:s} in data".format('c_keatom'))
                 def sum_f(x):
                     return 0
-            else:
-                def sum_f(x):
-                    return x['c_keatom'] * e_hartry
 
         elif self.type == 'potential':
-            if not 'c_peatom' in parametrs.columns:
+            if 'c_peatom' in parametrs.columns:
+                def sum_f(x):
+                    return x['c_peatom'] * e_hartry
+            else:
                 print ("error: no {:s} in data".format('c_peatom'))
                 def sum_f(x):
                     return 0
-            else:
-                def sum_f(x):
-                    return x['c_peatom'] * e_hartry
         elif self.type == 'full':
-            if (not 'c_keatom' in parametrs.columns) or (not 'c_peatom' in parametrs.columns):
+            if ('c_keatom' in parametrs.columns) or ('c_peatom' in parametrs.columns):
+                def sum_f(x):
+                    return (x['c_peatom'] + x['c_keatom']) * e_hartry
+            else:
                 print ("error: no need data in data")
                 def sum_f(x):
                     return 0
-            else:
-                def sum_f(x):
-                    return (x['c_peatom'] + x['c_keatom']) * e_hartry
 
         ion = parametrs[parametrs['type'] == 1.0].apply(sum_f, axis = 1).sum()
         electron = parametrs[parametrs['type'] == 2.0].apply(sum_f, axis = 1).sum()
