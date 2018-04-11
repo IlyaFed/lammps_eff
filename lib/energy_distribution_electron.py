@@ -35,6 +35,7 @@ class energy_distribution_electron(dash_object):
 
         if not col_name in parametrs.columns:
             print ("error: no {:s} in data".format(col_name))
+            self.data.at[Step, self.energy] = np.zeros((2, self.grid + 1))
             return
 
         energy = parametrs[parametrs['type'] == 2.0][col_name].apply(lambda x: x*e_hartry)

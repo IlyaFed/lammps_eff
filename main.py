@@ -10,6 +10,20 @@ from lib.pt_diagram import pt_diagram
 import numpy as np
 from multiprocessing.dummy import Pool as ThreadPool
 
+
+# from telegraph import Telegraph
+
+# telegraph = Telegraph()
+
+# telegraph.create_account(short_name='Ilya Fedorov')
+
+# response = telegraph.create_page(
+#     'Hey',
+#     html_content='<p>Hello, world!</p>'
+# )
+
+# print('http://telegra.ph/{}'.format(response['path']))
+
 experimental_data = {
     'Knudson': np.array([[900, 1250, 1600, 1700], [310, 290, 285, 285]]),
     'Loubeyre': np.array([[2000, 3000, 350, 350], [110, 50, 40, 25]]),
