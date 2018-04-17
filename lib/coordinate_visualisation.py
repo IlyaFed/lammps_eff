@@ -39,9 +39,9 @@ class coordinate_visualisation(dash_object):
         n = our_param.shape[0]
         coord_ion = np.zeros((3, n), dtype=float)
         for i in range(n):
-            coord_ion[0][i] = our_param.loc[our_param.index[i], 'x'] - wall[3]
-            coord_ion[1][i] = our_param.loc[our_param.index[i], 'y'] - wall[4]
-            coord_ion[2][i] = our_param.loc[our_param.index[i], 'z'] - wall[5]
+            coord_ion[0][i] = our_param.loc[our_param.index[i], 'x']
+            coord_ion[1][i] = our_param.loc[our_param.index[i], 'y']
+            coord_ion[2][i] = our_param.loc[our_param.index[i], 'z']
 
         self.data.at[Step, 'coord_ion'] = coord_ion
         # read electron coordinates
@@ -49,9 +49,9 @@ class coordinate_visualisation(dash_object):
         n = our_param.shape[0]
         coord_electron = np.zeros((4, n), dtype=float)
         for i in range(n):
-            coord_electron[0][i] = our_param.loc[our_param.index[i], 'x'] - wall[3]
-            coord_electron[1][i] = our_param.loc[our_param.index[i], 'y'] - wall[4]
-            coord_electron[2][i] = our_param.loc[our_param.index[i], 'z'] - wall[5]
+            coord_electron[0][i] = our_param.loc[our_param.index[i], 'x']
+            coord_electron[1][i] = our_param.loc[our_param.index[i], 'y']
+            coord_electron[2][i] = our_param.loc[our_param.index[i], 'z']
             coord_electron[3][i] = our_param.loc[our_param.index[i], 'c_1a[2]']
 
 
@@ -83,12 +83,7 @@ class coordinate_visualisation(dash_object):
             for j in range(self.grid_N):
                 for k in range(self.grid_N):
                     grid[i][j][k] = grid_res[i * self.grid_N * self.grid_N + j * self.grid_N + k]
-        wall[0] -= wall[3]
-        wall[1] -= wall[4]
-        wall[2] -= wall[5]
-        wall = wall[ :3]
         
-        self.data.at[Step, 'coord_wall'] = wall
         self.data.at[Step, 'surface'] = grid
 
 
@@ -197,7 +192,7 @@ class coordinate_visualisation(dash_object):
             marker=dict(size=3)
         ))
         grid = self.data.loc[self.current_index, 'surface']
-        wall = self.data.loc[self.current_index, 'coord_wall']
+        wall = self.data.loc[self.current_index, 'wall']
         self.isovalue_maxmin = [grid.max(), grid.min()]
         iso_value = min(self.isovalue, self.isovalue_maxmin[0] - 0.001)
         iso_value = max( iso_value, self.isovalue_maxmin[1] + 0.001)

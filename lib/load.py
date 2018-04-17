@@ -18,7 +18,7 @@ class load:
             lammpstrj_path_tmp = glob.glob(self.path + '/**/**/all.0.lammpstrj', recursive=True)[0].split('/')[:-1]
         except IndexError:
             print ("error: must be all.0.lammpstrj file")
-            return
+            exit()
 
         lammpstrj_path = ''
         for item in lammpstrj_path_tmp:
@@ -85,14 +85,14 @@ class load:
                     n = int( line )
                     self.general_info['n'] = n
                 if num_line == 5:
-                    wall[0] = float( line.split(" ")[1] )
-                    wall[3] = float( line.split(" ")[0] )
+                    wall[0] = float( line.split(" ")[0] )
+                    wall[3] = float( line.split(" ")[1] )
                 if num_line == 6:
-                    wall[1] = float( line.split(" ")[1] )
-                    wall[4] = float( line.split(" ")[0] )
+                    wall[1] = float( line.split(" ")[0] )
+                    wall[4] = float( line.split(" ")[1] )
                 if num_line == 7:
-                    wall[2] = float( line.split(" ")[1] )
-                    wall[5] = float( line.split(" ")[0] )
+                    wall[2] = float( line.split(" ")[0] )
+                    wall[5] = float( line.split(" ")[1] )
 
                 if num_line == 8:
                     line = line.split(" ")[:-1]
@@ -105,6 +105,13 @@ class load:
 
             step_pandas.sort_values(by='id', inplace=True)
             #print ("step_pandas: ", step_pandas)
+            step_pandas.loc[:, 'x'] -= wall[0]
+            step_pandas.loc[:, 'y'] -= wall[1]
+            step_pandas.loc[:, 'z'] -= wall[2] 
+            wall[3] -= wall[0]
+            wall[4] -= wall[1]
+            wall[5] -= wall[2]
+            wall = wall[3:]
             self.data.at[read_step, 'every'] = step_pandas
             self.data.at[read_step, 'wall'] = wall
             
@@ -138,7 +145,7 @@ class load:
             name =  glob.glob(self.path + '/**/**/log.lammps', recursive=True)[0]
         except IndexError:
             print ("error: must be log.lammps file")
-            return
+            exit()
 
         if not self.load_lammpstrj_flag:
             self.data = pd.DataFrame(columns=['every', 'wall']) # TODO check available step in lammps and log
@@ -236,8 +243,8 @@ class load:
         try:
             name =  glob.glob(self.path + '/**/**/data.lammps', recursive=True)[0]
         except IndexError:
-            print ("warning: must be data.lammps file, no timestep")
-            return
+            print ("error: must be data.lammps file, no timestep")
+            exit()
             
 
         mass_flag = 0

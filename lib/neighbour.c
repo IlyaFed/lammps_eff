@@ -158,37 +158,37 @@ int* neighbour_list_two( double* x, double* y, double* z,
         k_types[j] = 0;
         // e
         if ( (el == 1) && (ion == 0) ){
-            list[n*2 + 0] ++;
+            list[n*2 + 0] += el + ion;
             k_types[j] = 1;
         }
         // H+
         if ( (el == 0) && (ion == 1) ){
-            list[n*2 + 1] ++;
+            list[n*2 + 1] += el + ion;
             k_types[j] = 2;
         }
         // H
         if ( (el == 1) && (ion == 1) ){
-            list[n*2 + 2] ++;
+            list[n*2 + 2] += el + ion;
             k_types[j] = 3;
         }
         // H2+
         if ( (el == 1) && (ion == 2) ){
-            list[n*2 + 3] ++;
+            list[n*2 + 3] += el + ion;
             k_types[j] = 4;
         }
         // H2
         if ( (el == 2) && (ion == 2) ){
-            list[n*2 + 4] ++;
+            list[n*2 + 4] += el + ion;
             k_types[j] = 5;
         }
         // H3+
         if ( (el == 2) && (ion == 3) ){
-            list[n*2 + 5] ++;
+            list[n*2 + 5] += el + ion;
             k_types[j] = 6;
         }
         // H3
         if ( (el == 3) && (ion == 3) ){
-            list[n*2 + 6] ++;
+            list[n*2 + 6] += el + ion;
             k_types[j] = 7;
         }
     }

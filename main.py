@@ -7,6 +7,8 @@ from lib.energy_distribution_electron import energy_distribution_electron
 from lib.energy import energy
 from lib.neighbour_distribution import neighbour_distribution
 from lib.pt_diagram import pt_diagram
+from lib.rdf import rdf
+
 import numpy as np
 from multiprocessing.dummy import Pool as ThreadPool
 
@@ -50,7 +52,8 @@ def start_proc(path):
                energy_distribution_ion('potential'), energy_distribution_ion('kinetic'),
                energy_distribution_electron('potential'), energy_distribution_electron('kinetic'),
                energy(),
-               neighbour_distribution()]
+               neighbour_distribution(),
+               rdf()]
     global port
     system(path = path, objects = objects, port = port[path])
 

@@ -34,6 +34,8 @@ class energy_distribution_ion(dash_object):
 
         if not col_name in parametrs.columns:
             print ("error: no {:s} in data".format(col_name))
+            self.data.at[Step, self.energy] = np.zeros((2, self.grid + 1))
+            self.data.at[Step, 'ion_theory'] = np.zeros((2, self.grid + 1))
             return
 
         energy = parametrs[parametrs['type'] == 1.0][col_name].apply(lambda x: x*e_hartry)
@@ -60,7 +62,7 @@ class energy_distribution_ion(dash_object):
                 for i in range(self.grid + 1):
                     theory[1][i] = theory[0][i] ** 0.5 * np.exp(- theory[0][i] / Temperature)
                 # TODO smth is wrong here
-                theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
+                theory[1] = 0 #theory[1] / sum(theory[1]) * sum(e[1])
 
         self.data.at[Step, self.energy] = e
         self.data.at[Step, 'ion_theory'] = theory

@@ -34,6 +34,7 @@ class neighbour_distribution(dash_object):
         self.data.at[Step, 'particle_type'] = types_of_every_particles
 
         distribution = list_dist[len(coord[0]) * 2:]
+        distribution.append( len(coord[0]) - sum(distribution) ) # append "other particles"
         for i in range( len(self.particle_types)):
             self.data.at[Step, self.particle_types[i]] = distribution[i]
         
@@ -73,6 +74,7 @@ class neighbour_distribution(dash_object):
         self.data.at[Step, 'particle_type'] = types_of_every_particles
 
         distribution = list_dist[len(coord[0]) * 2:]
+        distribution.append( len(coord[0]) - sum(distribution) ) # append "other particles"
         for i in range( len(self.particle_types)):
             #print ("name = ", self.particle_types[i], ": ", distribution[i])
             self.data.at[Step, self.particle_types[i]] = distribution[i]
@@ -212,10 +214,10 @@ class neighbour_distribution(dash_object):
 
     def __init__(self):
         self.type = type
-        self.particle_types = ["e", "H+", "H", "H2+", "H2", "H3+", "H3"]
+        self.particle_types = ["e", "H+", "H", "H2+", "H2", "H3+", "H3", "other"]
         self.index_list = self.particle_types
         self.current_index = 0
         self.graph_type = 'scatter'
-        self.cut = 1.5
+        self.cut = 2.0
         self.mylib = ctypes.CDLL('lib/neighbour.so')
         self.name = 'neigbour_distribution'
