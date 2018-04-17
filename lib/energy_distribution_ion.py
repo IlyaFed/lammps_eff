@@ -14,7 +14,7 @@ class energy_distribution_ion(dash_object):
             return 0
 
         for item in self.index_list:
-            self.data[item] = pd.Series([np.zeros(self.grid+1, dtype=float)]*self.data.shape[0])
+            self.data[item] = pd.Series([np.zeros((2, self.grid + 1))]*self.data.shape[0])
 
         for Step in self.data.index:
             self.load_step(Step)
@@ -32,17 +32,16 @@ class energy_distribution_ion(dash_object):
         else:
             col_name = 'c_keatom'
 
-        if not col_name in parametrs.columns:
-            print ("error: no {:s} in data".format(col_name))
-            self.data.at[Step, self.energy] = np.zeros((2, self.grid + 1))
-            self.data.at[Step, 'ion_theory'] = np.zeros((2, self.grid + 1))
-            return
+        # if not col_name in parametrs.columns:
+        #     print ("error: no {:s} in data".format(col_name))
+        #     self.data.at[Step, self.energy] = np.zeros((2, self.grid + 1))
+        #     self.data.at[Step, 'ion_theory'] = np.zeros((2, self.grid + 1))
+        #     return
 
         energy = parametrs[parametrs['type'] == 1.0][col_name].apply(lambda x: x*e_hartry)
         e_max = energy.max()
         e_min = energy.min()
         e = np.zeros((2, self.grid + 1))
-        theory = e.copy()
         if e_max != e_min:
             for i in range(self.grid + 1):
                 e[0][i] = e_min + (e_max - e_min) / self.grid * i
@@ -52,7 +51,8 @@ class energy_distribution_ion(dash_object):
 
             energy.apply(f_e_dist)
 
-            Temperature = 2. / 3. / (parametrs[parametrs['type'] == 1.0]['c_keatom'].mean() * e_hartry)
+            theory = e.copy()
+            Temperature = 2. / 3. * energy.mean()
             if self.energy == 'potential':
                 for i in range(self.grid + 1):
                     theory[1][i] = np.exp(- theory[0][i] / Temperature )
@@ -61,9 +61,9 @@ class energy_distribution_ion(dash_object):
             else:
                 for i in range(self.grid + 1):
                     theory[1][i] = theory[0][i] ** 0.5 * np.exp(- theory[0][i] / Temperature)
-                # TODO smth is wrong here
-                theory[1] = 0 #theory[1] / sum(theory[1]) * sum(e[1])
+                theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
 
+        #print ("theory ", theory)
         self.data.at[Step, self.energy] = e
         self.data.at[Step, 'ion_theory'] = theory
 
@@ -99,7 +99,7 @@ class energy_distribution_ion(dash_object):
             showlegend = True,
             width=500,
             height=300,
-            title = 'Distribution of {:s} ion energy'.format(self.energy),
+            title = 'Distribution of {:s} energy'.format(self.energy),
             xaxis = dict(
                 showgrid = True,
                 zeroline = False,
@@ -146,9 +146,9 @@ class energy_distribution_ion(dash_object):
 
     def __init__(self, energy):
         self.current_index = 0
-        self.energy = 'electron_'+ energy
+        self.energy = "ion " + energy
         self.graph_type = 'scatter'
-        self.name = 'energy_distribution_ion_{:s}'.format(energy)
+        self.name = 'energy_distribution_{:s}'.format(energy)
         self.index_list = [self.energy, 'ion_theory']
         self.grid = 100
 

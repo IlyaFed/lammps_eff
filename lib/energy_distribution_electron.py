@@ -14,7 +14,7 @@ class energy_distribution_electron(dash_object):
             return 0
 
         for item in self.index_list:
-            self.data[item] = pd.Series([np.zeros(self.grid+1, dtype=float)]*self.data.shape[0])
+            self.data[item] = pd.Series([np.zeros((2, self.grid + 1))]*self.data.shape[0])
             
         for Step in self.data.index:
             self.load_step(Step)
@@ -33,10 +33,10 @@ class energy_distribution_electron(dash_object):
         else:
             col_name = 'c_keatom'
 
-        if not col_name in parametrs.columns:
-            print ("error: no {:s} in data".format(col_name))
-            self.data.at[Step, self.energy] = np.zeros((2, self.grid + 1))
-            return
+        # if not col_name in parametrs.columns:
+        #     print ("error: no {:s} in data".format(col_name))
+        #     self.data.at[Step, self.energy] = np.zeros((2, self.grid + 1))
+        #     return
 
         energy = parametrs[parametrs['type'] == 2.0][col_name].apply(lambda x: x*e_hartry)
         e_max = energy.max()
@@ -50,22 +50,20 @@ class energy_distribution_electron(dash_object):
                 e[1][int((x - e_min) / (e_max - e_min) * self.grid)] += 1
 
             energy.apply(f_e_dist)
-        '''
-        Temperature = 2. / 3. / (parametrs[parametrs['type'] == 1.0]['c_keatom'].mean() * e_hartry)
-        if self.energy == 'potential':
             theory = e.copy()
-            for i in range(self.grid + 1):
-                theory[1][i] = np.exp(- theory[0][i] / Temperature )
+            Temperature = 2. / 3. * energy.mean()
+            if self.energy == 'potential':
+                for i in range(self.grid + 1):
+                    theory[1][i] = np.exp(- theory[0][i] / Temperature )
 
-            theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
-        else:
-            theory = e.copy()
-            for i in range(self.grid + 1):
-                theory[1][i] = theory[0][i] ** 0.5 * np.exp(- theory[0][i] / Temperature)
-
-            theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
-        '''
+                theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
+            else:
+                for i in range(self.grid + 1):
+                    theory[1][i] = theory[0][i] ** 0.5 * np.exp(- theory[0][i] / Temperature)
+                theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
+        
         self.data.at[Step, self.energy] = e
+        self.data.at[Step, 'electron_theory'] = theory
 
     def __get_scatter_trace(self):
         '''
@@ -81,6 +79,14 @@ class energy_distribution_electron(dash_object):
             mode = 'line'
         ))
 
+        distribution = self.data.loc[self.current_index, 'electron_theory']
+        traces.append(go.Scatter(
+            x=distribution[0],
+            y=distribution[1],
+            name='Theory',
+            mode='line'
+        ))
+
         return traces
 
     def __get_trace(self):
@@ -92,7 +98,7 @@ class energy_distribution_electron(dash_object):
             showlegend = True,
             width=500,
             height=300,
-            title = 'Distribution of {:s} electron energy'.format(self.energy),
+            title = 'Distribution of {:s} energy'.format(self.energy),
             xaxis = dict(
                 showgrid = True,
                 zeroline = False,
@@ -138,9 +144,9 @@ class energy_distribution_electron(dash_object):
 
     def __init__(self, energy):
         self.current_index = 0
-        self.energy = 'ion_'+energy
+        self.energy = 'electron ' + energy
         self.graph_type = 'scatter'
-        self.name = 'energy_distribution_electron_{:s}'.format(energy)
+        self.name = 'energy_distribution {:s}'.format(energy)
         self.grid = 100
         self.index_list = [self.energy, 'electron_theory']
 

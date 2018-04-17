@@ -118,7 +118,9 @@ class coordinate_visualisation(dash_object):
         Here we create scatter trace for graph
         :return:
         '''
-        coord_full = self.data.loc[self.current_index, 'coord_neighboard'] # TODO check that it's exist
+        if not 'coord_neighboard' in self.data.columns:
+            return []
+        coord_full = self.data.loc[self.current_index, 'coord_neighboard']
         types = self.gen_info['particles_types'] # real name of every type ( 1 - e, 2 - H+)
         coord_type = self.data.loc[self.current_index, 'particle_type'] # type of every partice
         n = len(coord_full[0]) # number of particles

@@ -10,8 +10,11 @@ class temperature(dash_object):
         self.timestep = self.gen_info['timestep']
         self.mass = self.gen_info['mass']
 
-
-        if self.load_flag:
+        load_flag = 1
+        for item in self.index_list:
+            if not item in self.data.columns:
+                load_flag = 0
+        if load_flag:
             return 0
 
         for Step in self.data.index:
@@ -162,3 +165,4 @@ class temperature(dash_object):
         self.graph_type = 'scatter'
         self.name = 'temperature'
         self.load_flag = 0
+        self.index_list = ['temp_ion', 'temp_electron']

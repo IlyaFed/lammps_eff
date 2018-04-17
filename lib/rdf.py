@@ -153,7 +153,7 @@ class rdf(dash_object):
 
     def __init__(self):
         self.type = type
-        self.index_list = ['rdf']
+        self.index_list = ['rdf_el', 'rdf_ion', 'rdf_radius']
         self.current_index = 0
         self.graph_type = 'scatter'
         self.grid = 50

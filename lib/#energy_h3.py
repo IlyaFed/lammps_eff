@@ -1,10 +1,10 @@
 # it's a common class of all system object
-# TODO this function don't work
+# this function don't work!!!!
 '''
 from lib.common_object import *
 import numpy as np
 
-class energy_h2(dash_object):
+class energy_h3(dash_object):
     def load_step(self, args):
         '''
         Here we upload step data and put it into data structure
@@ -27,10 +27,9 @@ class energy_h2(dash_object):
                 return ( x['c_peatom'] + x['c_keatom'] ) * e_hartry
 
         ion = parametrs[parametrs['type'] == 1.0].apply(sum_f, axis = 1).sum()
-        #print (parametrs[parametrs['type'] == 1.0]['z'].values, "dist")
-        dist_x = parametrs[parametrs['type'] == 1.0]['x'].values[0] - parametrs[parametrs['type'] == 1.0]['x'].values[1]
-        dist_y = parametrs[parametrs['type'] == 1.0]['y'].values[0] - parametrs[parametrs['type'] == 1.0]['y'].values[1]
-        dist_z = parametrs[parametrs['type'] == 1.0]['z'].values[0] - parametrs[parametrs['type'] == 1.0]['z'].values[1]
+        dist_x = parametrs[parametrs['type'] == 2.0]['x'].values[0] - parametrs[parametrs['type'] == 1.0]['x'].values[1]
+        dist_y = parametrs[parametrs['type'] == 2.0]['y'].values[0] - parametrs[parametrs['type'] == 1.0]['y'].values[1]
+        dist_z = parametrs[parametrs['type'] == 2.0]['z'].values[0] - parametrs[parametrs['type'] == 1.0]['z'].values[1]
         dist = np.sqrt(dist_x**2 + dist_y**2 + dist_z**2)
 
         electron = parametrs[parametrs['type'] == 2.0].apply(sum_f, axis = 1).sum()

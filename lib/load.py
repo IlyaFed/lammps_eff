@@ -37,10 +37,6 @@ class load:
                 if not i in available_lammpstrj:
                     to_remove.append(i)
             self.data.drop(to_remove, inplace=True)
-            # TODO remove self.step self.start ...
-            self.start = self.steps[0]
-            self.stop = self.steps[-1]
-            self.step = self.steps[1] - self.steps[0]
         else:
             # reduce number of steps
             min_step = int(min_timeperiod / 0.005 /1000) * 1000 # step equal 100 fs and must diveded into 1000, approximate step as 0.005 fs
@@ -64,9 +60,6 @@ class load:
             if len(self.steps) < 2:
                 print ("Number of steps in load lammpstrj too small: {:d}, step of analysis: {:d}".format(len(self.steps), min_step))
                 exit()
-            self.start = self.steps[0]
-            self.stop = self.steps[-1]
-            self.step = self.steps[1] - self.steps[0]
         
             self.data = pd.DataFrame(columns=['every', 'wall'], index = self.steps)
         
@@ -117,22 +110,6 @@ class load:
             
         print ("\r{:30s} ({:s}) 100 %".format("read lammpstrj", self.path))
         self.load_lammpstrj_flag = True
-
-    def load_step(self): # TODO maybe remove load_step?
-        """
-        Read lammpstrj file and apply function
-        :param path: path to you lammpstr files
-        """
-
-        llist = np.array([])
-        for msdfile in os.listdir(self.path):
-            if msdfile.split('.')[-1] == 'lammpstrj':
-                llist = np.append(llist, [int(msdfile.split('.')[1])])
-        llist.sort()
-        self.start = int(llist[0])
-        self.step = max(int(llist[1] - llist[0]), self.minstep)
-        self.stop = int(llist[-1])
-        del llist
 
     def load_log(self):
         """
@@ -220,9 +197,6 @@ class load:
                     to_remove.append(i)
 
             self.data.drop(to_remove, inplace=True)
-            self.start = self.steps[0]
-            self.stop = self.steps[-1]
-            self.step = self.steps[1] - self.steps[0]
 
 
 
@@ -303,9 +277,12 @@ class load:
 
     def load_objects(self):
         new_flag = 0
+        load_object_status = 0
+        max_len = len(self.objects)
         for object in self.objects:
+            max_len += 1
+            print ( "\r{:30s} ({:s}) {:3d} %".format("read objects", self.path, int(load_object_status/max_len * 100)), end = '')
             new_flag += object.analyse(self.data, self.general_info)
-        
         return new_flag
         
     def upload_backup(self, filename):
@@ -320,9 +297,6 @@ class load:
             backup_data = pickle.load(f)
         self.data = backup_data['data']
         self.general_info = backup_data['general_info']
-        self.start = self.data.index[0]
-        self.step = self.data.index[1] - self.data.index[0]
-        self.stop = self.data.index[-1]
         if self.load_objects():
             print ("create updated backup")
             self.upload_backup(filename)
