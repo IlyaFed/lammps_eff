@@ -10,12 +10,12 @@ class system(load):
     def set_app(self):
         self.app = dash.Dash()
         self.step_input = 'Step-slider'
-        slider_step = self.steps[1] - self.steps[0]
+        slider_step = self.data.index[1] - self.data.index[0]
         slider = dcc.Slider(
             id=self.step_input,
-            min=self.steps[0],
-            max=self.steps[-1],
-            value=self.steps[0],
+            min=self.data.index[0],
+            max=self.data.index[-1],
+            value=self.data.index[0],
             step= slider_step # int number of step
             #marks={str(Step): str(Step) for Step in range(self.start, self.stop, slider_step)}
         )
@@ -24,7 +24,7 @@ class system(load):
             id=self.value_input,
             placeholder='Step',
             type='value',
-            value=self.steps[0]
+            value=self.data.index[0]
         )
 
 
