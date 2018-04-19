@@ -32,11 +32,11 @@ class energy_distribution_ion(dash_object):
         else:
             col_name = 'c_keatom'
 
-        # if not col_name in parametrs.columns:
-        #     print ("error: no {:s} in data".format(col_name))
-        #     self.data.at[Step, self.energy] = np.zeros((2, self.grid + 1))
-        #     self.data.at[Step, 'ion_theory'] = np.zeros((2, self.grid + 1))
-        #     return
+        if not col_name in parametrs.columns:
+            print ("error: no {:s} in data".format(col_name))
+            self.data.at[Step, self.energy] = np.zeros((2, self.grid + 1))
+            self.data.at[Step, 'ion_theory'] = np.zeros((2, self.grid + 1))
+            return
 
         energy = parametrs[parametrs['type'] == 1.0][col_name].apply(lambda x: x*e_hartry)
         e_max = energy.max()
