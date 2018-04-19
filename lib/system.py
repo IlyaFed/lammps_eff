@@ -65,7 +65,7 @@ class system(load):
         self.app.run_server(port = self.port, host = '0.0.0.0')
         
     def __init__(self, path, objects, server = 0, minstep = 0, port = 8050, custom_steps = []):
-        super(system, self).__init__(objects, minstep=minstep, custom_steps = custom_steps)
+        super(system, self).__init__(objects, minstep=minstep, custom_steps = custom_steps, path = path)
         self.port = port
         load_flag = 0
         # find backup path 
@@ -75,7 +75,7 @@ class system(load):
             load_flag = 1
         
         if load_flag:
-            self.load(path = path)
+            self.load()
             self.upload_backup(filename = path + "/.backup")
         else:
             self.load_backup(filename = backup_file)

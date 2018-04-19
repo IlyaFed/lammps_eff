@@ -265,7 +265,7 @@ class load:
         for line in data_from_file[1:]:
             self.general_info['description'] += line + "\n"
 
-    def load(self, path):
+    def load(self):
         ''' 
         Here we read directory to find files:
         log.lammps
@@ -274,7 +274,6 @@ class load:
         
         Then start reading this files
         '''
-        self.path = path
         self.load_discription()
         self.load_data()
         self.load_log()    
@@ -314,10 +313,10 @@ class load:
             self.upload_backup(filename)
         print ("backup has loaded")
 
-    def __init__(self, objects, minstep, custom_steps):
+    def __init__(self, objects, minstep, custom_steps, path):
         self.objects = objects
         self.minstep = minstep
-
+        self.path = path
         self.general_info = {'mass': [0,0], 'timestep': 1.0}
         self.load_log_flag = False
         self.load_lammpstrj_flag = False
