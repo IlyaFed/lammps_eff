@@ -36,8 +36,6 @@ experimental_data = {
 with open("input.txt", "r") as file:
     path = [line.replace("\n","") for line in  file.readlines()]
 
-print ("path: ", path)
-print ("len_path: ", len(path))
 port_item = 8051
 port = dict()
 for item in path:

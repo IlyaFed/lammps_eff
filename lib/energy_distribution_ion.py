@@ -55,7 +55,7 @@ class energy_distribution_ion(dash_object):
             else:
                 for i in range(self.grid + 1):
                     theory[1][i] = theory[0][i] ** 0.5 * np.exp(- theory[0][i] / Temperature)
-                theory[1] = theory[1] / s
+                theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
         self.data.at[Step, self.energy] = e
         self.data.at[Step, 'ion_theory'] = theory
 
