@@ -13,9 +13,14 @@ class energy_distribution_electron(dash_object):
         if load_flag:
             return 0
 
+
         for item in self.index_list:
             self.data[item] = pd.Series([np.zeros((2, self.grid + 1))]*self.data.shape[0])
-            
+
+        if not col_name in parametrs.columns:
+            print ("error: no {:s} in data".format(col_name))
+            return
+         
         for Step in self.data.index:
             self.load_step(Step)
         return 1
@@ -32,11 +37,6 @@ class energy_distribution_electron(dash_object):
             col_name = 'c_peatom'
         else:
             col_name = 'c_keatom'
-
-        if not col_name in parametrs.columns:
-            print ("error: no {:s} in data".format(col_name))
-            self.data.at[Step, self.energy] = np.zeros((2, self.grid + 1))
-            return
 
         energy = parametrs[parametrs['type'] == 2.0][col_name].apply(lambda x: x*e_hartry)
         e_max = energy.max()
