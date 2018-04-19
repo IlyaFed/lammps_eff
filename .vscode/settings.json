@@ -10,5 +10,6 @@
         "stdexcept": "c",
         "type_traits": "c",
         "typeinfo": "c"
-    }
+    },
+    "python.pythonPath": "/usr/local/bin/python3"
 }

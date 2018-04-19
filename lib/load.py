@@ -13,7 +13,7 @@ class load:
         """
         Read lammpstrj file and apply function
         """
-        print ( "\r{:30s} ({:s}) ...".format("read lammpstrj", self.path), end = '')
+        print ("{:30s} ({:s}) {:3d} %".format("read lammpstrj", self.path, 0), end = '\n')
         try:
             lammpstrj_path_tmp = glob.glob(self.path + '/**/**/all.0.lammpstrj', recursive=True)[0].split('/')[:-1]
         except IndexError:
@@ -66,9 +66,12 @@ class load:
         # create pandas
         
         iteration_number = 0
+        print_list = [30, 60]
         iteration_len = len(self.steps)
         for read_step in self.steps:
-            print ("\r{:30s} ({:s}) {:3d} %".format("read lammpstrj", self.path, int(100.* iteration_number/iteration_len )), end = '')
+            if len(print_list) and ( 100.* iteration_number/iteration_len > print_list[0] ):
+                print ("{:30s} ({:s}) {:3d} %".format("read lammpstrj", self.path, print_list[0]), end = '\n')
+                del ( print_list[0] )
             iteration_number += 1
             file_name = "all.{:d}.lammpstrj".format(read_step)
             n = 0
@@ -108,7 +111,7 @@ class load:
             self.data.at[read_step, 'every'] = step_pandas
             self.data.at[read_step, 'wall'] = wall
             
-        print ("\r{:30s} ({:s}) 100 %".format("read lammpstrj", self.path))
+        print ("{:30s} ({:s}) 100 %".format("read lammpstrj", self.path))
         self.load_lammpstrj_flag = True
 
     def load_log(self):
@@ -117,7 +120,7 @@ class load:
         :param name: full name of you log
         :return: pandas of date
         """
-        print ( "\rread lammps log ({:s}) ... ".format(self.path), end = '')
+        print ("{:30s} ({:s}) {:3d} %".format("read log", self.path, 0), end = '\n')
         try:
             name =  glob.glob(self.path + '/**/**/log.lammps', recursive=True)[0]
         except IndexError:
@@ -134,6 +137,7 @@ class load:
             print ("error: get number of lines in file fall")
             line_in_file = 100
         read_flag = 0
+        print_list = [30,60]
         for num_line, line in enumerate( open( name, 'r')):
             if (line[0] == 't') and  (line.split()[0] == 'timestep') and (read_flag == 0):
                 self.general_info['timestep'] = float(line.split()[1])
@@ -146,7 +150,10 @@ class load:
                 read_flag = 1
                 continue
             if read_flag:
-                print ( "\r{:30s} ({:s}) {:3d} %".format("read lammps log", self.path, int(num_line/line_in_file * 100)), end = '')
+
+                if len(print_list) and ( num_line/line_in_file * 100 > print_list[0] ):
+                    print ("{:30s} ({:s}) {:3d} %".format("read log", self.path, print_list[0]), end = '\n')
+                    del ( print_list[0] )
                 try:
                     line_data = [float(i) for i in line.split()[1:]]
                     Step = int( line.split()[0])
@@ -202,7 +209,7 @@ class load:
 
         self.data['Press'] = self.data['Press'] / 1e9 # create GPa
 
-        print("\r{:30s} ({:s}) {:3d} %".format("read lammps log",self.path,  100))
+        print("\r{:30s} ({:s}) {:3d} %".format("read log",self.path,  100))
         del read_flag, columns
 
         self.load_log_flag = True
@@ -213,7 +220,7 @@ class load:
         :param name: full name of you log
         :return: pandas of date
         """
-        print ( "\rread data ({:s}) ...".format(self.path), end = '')
+        #print ( "read data ({:s}) 0 %".format(self.path), end = '\n')
         try:
             name =  glob.glob(self.path + '/**/**/data.lammps', recursive=True)[0]
         except IndexError:
@@ -238,7 +245,7 @@ class load:
                 self.general_info['mass'][1] = float(line.split()[1])
                 break
             
-        print("\rread data ({:s}) success".format(self.path))
+        print("read data ({:s}) success".format(self.path))
 
         self.load_data_flag = True
 
@@ -276,13 +283,18 @@ class load:
         self.load_objects()
 
     def load_objects(self):
+        print ("{:30s} ({:s}) {:3d} %".format("read objects", self.path, 0), end = '\n')
         new_flag = 0
         load_object_status = 0
         max_len = len(self.objects)
+        print_list = [20, 40, 60, 80]
         for object in self.objects:
-            max_len += 1
-            print ( "\r{:30s} ({:s}) {:3d} %".format("read objects", self.path, int(load_object_status/max_len * 100)), end = '')
+            load_object_status += 1
+            if len(print_list) and ( load_object_status/max_len * 100 > print_list[0] ):
+                    print ("{:30s} ({:s}) {:3d} %".format("read objects", self.path, print_list[0]), end = '\n')
+                    del ( print_list[0] )
             new_flag += object.analyse(self.data, self.general_info)
+        print ("{:30s} ({:s}) {:3d} %".format("read objects", self.path, 100), end = '\n')
         return new_flag
         
     def upload_backup(self, filename):
