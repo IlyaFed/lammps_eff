@@ -69,4 +69,4 @@ results = pool.map(start_proc, path)
 #close the pool and wait for the work to finish
 pool.close()
 pool.join()
-
+ #TODO logging

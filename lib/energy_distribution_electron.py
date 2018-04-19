@@ -17,8 +17,10 @@ class energy_distribution_electron(dash_object):
         for item in self.index_list:
             self.data[item] = pd.Series([np.zeros((2, self.grid + 1))]*self.data.shape[0])
 
-        if not col_name in parametrs.columns:
-            print ("error: no {:s} in data".format(col_name))
+
+        parametrs = self.data.loc[self.data.index[0], 'every']
+        if not self.col_name in parametrs.columns:
+            logging.warning ("no {:s} in data".format(self.col_name))
             return
          
         for Step in self.data.index:
@@ -33,12 +35,7 @@ class energy_distribution_electron(dash_object):
         
         e_hartry = 27.2113845
 
-        if self.energy == 'potential':
-            col_name = 'c_peatom'
-        else:
-            col_name = 'c_keatom'
-
-        energy = parametrs[parametrs['type'] == 2.0][col_name].apply(lambda x: x*e_hartry)
+        energy = parametrs[parametrs['type'] == 2.0][self.col_name].apply(lambda x: x*e_hartry)
         e_max = energy.max()
         e_min = energy.min()
         e = np.zeros((2, self.grid + 1))
@@ -144,6 +141,10 @@ class energy_distribution_electron(dash_object):
 
     def __init__(self, energy):
         self.current_index = 0
+        if energy == 'potential':
+            self.col_name = 'c_peatom'
+        else:
+            self.col_name = 'c_keatom'
         self.energy = 'electron ' + energy
         self.graph_type = 'scatter'
         self.name = 'energy_distribution {:s}'.format(energy)

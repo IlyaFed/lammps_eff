@@ -1,1 +1,28 @@
- * Running on http://0.0.0.0:8051/ (Press CTRL+C to quit)
+INFO:root:load backup
+INFO:root:load backup
+INFO:root:read objects                   (./test_data/)   0 %
+INFO:root:read objects                   (./test_data/)  20 %
+INFO:root:read objects                   (./test_data/)  40 %
+INFO:root:read objects                   (./test_data/)  60 %
+INFO:root:read objects                   (./test_data/)  80 %
+INFO:root:read objects                   (./test_data/) 100 %
+INFO:root:backup has loaded
+INFO:werkzeug: * Running on http://0.0.0.0:8051/ (Press CTRL+C to quit)
+INFO:root:load backup
+INFO:root:read objects                   (./test_data/)   0 %
+INFO:root:read objects                   (./test_data/)  20 %
+INFO:root:read objects                   (./test_data/)  40 %
+INFO:root:read objects                   (./test_data/)  60 %
+INFO:root:read objects                   (./test_data/)  80 %
+INFO:root:read objects                   (./test_data/) 100 %
+INFO:root:backup has loaded
+INFO:werkzeug: * Running on http://0.0.0.0:8051/ (Press CTRL+C to quit)
+INFO:root:load backup
+INFO:root:read objects                   (./test_data/)   0 %
+INFO:root:read objects                   (./test_data/)  20 %
+INFO:root:read objects                   (./test_data/)  40 %
+INFO:root:read objects                   (./test_data/)  60 %
+INFO:root:read objects                   (./test_data/)  80 %
+INFO:root:read objects                   (./test_data/) 100 %
+INFO:root:backup has loaded
+INFO:werkzeug: * Running on http://0.0.0.0:8051/ (Press CTRL+C to quit)

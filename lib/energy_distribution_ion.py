@@ -16,8 +16,9 @@ class energy_distribution_ion(dash_object):
         for item in self.index_list:
             self.data[item] = pd.Series([np.zeros((2, self.grid + 1))]*self.data.shape[0])
 
-        if not col_name in parametrs.columns:
-            print ("error: no {:s} in data".format(col_name))
+        parametrs = self.data.loc[self.data.index[0], 'every']
+        if not self.col_name in parametrs.columns:
+            logging.warning ("no {:s} in data".format(self.col_name))
             return 
 
         for Step in self.data.index:
@@ -31,12 +32,7 @@ class energy_distribution_ion(dash_object):
         '''
         e_hartry = 27.2113845
 
-        if self.energy == 'potential':
-            col_name = 'c_peatom'
-        else:
-            col_name = 'c_keatom'
-
-        energy = parametrs[parametrs['type'] == 1.0][col_name].apply(lambda x: x*e_hartry)
+        energy = parametrs[parametrs['type'] == 1.0][self.col_name].apply(lambda x: x*e_hartry)
         e_max = energy.max()
         e_min = energy.min()
         e = np.zeros((2, self.grid + 1))
@@ -59,9 +55,7 @@ class energy_distribution_ion(dash_object):
             else:
                 for i in range(self.grid + 1):
                     theory[1][i] = theory[0][i] ** 0.5 * np.exp(- theory[0][i] / Temperature)
-                theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
-
-        #print ("theory ", theory)
+                theory[1] = theory[1] / s
         self.data.at[Step, self.energy] = e
         self.data.at[Step, 'ion_theory'] = theory
 
@@ -144,6 +138,10 @@ class energy_distribution_ion(dash_object):
 
     def __init__(self, energy):
         self.current_index = 0
+        if energy == 'potential':
+            self.col_name = 'c_peatom'
+        else:
+            self.col_name = 'c_keatom'
         self.energy = "ion " + energy
         self.graph_type = 'scatter'
         self.name = 'energy_distribution_{:s}'.format(energy)

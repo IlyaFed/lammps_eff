@@ -9,7 +9,8 @@ main: clean
 	python3 main.py
 
 silence:
-	python3 main.py > log.log 2>>log.log &
+	rm -f log.log
+	python3 main.py &
 
 clean:
 	rm -f ./test_data/.backup

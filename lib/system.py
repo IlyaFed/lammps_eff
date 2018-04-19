@@ -2,10 +2,9 @@ from lib.load import *
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import logging
 
 class system(load):
-
-    
 
     def set_app(self):
         self.app = dash.Dash()
@@ -65,6 +64,7 @@ class system(load):
         self.app.run_server(port = self.port, host = '0.0.0.0')
         
     def __init__(self, path, objects, server = 0, minstep = 0, port = 8050, custom_steps = []):
+        logging.basicConfig(filename="log.log", level=logging.INFO)
         super(system, self).__init__(objects, minstep=minstep, custom_steps = custom_steps, path = path)
         self.port = port
         load_flag = 0
@@ -79,19 +79,6 @@ class system(load):
             self.upload_backup(filename = path + "/.backup")
         else:
             self.load_backup(filename = backup_file)
-        '''
-        if load_flag == 0:
-            for object in self.objects:
-                load_flag += object.load(path=backup_path)
-            print ("load: {:40s}".format("checked"))
-
-        if load_flag:
-            self.load(path = path)
-            for object in self.objects:
-                object.save(path = backup_path)
-            print("save: {:40s}".format("success"))
-        else:
-            self.load_step(path=lammpstrj)
-        '''
+        
         self.server = server
         self.set_app()

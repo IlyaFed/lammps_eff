@@ -4,6 +4,7 @@ import os
 import glob # to recursive find files
 from subprocess import Popen, PIPE
 import pickle
+import logging
 
 min_timeperiod = 100 # 100 fs
 
@@ -13,7 +14,7 @@ class load:
         """
         Read lammpstrj file and apply function
         """
-        print ("{:30s} ({:s}) {:3d} %".format("read lammpstrj", self.path, 0), end = '\n')
+        logging.info ("{:30s} ({:s}) {:3d} %".format("read lammpstrj", self.path, 0))
         try:
             lammpstrj_path_tmp = glob.glob(self.path + '/**/**/all.0.lammpstrj', recursive=True)[0].split('/')[:-1]
         except IndexError:
@@ -58,7 +59,7 @@ class load:
                         break
                 buf_step = next_step
             if len(self.steps) < 2:
-                print ("Number of steps in load lammpstrj too small: {:d}, step of analysis: {:d}".format(len(self.steps), min_step))
+                logging.error ("Number of steps in load lammpstrj too small: {:d}, step of analysis: {:d}".format(len(self.steps), min_step))
                 exit()
         
             self.data = pd.DataFrame(columns=['every', 'wall'], index = self.steps)
@@ -70,7 +71,7 @@ class load:
         iteration_len = len(self.steps)
         for read_step in self.steps:
             if len(print_list) and ( 100.* iteration_number/iteration_len > print_list[0] ):
-                print ("{:30s} ({:s}) {:3d} %".format("read lammpstrj", self.path, print_list[0]), end = '\n')
+                logging.info("{:30s} ({:s}) {:3d} %".format("read lammpstrj", self.path, print_list[0]))
                 del ( print_list[0] )
             iteration_number += 1
             file_name = "all.{:d}.lammpstrj".format(read_step)
@@ -111,7 +112,7 @@ class load:
             self.data.at[read_step, 'every'] = step_pandas
             self.data.at[read_step, 'wall'] = wall
             
-        print ("{:30s} ({:s}) 100 %".format("read lammpstrj", self.path))
+        logging.info ("{:30s} ({:s}) 100 %".format("read lammpstrj", self.path))
         self.load_lammpstrj_flag = True
 
     def load_log(self):
@@ -120,11 +121,11 @@ class load:
         :param name: full name of you log
         :return: pandas of date
         """
-        print ("{:30s} ({:s}) {:3d} %".format("read log", self.path, 0), end = '\n')
+        logging.info ("{:30s} ({:s}) {:3d} %".format("read log", self.path, 0))
         try:
             name =  glob.glob(self.path + '/**/**/log.lammps', recursive=True)[0]
         except IndexError:
-            print ("error: must be log.lammps file")
+            logging.error ("error: must be log.lammps file")
             exit()
 
         if not self.load_lammpstrj_flag:
@@ -134,7 +135,7 @@ class load:
         try:
             line_in_file = int(str(p.stdout.read()).split("b'")[1].split(name)[0])
         except:
-            print ("error: get number of lines in file fall")
+            logging.debug ("error: get number of lines in file fall")
             line_in_file = 100
         read_flag = 0
         print_list = [30,60]
@@ -152,7 +153,7 @@ class load:
             if read_flag:
 
                 if len(print_list) and ( num_line/line_in_file * 100 > print_list[0] ):
-                    print ("{:30s} ({:s}) {:3d} %".format("read log", self.path, print_list[0]), end = '\n')
+                    logging.info ("{:30s} ({:s}) {:3d} %".format("read log", self.path, print_list[0]))
                     del ( print_list[0] )
                 try:
                     line_data = [float(i) for i in line.split()[1:]]
@@ -194,7 +195,7 @@ class load:
                 buf_step = next_step
 
             if len(self.steps) < 2:
-                print ("Number of steps in load log too small: {:d}, step of analysis: {:d}".format(len(self.steps), min_step))
+                logging.error ("Number of steps in load log too small: {:d}, step of analysis: {:d}".format(len(self.steps), min_step))
                 exit()
             # remove useless
 
@@ -209,7 +210,7 @@ class load:
 
         self.data['Press'] = self.data['Press'] / 1e9 # create GPa
 
-        print("\r{:30s} ({:s}) {:3d} %".format("read log",self.path,  100))
+        logging.info("{:30s} ({:s}) {:3d} %".format("read log",self.path,  100))
         del read_flag, columns
 
         self.load_log_flag = True
@@ -220,11 +221,11 @@ class load:
         :param name: full name of you log
         :return: pandas of date
         """
-        #print ( "read data ({:s}) 0 %".format(self.path), end = '\n')
+        #print ( "read data ({:s}) 0 %".format(self.path))
         try:
             name =  glob.glob(self.path + '/**/**/data.lammps', recursive=True)[0]
         except IndexError:
-            print ("error: must be data.lammps file, no timestep")
+            logging.error ("error: must be data.lammps file, no timestep")
             exit()
             
 
@@ -245,7 +246,7 @@ class load:
                 self.general_info['mass'][1] = float(line.split()[1])
                 break
             
-        print("read data ({:s}) success".format(self.path))
+        logging.info("read data ({:s}) success".format(self.path))
 
         self.load_data_flag = True
 
@@ -253,7 +254,7 @@ class load:
         try:
             filename =  glob.glob(self.path + '/**/**/description.txt', recursive=True)[0]
         except IndexError:
-            print ("warning: no description.txt file")
+            logging.warning ("warning: no description.txt file")
             self.general_info['title'] = self.path
             self.general_info['description'] = 'no description file'
             return
@@ -282,7 +283,7 @@ class load:
         self.load_objects()
 
     def load_objects(self):
-        print ("{:30s} ({:s}) {:3d} %".format("read objects", self.path, 0), end = '\n')
+        logging.info ("{:30s} ({:s}) {:3d} %".format("read objects", self.path, 0))
         new_flag = 0
         load_object_status = 0
         max_len = len(self.objects)
@@ -290,28 +291,28 @@ class load:
         for object in self.objects:
             load_object_status += 1
             if len(print_list) and ( load_object_status/max_len * 100 > print_list[0] ):
-                    print ("{:30s} ({:s}) {:3d} %".format("read objects", self.path, print_list[0]), end = '\n')
+                    logging.info ("{:30s} ({:s}) {:3d} %".format("read objects", self.path, print_list[0]))
                     del ( print_list[0] )
             new_flag += object.analyse(self.data, self.general_info)
-        print ("{:30s} ({:s}) {:3d} %".format("read objects", self.path, 100), end = '\n')
+        logging.info ("{:30s} ({:s}) {:3d} %".format("read objects", self.path, 100))
         return new_flag
         
     def upload_backup(self, filename):
         backup_data = {'data': self.data, 'general_info': self.general_info}
         with open(filename, 'wb') as f:
             pickle.dump(backup_data, f)
-        print ("backup success")
+        logging.info ("backup success")
 
     def load_backup(self, filename):
-        print ("load backup")
+        logging.info ("load backup")
         with open(filename, 'rb') as f:
             backup_data = pickle.load(f)
         self.data = backup_data['data']
         self.general_info = backup_data['general_info']
         if self.load_objects():
-            print ("create updated backup")
+            logging.info ("create updated backup")
             self.upload_backup(filename)
-        print ("backup has loaded")
+        logging.info ("backup has loaded")
 
     def __init__(self, objects, minstep, custom_steps, path):
         self.objects = objects
