@@ -1,0 +1,7 @@
+git.sh
+input.txt
+lib/__pycache__/
+lib/test_data/
+lib/grid_gauss.so
+lib/neighbour.so
+lib/rdf.so
