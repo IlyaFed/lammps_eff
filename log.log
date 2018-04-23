@@ -1,28 +1,29 @@
 INFO:root:load backup
-INFO:root:load backup
-INFO:root:read objects                   (./test_data/)   0 %
-INFO:root:read objects                   (./test_data/)  20 %
-INFO:root:read objects                   (./test_data/)  40 %
-INFO:root:read objects                   (./test_data/)  60 %
-INFO:root:read objects                   (./test_data/)  80 %
-INFO:root:read objects                   (./test_data/) 100 %
+INFO:root:read objects                   (test_data/)   0 %
+INFO:root:read objects                   (test_data/)  20 %
+INFO:root:read objects                   (test_data/)  40 %
+INFO:root:read objects                   (test_data/)  60 %
+INFO:root:read objects                   (test_data/)  80 %
+INFO:root:read objects                   (test_data/) 100 %
 INFO:root:backup has loaded
-INFO:werkzeug: * Running on http://0.0.0.0:8051/ (Press CTRL+C to quit)
-INFO:root:load backup
-INFO:root:read objects                   (./test_data/)   0 %
-INFO:root:read objects                   (./test_data/)  20 %
-INFO:root:read objects                   (./test_data/)  40 %
-INFO:root:read objects                   (./test_data/)  60 %
-INFO:root:read objects                   (./test_data/)  80 %
-INFO:root:read objects                   (./test_data/) 100 %
-INFO:root:backup has loaded
-INFO:werkzeug: * Running on http://0.0.0.0:8051/ (Press CTRL+C to quit)
-INFO:root:load backup
-INFO:root:read objects                   (./test_data/)   0 %
-INFO:root:read objects                   (./test_data/)  20 %
-INFO:root:read objects                   (./test_data/)  40 %
-INFO:root:read objects                   (./test_data/)  60 %
-INFO:root:read objects                   (./test_data/)  80 %
-INFO:root:read objects                   (./test_data/) 100 %
-INFO:root:backup has loaded
-INFO:werkzeug: * Running on http://0.0.0.0:8051/ (Press CTRL+C to quit)
+INFO:werkzeug: * Running on http://0.0.0.0:8050/ (Press CTRL+C to quit)
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:39:57] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:39:58] "GET /_dash-layout HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:39:58] "GET /_dash-dependencies HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:39:58] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:39:58] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:39:58] "GET /favicon.ico HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:40:00] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:40:00] "GET /favicon.ico HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:40:00] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:40:00] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:40:00] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:40:00] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:40:00] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:40:00] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:40:00] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:40:00] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:40:00] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:40:00] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:40:00] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [23/Apr/2018 23:40:00] "POST /_dash-update-component HTTP/1.1" 200 -

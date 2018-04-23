@@ -5,7 +5,8 @@ install:
 	g++ -shared -O3 -Wall -fPIC -o lib/neighbour.so lib/neighbour.c
 	g++ -shared -O3 -Wall -fPIC -o lib/rdf_c.so lib/rdf_c.c
 
-main: clean
+main:# clean
+	rm -f log.log
 	python3 main.py
 
 silence:

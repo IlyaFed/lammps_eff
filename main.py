@@ -8,6 +8,9 @@ from lib.energy import energy
 from lib.neighbour_distribution import neighbour_distribution
 from lib.pt_diagram import pt_diagram
 from lib.rdf import rdf
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
 
 import numpy as np
 from multiprocessing.dummy import Pool as ThreadPool
@@ -34,13 +37,11 @@ experimental_data = {
 }
 
 with open("input.txt", "r") as file:
-    path = [line.replace("\n","") for line in  file.readlines()]
+    paths = [line.replace("\n","") for line in  file.readlines()]
 
-port_item = 8051
-port = dict()
-for item in path:
-    port[item] = port_item
-    port_item += 1
+
+port = 8050
+system_objects = dict()
 
 def start_proc(path):
     objects = [coordinate_visualisation(),
@@ -52,19 +53,59 @@ def start_proc(path):
                energy(),
                neighbour_distribution(),
                rdf()]
-    global port
-    system(path = path, objects = objects, port = port[path])
+    global system_objects
+    system_objects[path] = system(path = path, objects = objects)
 
 
 
 # Make the Pool of workers
-pool = ThreadPool(len(path))
+pool = ThreadPool(len(paths))
 
 #ThreadPool Open the urls in their own threads
 # and return the results
-results = pool.map(start_proc, path)
+results = pool.map(start_proc, paths)
 
 #close the pool and wait for the work to finish
 pool.close()
 pool.join()
- #TODO logging
+ #TODO 
+ 
+app = dash.Dash()
+app.config.suppress_callback_exceptions = True
+app.layout = html.Div([
+    # represents the URL bar, doesn't render anything
+    dcc.Location(id='url', refresh=False),
+    # content will be rendered in this element
+    html.Div(id='page-content')]
+)
+
+layout_list = []
+layout_object = dict()
+for path in paths:
+    title = system_objects[path].get_title()
+    layout_object[path] = system_objects[path].get_layout()
+    system_objects[path].set_app(app)
+    layout_list.append( dcc.Link(title, href="/" + path) )
+    layout_list.append( html.Br())
+
+index_page = html.Div(layout_list)
+
+
+@app.callback(dash.dependencies.Output('page-content', 'children'),
+              [dash.dependencies.Input('url', 'pathname')])
+def display_page(pathname):
+    if not pathname:
+        return index_page
+    pathname_real = pathname[1:] # without '/'
+    if pathname_real in paths:
+        return system_objects[pathname_real].get_layout()
+    else:
+        return index_page
+
+app.css.append_css({
+    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
+})
+
+app.run_server(port = port, host = '0.0.0.0')
+
+

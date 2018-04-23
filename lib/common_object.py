@@ -84,6 +84,10 @@ class dash_object:
         '''
         Here we describe frontend of our object
         '''
+
+    def make_name_unique(self, unique_code):
+        self.name = unique_code + self.name
+    
     def __init__(self):
         self.data = pd.DataFrame()
         self.current_index = 0
