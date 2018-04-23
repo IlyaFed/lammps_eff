@@ -101,7 +101,7 @@ class system(load):
             self.load_backup(filename = backup_file)
 
         self.back_botton = 0
-        self.unique_code = path
+        self.unique_code = path.replace('/','')
         self.step_input = self.unique_code + 'Step-slider'
         self.value_input = self.unique_code + 'input_step'
         for object in self.objects:
