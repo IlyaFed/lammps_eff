@@ -118,6 +118,7 @@ class common_pt_diagram(dash_object):
 
     def __init__(self, experimental_data = dict()):
         dash_object.__init__(self)
+        self.info = []
         self.current_index = 0
         self.graph_type = 'scatter'
         self.name = 'Common PT diagramm'
