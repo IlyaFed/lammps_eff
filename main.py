@@ -16,7 +16,11 @@ import dash_core_components as dcc
 import dash_html_components as html
 from threading import Thread
 
+import dash_auth
 import numpy as np
+VALID_USERNAME_PASSWORD_PAIRS = [
+    ['hydrogen', 'hydrogen']
+]
 #from multiprocessing.dummy import Pool as ThreadPool
 
 
@@ -114,7 +118,11 @@ def update_pt_diagram():
         
 
 
-app = dash.Dash()
+app = dash.Dash('auth')
+auth = dash_auth.BasicAuth(
+    app,
+    VALID_USERNAME_PASSWORD_PAIRS
+)
 app.config.suppress_callback_exceptions = True
 
 app.layout = html.Div([
