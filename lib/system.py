@@ -120,7 +120,7 @@ class system(load, Thread):
         self.path = path
         self.load_flag = 0
         self.ready_flag = 0
-        self.general_info['title'] = path
+        self.general_info['title'] = path.replace("./","")
         self.back_botton = 1
         self.unique_code = path.replace('/','').replace('.','')
          
@@ -137,7 +137,7 @@ class system(load, Thread):
 
     def is_ready(self):
         return self.ready_flag
-        
+
     def run(self):
         # find backup path 
         try:
