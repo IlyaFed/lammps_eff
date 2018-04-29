@@ -3,8 +3,9 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import logging
+from threading import Thread
 
-class system(load):
+class system(load, Thread):
 
     def set_app(self, app):
         self.app = app
@@ -27,39 +28,51 @@ class system(load):
             object.add_app(app = self.app, step_input = self.step_input, value_input=self.value_input)
         
     def get_layout(self):
-        slider_step = self.data.index[1] - self.data.index[0]
-        slider = dcc.Slider(
+        
+
+        slider_step = 0
+        slider_min = 0
+        slider_max = 0
+        if self.ready_flag:
+            slider_step = self.data.index[1] - self.data.index[0]
+            slider_min = self.data.index[0]
+            slider_max = self.data.index[-1]
+            
+        slider_element = dcc.Slider(
             id=self.step_input,
-            min=self.data.index[0],
-            max=self.data.index[-1],
-            value=self.data.index[0],
+            min=slider_min,
+            max=slider_max,
+            value=slider_min,
             step= slider_step # int number of step
             #marks={str(Step): str(Step) for Step in range(self.start, self.stop, slider_step)}
         )
-        input = dcc.Input(
+
+        input_step_element = dcc.Input(
             id=self.value_input,
             placeholder='Step',
             type='value',
-            value=self.data.index[0]
+            value=slider_min
         )        
         children = []
         for object in self.objects:
-            children.append( object.get_html())
+            children.append( object.layout())
 
         self.title = self.general_info['title']
-        self.markdown = "data_file:\n{:s}\n".format(self.general_info['data_description']) 
-        self.markdown += "description_file:\n{:s}".format(self.general_info['description'])
+        self.markdown = ""
+        if self.ready_flag:
+            self.markdown += "data_file:\n{:s}\n".format(self.general_info['data_description']) 
+            self.markdown += "description_file:\n{:s}".format(self.general_info['description'])
 
         if self.back_botton:
             return html.Div([
+                html.Div(id=self.unique_code),
+                html.Br(),
+                dcc.Link('Go back to home', href='/'),
                 html.H1(self.title),
                 html.Div(dcc.Markdown(self.markdown)),
                 html.Div(className = 'row', children = children),
-                html.Div(children = slider),
-                html.Div(input),
-                html.Div(id='page-1-content'),
-                html.Br(),
-                dcc.Link('Go back to home', href='/')
+                html.Div(children = slider_element),
+                html.Div(input_step_element)
                 ]
                 # className = 'twelve columns'
                 )
@@ -68,14 +81,18 @@ class system(load):
                 html.H1(self.title),
                 html.Div(dcc.Markdown(self.markdown)),
                 html.Div(className = 'row', children = children),
-                html.Div(children = slider),
-                html.Div(input)
+                html.Div(children = slider_element),
+                html.Div(input_step_element)
                 ]
                 # className = 'twelve columns'
                 )
 
-    def run(self, port):
-        self.back_botton = 1
+    def run_on_port(self, port):
+        '''
+        Create page of this system in this port
+        '''
+        self.run()
+        self.back_botton = 0
         app = dash.Dash()
         app.layout = self.get_layout()
         self.set_app(app)
@@ -84,29 +101,58 @@ class system(load):
     def get_title(self):
         return self.general_info['title']
 
-    def __init__(self, path, objects, minstep = 0, custom_steps = []):
-        logging.basicConfig(filename="log.log", level=logging.INFO)
-        super(system, self).__init__(objects, minstep=minstep, custom_steps = custom_steps, path = path)
-        load_flag = 0
-        # find backup path 
-        try:
-            backup_file =  glob.glob(path + '/**/**/.backup', recursive=True)[0]
-        except IndexError:
-            load_flag = 1
+    # def load_everything(self, path):
+    #     class load_thread(Thread):
+    #         def __init__(self, path):
+    #             Thread.__init__(self)
+    #             self.path = path
+                
         
-        if load_flag:
-            self.load()
-            self.upload_backup(filename = path + "/.backup")
-        else:
-            self.load_backup(filename = backup_file)
+    #     my_thread = load_thread(path)
+    #     my_thread.start()
 
-        self.back_botton = 0
+
+    def __init__(self, path, objects, minstep = 0, custom_steps = []):
+        Thread.__init__(self)
+        logging.basicConfig(filename="log.log", level=logging.INFO)
+        load.__init__(self, objects, minstep=minstep, custom_steps = custom_steps, path = path)
+        #print ("data: ", self.data)
+        self.path = path
+        self.load_flag = 0
+        self.ready_flag = 0
+        self.general_info['title'] = path
+        self.back_botton = 1
         self.unique_code = path.replace('/','').replace('.','')
+         
         self.step_input = self.unique_code + 'Step-slider'
         self.value_input = self.unique_code + 'input_step'
         for object in self.objects:
             object.make_name_unique(self.unique_code)
+    
+    def info(self):
+        return {
+            'data': self.data,
+            'info': self.general_info
+        }
 
-
+    def is_ready(self):
+        return self.ready_flag
+        
+    def run(self):
+        # find backup path 
+        try:
+            self.backup_file =  glob.glob(self.path + '/**/**/.backup', recursive=True)[0]
+        except IndexError:
+            self.load_flag = 1
+        if self.load_flag:
+            logging.info("no backup file")
+        else:
+            logging.info("backup file exist")
+        if self.load_flag:
+            self.load()
+            self.upload_backup(filename = self.path + "/.backup")
+        else:
+            self.load_backup(filename = self.backup_file)
+        self.ready_flag = 1
 
         #self.run(8050)

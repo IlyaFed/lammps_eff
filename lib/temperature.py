@@ -143,11 +143,6 @@ class temperature(dash_object):
             'layout': layout
         }
 
-    def _internal_callback(self):
-        ''''
-        Here we explain all callback which caused bu internal parametrs changes
-        '''
-
     def get_html(self):
         '''
         Here we describe frontend of our object
@@ -161,6 +156,7 @@ class temperature(dash_object):
         return layout
 
     def __init__(self):
+        dash_object.__init__(self)
         self.current_index = 0
         self.graph_type = 'scatter'
         self.name = 'temperature'

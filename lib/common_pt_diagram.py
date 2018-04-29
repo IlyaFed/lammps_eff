@@ -3,10 +3,11 @@ from lib.common_object import *
 import numpy as np
 
 
-class pt_diagram(dash_object):
-    def analyse(self, data, gen_info):
-        self.data = data
-        self.gen_info = gen_info
+class common_pt_diagram(dash_object):
+    def analyse(self, info):
+        self.info = info
+        if len(self.info):
+            self.analysed_flag = 1
         '''
         Here we upload step data and put it into data structure
         '''
@@ -19,16 +20,15 @@ class pt_diagram(dash_object):
         '''
         traces = []
 
-        traces.append(go.Scatter(
-            x=self.data['Press'].values, # GPa
-            y=self.data['temp_ion'].values,
-            mode = 'markers',
-            name = 'Data'
-        ))
-
-        # create line in choosen step
-        max_T = max(self.data['temp_ion'].max(), self.data['temp_ion'].max())
-        min_T = min(self.data['temp_ion'].min(), self.data['temp_ion'].min())
+        for sys_info in self.info:
+            data = sys_info['data']
+            geninfo = sys_info['info']
+            traces.append(go.Scatter(
+                x=data['Press'].values, # GPa
+                y=data['temp_ion'].values,
+                mode = 'markers',
+                name = geninfo['title']
+            ))
 
 
         for item in list(self.experimental_data.keys()):
@@ -38,16 +38,7 @@ class pt_diagram(dash_object):
             mode = 'markers',
             name = item
             ))
-            max_T = max(max_T, max(self.experimental_data[item][0]))
-            min_T = max(min_T, min(self.experimental_data[item][0]))
-
-        press = self.data.loc[self.current_index, 'Press']
-        traces.append(go.Scatter(
-            x = np.linspace(press, press, 100),
-            y = np.linspace(min_T, max_T, 100),
-            name = 'current step'
-        ))
-
+          
         return traces
 
     def __get_trace(self):
@@ -85,20 +76,25 @@ class pt_diagram(dash_object):
             'layout': layout
         }
 
-    def callback(self, step_input, value_input):
+    def add_app(self, app, page):
+        '''
+        Here we add Dash visualisation for our data
+        '''
+        self.app = app
+        self.callback(page)
+
+    def callback(self, page):
         '''
         Here we explain reaction into external step change
         '''
         @self.app.callback(
             dash.dependencies.Output(self.name, 'figure'),
-            [dash.dependencies.Input(step_input, 'value'),
+            [dash.dependencies.Input(page, 'pathname'),
              dash.dependencies.Input(self.name+'yaxis_type', 'value')])
-        def update_figure(selected_Step, yaxis_type):
+        def update_figure(pathname, yaxis_type):
             #if selected_Step == 0:
             #    selected_Step = selected_Step_0
             self.yaxis_type = yaxis_type
-            if (int(selected_Step) in self.data.index):
-                self.current_index = int(selected_Step)
             return self._update_graph()
 
     def get_html(self):
@@ -116,7 +112,7 @@ class pt_diagram(dash_object):
             html.Div(dcc.Graph(
                 id=self.name,
             ))],
-            style = {'width': '48%', 'display': 'inline-block'}
+            style = {'width': '100%', 'display': 'inline-block'}
         )
         return layout
 
@@ -124,7 +120,7 @@ class pt_diagram(dash_object):
         dash_object.__init__(self)
         self.current_index = 0
         self.graph_type = 'scatter'
-        self.name = 'PT'
+        self.name = 'Common PT diagramm'
         self.experimental_data = experimental_data
         self.yaxis_type = 'log'
         self.load_flag = 0

@@ -293,7 +293,7 @@ class load:
             if len(print_list) and ( load_object_status/max_len * 100 > print_list[0] ):
                     logging.info ("{:30s} ({:s}) {:3d} %".format("read objects", self.path, print_list[0]))
                     del ( print_list[0] )
-            new_flag += object.analyse(self.data, self.general_info)
+            new_flag += object.set(self.data, self.general_info)
         logging.info ("{:30s} ({:s}) {:3d} %".format("read objects", self.path, 100))
         return new_flag
         

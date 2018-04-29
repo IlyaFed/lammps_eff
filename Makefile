@@ -15,3 +15,7 @@ silence:
 
 clean:
 	rm -f ./test_data/.backup
+
+test:
+	rm -f log.log
+	python3 test_system.py

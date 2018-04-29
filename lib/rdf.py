@@ -132,11 +132,7 @@ class rdf(dash_object):
             'data': traces,
             'layout': layout
         }
-
-    def _internal_callback(self):
-        '''
-        Here we explain all callback which caused bu internal parametrs changes
-        '''
+        
 
     def get_html(self):
         '''
@@ -152,6 +148,7 @@ class rdf(dash_object):
 
 
     def __init__(self):
+        dash_object.__init__(self)
         self.type = type
         self.index_list = ['rdf_el', 'rdf_ion', 'rdf_radius']
         self.current_index = 0

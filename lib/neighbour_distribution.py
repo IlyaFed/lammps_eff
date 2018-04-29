@@ -193,12 +193,7 @@ class neighbour_distribution(dash_object):
             'data': traces,
             'layout': layout
         }
-
-    def _internal_callback(self):
-        '''
-        Here we explain all callback which caused bu internal parametrs changes
-        '''
-
+          
     def get_html(self):
         '''
         Here we describe frontend of our object
@@ -213,6 +208,7 @@ class neighbour_distribution(dash_object):
 
 
     def __init__(self):
+        dash_object.__init__(self)
         self.type = type
         self.particle_types = ["e", "H+", "H", "H2+", "H2", "H3+", "H3", "other"]
         self.index_list = self.particle_types

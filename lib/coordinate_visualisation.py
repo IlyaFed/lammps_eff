@@ -296,13 +296,7 @@ class coordinate_visualisation(dash_object):
             'layout': layout
         }
 
-
-    def _internal_callback(self):
-        '''
-        Here we explain all callback which caused bu internal parametrs changes
-        '''
-
-    def _external_callback(self, step_input, value_input):
+    def callback(self, step_input, value_input):
         '''
         Here we explain reaction into external step change
         '''
@@ -319,7 +313,7 @@ class coordinate_visualisation(dash_object):
             if (int(selected_Step) in self.data.index):
                 self.current_index = int(selected_Step)
                 #self.wall = self.data[self.data['Step'] == int(selected_Step)]['wall'].values[0]
-            return self._update_graph()
+            return self._update_graph() # TODO if data are not loaded
 
     def get_html(self):
         '''
@@ -348,6 +342,7 @@ class coordinate_visualisation(dash_object):
         return layout
 
     def __init__(self):
+        dash_object.__init__(self)
         self.current_index = 0
         self.grid_N = 50
         self.mylib = ctypes.CDLL('lib/grid_gauss.so')

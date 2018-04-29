@@ -117,12 +117,6 @@ class energy_distribution_ion(dash_object):
             'layout': layout
         }
 
-    def _internal_callback(self):
-        '''
-        Here we explain all callback which caused bu internal parametrs changes
-        '''
-
-
 
     def get_html(self):
         '''
@@ -137,6 +131,7 @@ class energy_distribution_ion(dash_object):
         return layout
 
     def __init__(self, energy):
+        dash_object.__init__(self)
         self.current_index = 0
         if energy == 'potential':
             self.col_name = 'c_peatom'
