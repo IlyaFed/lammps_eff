@@ -64,12 +64,14 @@ class pt_diagram(dash_object):
             title = 'PT diagram',
             xaxis = dict(
                 showgrid = True,
+                range=[0,650],
                 zeroline = False,
                 showline = True,
                 title = 'Pressure, GPa'
             ),
             yaxis=dict(
                 type=self.yaxis_type,
+                range=[0,20000],
                 showgrid=True,
                 zeroline=False,
                 showline=True,
