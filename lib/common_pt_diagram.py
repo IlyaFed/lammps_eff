@@ -70,6 +70,9 @@ class common_pt_diagram(dash_object):
                 zeroline=False,
                 showline=True,
                 title='Temperature, K'
+            ),
+            hoverlabel=dict(
+                namelength=-1
             )
         )
 
