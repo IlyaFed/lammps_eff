@@ -29,7 +29,7 @@ class common_pt_diagram(dash_object):
             traces.append(go.Scatter(
                 x=data['Press'].values, # GPa
                 y=data['temp_ion'].values,
-                mode = 'lines+markers',
+                mode = 'markers',
                 name = geninfo['title']
             ))
 
