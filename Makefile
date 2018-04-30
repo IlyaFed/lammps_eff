@@ -19,3 +19,6 @@ clean:
 test:
 	rm -f log.log
 	python3 test_system.py
+
+show:
+	ps -lA | grep python3
