@@ -165,7 +165,6 @@ class system(load, Thread):
 
     def __init__(self, path, objects, minstep = 0, custom_steps = []):
         Thread.__init__(self)
-        logging.basicConfig(filename="log.log", level=logging.INFO)
         load.__init__(self, objects, minstep=minstep, custom_steps = custom_steps, path = path)
         #print ("data: ", self.data)
         self.path = path

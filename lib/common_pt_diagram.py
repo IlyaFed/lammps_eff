@@ -4,8 +4,11 @@ import numpy as np
 
 
 class common_pt_diagram(dash_object):
-    def analyse(self, info):
-        self.info = info
+    def analyse(self, system_objects):
+        self.info = []
+        for path in system_objects:
+            if system_objects[path].is_ready():
+                self.info.append(system_objects[path].info())
         if len(self.info):
             self.analysed_flag = 1
         '''
@@ -26,7 +29,7 @@ class common_pt_diagram(dash_object):
             traces.append(go.Scatter(
                 x=data['Press'].values, # GPa
                 y=data['temp_ion'].values,
-                mode = 'markers',
+                mode = 'lines+markers',
                 name = geninfo['title']
             ))
 
@@ -36,6 +39,10 @@ class common_pt_diagram(dash_object):
             x=self.experimental_data[item][1],
             y=self.experimental_data[item][0],
             mode = 'markers',
+            marker={
+                'symbol': "x",
+                'size': 10
+            },
             name = item
             ))
           
