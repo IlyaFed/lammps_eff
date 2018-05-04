@@ -47,15 +47,12 @@ class energy_distribution_ion(dash_object):
 
             theory = e.copy()
             Temperature = 2. / 3. * energy.mean()
-            if self.energy == 'potential':
+            if self.col_name == 'c_keatom':
                 for i in range(self.grid + 1):
-                    theory[1][i] = np.exp(- theory[0][i] / Temperature )
+                    theory[1][i] = theory[0][i] ** 0.5 * np.exp(- theory[0][i] / Temperature )
 
                 theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
-            else:
-                for i in range(self.grid + 1):
-                    theory[1][i] = theory[0][i] ** 0.5 * np.exp(- theory[0][i] / Temperature)
-                theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
+            
         self.data.at[Step, self.energy] = e
         self.data.at[Step, 'ion_theory'] = theory
 
@@ -72,13 +69,14 @@ class energy_distribution_ion(dash_object):
             name = self.energy,
             mode = 'line'
         ))
-        distribution = self.data.loc[self.current_index, 'ion_theory']
-        traces.append(go.Scatter(
-            x=distribution[0],
-            y=distribution[1],
-            name='Theory',
-            mode='line'
-        ))
+        if self.col_name == 'c_keatom':
+            distribution = self.data.loc[self.current_index, 'ion_theory']
+            traces.append(go.Scatter(
+                x=distribution[0],
+                y=distribution[1],
+                name='Theory',
+                mode='line'
+            ))
 
         return traces
 

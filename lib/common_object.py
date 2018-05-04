@@ -79,9 +79,19 @@ class dash_object:
         def update_figure(selected_Step):
             #if selected_Step == 0:
             #    selected_Step = selected_Step_0
+            # if not selected_Step:
+            #     for arg in arguments:
+            #         if arg:
+            #             selected_Step = arg["points"][0]["x"]
+            #             print (arg)
+            #             break
+
             if (int(selected_Step) in self.data.index):
                 self.current_index = int(selected_Step)
             return self.update_graph()
+
+    def get_name(self):
+        return self.name
 
     def add_app(self, app, step_input, value_input):
         '''

@@ -4,19 +4,27 @@ import dash_core_components as dcc
 import dash_html_components as html
 import logging
 from threading import Thread
-
+import json #TODO
 
 class system(load, Thread):
 
     def set_app(self, app):
         self.app = app
         
+        # get clickData input from objects
+        input_objects = []
+        for object in self.objects:
+            input_objects.append(dash.dependencies.Input(object.get_name(), 'clickData'))
 
         @self.app.callback(
             dash.dependencies.Output(self.step_input, 'value'),
-            [dash.dependencies.Input(self.value_input, 'value')]
+            [dash.dependencies.Input(self.value_input, 'value')] + input_objects
         )
-        def update_figure(selected_Step):
+        def update_figure(selected_Step, *arguments):
+            for item in arguments:
+                if item:
+                    selected_Step = item['points'][0]['x']
+                    break
             return selected_Step
 
         #description
@@ -49,6 +57,7 @@ class system(load, Thread):
         #     [dash.dependencies.Input(self.step_input, 'value')])
         # def update_figure_2(selected_Step):
         #     return selected_Step
+
 
         for object in self.objects:
             object.add_app(app = self.app, step_input = self.step_input, value_input=self.value_input)
