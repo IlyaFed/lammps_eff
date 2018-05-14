@@ -36,6 +36,7 @@ class dash_object:
         '''
 
     def update_graph(self):
+        # check that data available
         if self.analysed_flag:
             return self._update_graph()
         else:
@@ -137,6 +138,7 @@ class dash_object:
     def make_name_unique(self, unique_code):
         self.name = unique_code + self.name
     
+
     def __init__(self):
         self.analysed_flag = 0
         self.current_index = 0

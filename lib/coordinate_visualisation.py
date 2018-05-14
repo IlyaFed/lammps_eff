@@ -43,7 +43,20 @@ class coordinate_visualisation(dash_object):
             coord_ion[1][i] = our_param.loc[our_param.index[i], 'y']
             coord_ion[2][i] = our_param.loc[our_param.index[i], 'z']
 
-        self.data.at[Step, 'coord_ion'] = coord_ion
+        self.data.at[Step, 'coord_ions'] = coord_ion
+
+        #highlight_ion
+        our_param = parametrs[(parametrs['type'] == 1.0) & (parametrs['id'].isin(self.highlight_particles))]
+        n = our_param.shape[0]
+        coord_highlight_ion = np.zeros((3, n), dtype=float)
+        for i in range(n):
+            coord_highlight_ion[0][i] = our_param.loc[our_param.index[i], 'x']
+            coord_highlight_ion[1][i] = our_param.loc[our_param.index[i], 'y']
+            coord_highlight_ion[2][i] = our_param.loc[our_param.index[i], 'z']
+
+        self.data.at[Step, 'highlight_ions'] = coord_highlight_ion
+
+
         # read electron coordinates
         our_param = parametrs[parametrs['type'] == 2.0]
         n = our_param.shape[0]
@@ -55,7 +68,19 @@ class coordinate_visualisation(dash_object):
             coord_electron[3][i] = our_param.loc[our_param.index[i], 'c_1a[2]']
 
 
-        self.data.at[Step, 'coord_electron'] = coord_electron
+        self.data.at[Step, 'coord_electrons'] = coord_electron
+
+        #highlight_electron
+        our_param = parametrs[(parametrs['type'] == 2.0) & (parametrs['id'].isin(self.highlight_particles))]
+        n = our_param.shape[0]
+        coord_highlight_electron = np.zeros((3, n), dtype=float)
+        for i in range(n):
+            coord_highlight_electron[0][i] = our_param.loc[our_param.index[i], 'x']
+            coord_highlight_electron[1][i] = our_param.loc[our_param.index[i], 'y']
+            coord_highlight_electron[2][i] = our_param.loc[our_param.index[i], 'z']
+
+        self.data.at[Step, 'highlight_electrons'] = coord_highlight_electron
+
 
         self.mylib.grid_gauss.restype = ctypes.POINTER(ctypes.c_double)
         self.mylib.grid_gauss.argtypes = [ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double),
@@ -86,23 +111,22 @@ class coordinate_visualisation(dash_object):
         
         self.data.at[Step, 'surface'] = grid
 
-
     def __get_scatter_trace(self):
         '''
         Here we create scatter trace for graph
         :return:
         '''
         traces = []
-        ions = self.data.loc[self.current_index, 'coord_ion']
+        ions = self.data.loc[self.current_index, 'coord_ions']
         traces.append(go.Scatter3d(
             x = ions[0],
             y = ions[1],
             z = ions[2],
-            name = 'ions',
+            name = 'protons',
             mode = 'markers',
             marker = dict( size = 2)
         ))
-        electrons = self.data.loc[self.current_index, 'coord_electron']
+        electrons = self.data.loc[self.current_index, 'coord_electrons']
         traces.append(go.Scatter3d(
             x=electrons[0],
             y=electrons[1],
@@ -111,6 +135,27 @@ class coordinate_visualisation(dash_object):
             mode = 'markers',
             marker = dict( size = 3)
         ))
+
+        # if we should highlight some particles
+        highlight_ions = self.data.loc[self.current_index, 'highlight_ions']
+        traces.append(go.Scatter3d(
+            x = highlight_ions[0],
+            y = highlight_ions[1],
+            z = highlight_ions[2],
+            name = 'hightlight protons',
+            mode = 'markers',
+            marker = dict( size = 2)
+        ))
+        highlight_electrons = self.data.loc[self.current_index, 'highlight_electrons']
+        traces.append(go.Scatter3d(
+            x=highlight_electrons[0],
+            y=highlight_electrons[1],
+            z=highlight_electrons[2],
+            name='hightlight electrons',
+            mode = 'markers',
+            marker = dict( size = 3)
+        ))
+            
         return traces
 
     def __get_types_trace(self):
@@ -268,7 +313,6 @@ class coordinate_visualisation(dash_object):
         if self.graph_type == 'types':
             return self.__get_types_trace()
         
-
     def __get_layout(self):
         if self.graph_type == 'surface':
             layout = go.Layout(
@@ -341,8 +385,9 @@ class coordinate_visualisation(dash_object):
         )
         return layout
 
-    def __init__(self):
+    def __init__(self, highlight_particles=[]):
         dash_object.__init__(self)
+        self.highlight_particles = highlight_particles
         self.current_index = 0
         self.grid_N = 50
         self.mylib = ctypes.CDLL('lib/grid_gauss.so')
@@ -351,5 +396,5 @@ class coordinate_visualisation(dash_object):
         self.isovalue = 0.01
         self.isovalue_maxmin = [0, 0]
         self.wall = [20., 20., 20.]
-        self.index_list = ['coord_ion', 'coord_electron', 'coord_wall', 'surface']
+        self.index_list = ['coord_ions', 'coord_electrons', 'coord_wall', 'surface', 'highlight_ions', 'highlight_electrons']
 

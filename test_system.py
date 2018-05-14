@@ -1,6 +1,9 @@
 from lib.system import system
 from lib.coordinate_visualisation import coordinate_visualisation
 from lib.temperature import temperature
+from lib.temperature_h2 import temperature_h2
+from lib.energy_h2 import energy_h2
+from lib.distance_h2 import distance_h2
 from lib.pressure import pressure
 from lib.energy_distribution_ion import energy_distribution_ion
 from lib.energy_distribution_electron import energy_distribution_electron
@@ -63,12 +66,14 @@ port = 8051
 # start analysing results
 
 
-objects = [coordinate_visualisation(),
+objects = [coordinate_visualisation(highlight_particles=[233, 234,235,236]),
             pt_diagram(experimental_data),
+            temperature_h2(indexes_of_particle=[233, 234,235,236]),
+            energy_h2(type='potential', indexes_of_particle=[233, 234,235,236]),
+            energy_h2(type='full', indexes_of_particle=[233, 234,235,236]),
+            distance_h2(indexes_of_particle=[233, 234,235,236]),
             temperature(),
             pressure(),
-            energy_distribution_ion('potential'), energy_distribution_ion('kinetic'),
-            energy_distribution_electron('potential'), energy_distribution_electron('kinetic'),
             energy(),
             neighbour_distribution(),
             rdf()]

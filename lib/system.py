@@ -136,16 +136,55 @@ class system(load, Thread):
                 )
         else:
             return html.Div([
-                html.H1(self.title),
-                html.Div(dcc.Input(id=self.markdown_input, value=self.markdown, type='text')),
+                html.Div(id=self.unique_code),
+                html.H1(self.general_info['title']),
+                dcc.Textarea(
+                    id=self.data_description_input,
+                    title="Input data description",
+                    value=self.general_info['data_description'],
+                    style={
+                        'width': '100%',
+                        'height': '40pt'
+                        }
+                ),
+                dcc.Textarea(
+                    id=self.description_input,
+                    title="Description",
+                    value=self.general_info['description'],
+                    style={
+                        'width': '100%',
+                        'height': '100pt'
+                    }
+                ),
+                dcc.Textarea(
+                    id=self.title_input,
+                    title="Title",
+                    value=self.general_info['title'],
+                    style={
+                        'width': '100%',
+                        'height': '10pt'
+                        }
+                ),
+                html.Button('Save', id=self.button_input),
                 html.Div(id=self.markdown_input_return),
-                #html.Div(dcc.Markdown(self.markdown)),
                 html.Div(className = 'row', children = children),
                 html.Div(children = slider_element),
                 html.Div(input_step_element)
                 ]
                 # className = 'twelve columns'
                 )
+            
+            # html.Div([
+            #     html.H1(self.general_info['title']),
+            #     html.Div(dcc.Input(id=self.markdown_input, value=self.markdown, type='text')),
+            #     html.Div(id=self.markdown_input_return),
+            #     #html.Div(dcc.Markdown(self.markdown)),
+            #     html.Div(className = 'row', children = children),
+            #     html.Div(children = slider_element),
+            #     html.Div(input_step_element)
+            #     ]
+            #     # className = 'twelve columns'
+            #     )
 
     def run_on_port(self, port):
         '''
