@@ -1,7 +1,7 @@
 from lib.common_object import *
 import numpy as np
 
-class energy_distribution_electron(dash_object):
+class energy_distribution_electron_full(dash_object):
     def analyse(self, data, gen_info):
         self.data = data
         self.gen_info = gen_info
@@ -19,16 +19,18 @@ class energy_distribution_electron(dash_object):
 
 
         parametrs = self.data.loc[self.data.index[0], 'every']
-        if not self.col_name in parametrs.columns:
+        if (not 'c_keatom' in parametrs.columns) or (not 'c_peatom' in parametrs.columns):
             logging.warning ("no {:s} in data".format(self.col_name))
             return
-         
         for Step in self.data.index:
             self.load_step(Step)
         return 1
 
     def load_step(self, Step):
         parametrs = self.data.loc[Step, 'every']
+
+        parametrs['full_energy'] =  parametrs['c_keatom'] + parametrs['c_peatom']
+        self.col_name = 'full_energy'        
         '''
         Here we upload step data and put it into data structure
         '''
@@ -47,20 +49,9 @@ class energy_distribution_electron(dash_object):
                 e[1][int((x - e_min) / (e_max - e_min) * self.grid)] += 1
 
             energy.apply(f_e_dist)
-            theory = e.copy()
-            Temperature = 2. / 3. * energy.mean()
-            if self.energy == 'potential':
-                for i in range(self.grid + 1):
-                    theory[1][i] = np.exp(- theory[0][i] / Temperature )
-
-                theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
-            else:
-                for i in range(self.grid + 1):
-                    theory[1][i] = theory[0][i] ** 0.5 * np.exp(- theory[0][i] / Temperature)
-                theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
-        
+            
         self.data.at[Step, self.energy] = e
-        self.data.at[Step, 'electron_theory'] = theory
+        
 
     def __get_scatter_trace(self):
         '''
@@ -136,17 +127,14 @@ class energy_distribution_electron(dash_object):
                     )
         return layout
 
-    def __init__(self, energy):
+    def __init__(self):
         dash_object.__init__(self)
         self.current_index = 0
-        if energy == 'potential':
-            self.col_name = 'c_peatom'
-        else:
-            self.col_name = 'c_keatom'
+        energy = "full_energy"
         self.energy = 'electron ' + energy
         self.graph_type = 'scatter'
         self.name = 'energy_distribution {:s}'.format(self.energy)
         self.grid = 100
-        self.index_list = [self.energy, 'electron_theory']
+        self.index_list = [self.energy]
 
 

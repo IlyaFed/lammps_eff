@@ -5,12 +5,14 @@ from lib.temperature import temperature
 from lib.pressure import pressure
 from lib.energy_distribution_ion import energy_distribution_ion
 from lib.energy_distribution_electron import energy_distribution_electron
+from lib.energy_distribution_electron_full import energy_distribution_electron_full
 from lib.energy import energy
 from lib.neighbour_distribution import neighbour_distribution
 from lib.pt_diagram import pt_diagram
 from lib.rdf import rdf
 
 from lib.common_pt_diagram import common_pt_diagram
+from lib.common_neighbour_distribution import common_neighbour_distribtution
 
 import dash
 import dash_auth
@@ -21,6 +23,8 @@ VALID_USERNAME_PASSWORD_PAIRS = [
     ['hydrogen', 'hydrogen']
 ]
 PORT = 8050
+COMMON_PHRASE_FOR_NEIGHBOUR='rho0.6'
+
 import logging
 logging.basicConfig(filename="log.log", level=logging.INFO)
 
@@ -50,6 +54,7 @@ def run_systems(paths):
                     pressure(),
                     energy_distribution_ion('potential'), energy_distribution_ion('kinetic'),
                     energy_distribution_electron('potential'), energy_distribution_electron('kinetic'),
+                    energy_distribution_electron_full(),
                     energy(),
                     neighbour_distribution(),
                     rdf()]
@@ -69,11 +74,12 @@ def set_app():
     app.config.suppress_callback_exceptions = True # allow callback for non-existence id
     return app
 
-def get_main_layout(common_pt):
+def get_main_layout(common_pt, common_neighbour):
     return html.Div([
     # represents the URL bar, doesn't render anything
     html.H1("Hydrogen observation"),
     html.Div(common_pt.layout()),
+    html.Div(common_neighbour.layout()),
     dcc.Location(id='url', refresh=False),
     # content will be rendered in this element
     html.Div(id='page-content')]
@@ -107,13 +113,17 @@ if __name__ == "__main__":
     common_pt = common_pt_diagram(experimental_data)
     common_pt.analyse(system_objects)
     common_pt.add_app(app, page='url')
-    app.layout = get_main_layout(common_pt)
+    common_neighbour = common_neighbour_distribtution(COMMON_PHRASE_FOR_NEIGHBOUR)
+    common_neighbour.analyse(system_objects)
+    common_neighbour.add_app(app, page='url')
+    app.layout = get_main_layout(common_pt, common_neighbour)
     set_objects_app(app, system_objects)
     
     @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
     def display_page(pathname):
         common_pt.analyse(system_objects)
+        common_neighbour.analyse(system_objects)
         if not pathname:
             return html.Div(get_layout_list(system_objects))
         

@@ -20,5 +20,9 @@ test:
 	rm -f log.log
 	python3 test_system.py
 
+test_http:
+	rm -f log.log
+	python3 test_http.py
+
 show:
 	ps -lA | grep python3

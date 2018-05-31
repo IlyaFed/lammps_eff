@@ -137,7 +137,7 @@ class energy_distribution_ion(dash_object):
             self.col_name = 'c_keatom'
         self.energy = "ion " + energy
         self.graph_type = 'scatter'
-        self.name = 'energy_distribution_{:s}'.format(energy)
+        self.name = 'energy_distribution_{:s}'.format(self.energy)
         self.index_list = [self.energy, 'ion_theory']
         self.grid = 100
 

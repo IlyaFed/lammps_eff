@@ -5,8 +5,9 @@ import dash_html_components as html
 import logging
 from threading import Thread
 import json #TODO
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
-class system(load, Thread):
+class system(load, Thread, BaseHTTPRequestHandler):
 
     def set_app(self, app):
         self.app = app
@@ -200,17 +201,6 @@ class system(load, Thread):
     def get_title(self):
         return self.general_info['title']
 
-    # def load_everything(self, path):
-    #     class load_thread(Thread):
-    #         def __init__(self, path):
-    #             Thread.__init__(self)
-    #             self.path = path
-                
-        
-    #     my_thread = load_thread(path)
-    #     my_thread.start()
-
-
     def __init__(self, path, objects, minstep = 0, custom_steps = []):
         Thread.__init__(self)
         load.__init__(self, objects, minstep=minstep, custom_steps = custom_steps, path = path)
@@ -237,6 +227,36 @@ class system(load, Thread):
             'data': self.data,
             'info': self.general_info
         }
+
+    def run_http(self):
+        self.run()
+        data_x = ' '.join([str(i) for i in self.data['Press'].values])
+        data_y = ' '.join([str(i) for i in self.data['Temp'].values])
+        class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
+            
+            # GET
+            def do_GET(self):
+                    # Send response status code
+                    self.send_response(200)
+            
+                    # Send headers
+                    self.send_header('Content-type','text/html')
+                    self.end_headers()
+            
+                    # Send message back to client
+                    message = data_x + "||||" + data_y
+                    # Write content as utf-8 data
+                    self.wfile.write(bytes(message, "utf8"))
+                    return
+
+        print('starting server...')
+        
+        # Server settings
+        # Choose port 8080, for port 80, which is normally used for a http server, you need root access
+        server_address = ('127.0.0.1', 8081)
+        httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
+        print('running server...')
+        httpd.serve_forever()       
 
     def is_ready(self):
         return self.ready_flag
