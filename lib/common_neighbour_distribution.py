@@ -30,8 +30,8 @@ class common_neighbour_distribtution(dash_object):
             geninfo = sys_info['info']
             N = data.loc[data.index[0], 'every'].shape[0]
             traces.append(go.Scatter(
-                x=data['Press'].values, # GPa
-                y=data['H2'].values/N,
+                x=data['Press'].values[1:], # GPa
+                y=data['H2'].values[1:]/N, #[1:] - because first one is wrong
                 mode = 'line',
                 name = geninfo['title']
             ))
