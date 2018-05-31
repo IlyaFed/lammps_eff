@@ -11,7 +11,7 @@ main:# clean
 
 silence:
 	rm -f log.log
-	python3 main.py &
+	bash -c "exec -a lammps_eff python3 main.py &"
 
 clean:
 	rm -f ./test_data/.backup
@@ -25,4 +25,7 @@ test_http:
 	python3 test_http.py
 
 show:
-	ps -lA | grep python3
+	ps -ef | grep lammps_eff
+
+kill:
+	pkill -f lammps_eff
