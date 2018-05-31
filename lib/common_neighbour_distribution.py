@@ -49,6 +49,7 @@ class common_neighbour_distribtution(dash_object):
             showlegend = True,
             title = 'Common neighbour distribution for ' + self.common_phrase,
             xaxis = dict(
+                range=[0,400],
                 showgrid = True,
                 zeroline = False,
                 showline = True,
