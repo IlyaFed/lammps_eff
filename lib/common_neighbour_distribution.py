@@ -27,11 +27,11 @@ class common_neighbour_distribtution(dash_object):
 
         for sys_info in self.info:
             data = sys_info['data']
-            #print (data["H2"])
             geninfo = sys_info['info']
+            N = data.loc[data.index[0], 'every'].shape[0]
             traces.append(go.Scatter(
                 x=data['Press'].values, # GPa
-                y=data['H2'].values,
+                y=data['H2'].values/N,
                 mode = 'line',
                 name = geninfo['title']
             ))
@@ -60,7 +60,7 @@ class common_neighbour_distribtution(dash_object):
                 showgrid=True,
                 zeroline=False,
                 showline=True,
-                title='Number of H2 molecules'
+                title='Number of H2 molecules, %'
             ),
             hoverlabel=dict(
                 namelength=-1
