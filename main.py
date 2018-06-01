@@ -23,7 +23,7 @@ VALID_USERNAME_PASSWORD_PAIRS = [
     ['hydrogen', 'hydrogen']
 ]
 PORT = 8050
-COMMON_PHRASE_FOR_NEIGHBOUR=''#rho0.6'
+COMMON_PHRASE_FOR_NEIGHBOUR='rho0.6'
 
 import logging
 logging.basicConfig(filename="log.log", level=logging.INFO)
@@ -62,7 +62,7 @@ def run_systems(paths):
         system_objects[path] = system(path = path, objects = objects)
         system_objects[path].start()
     return system_objects
- 
+
 
 def set_app():
     global VALID_USERNAME_PASSWORD_PAIRS
@@ -100,7 +100,7 @@ def get_layout_list(system_objects):
         #if not path in system_objects:
         #    continue # this work is not finished, should wait
         title = system_objects[path].get_title()
-        
+
         layout_list.append( dcc.Link(title, href="/" + path) )
         layout_list.append( html.Br())
     return layout_list
@@ -118,7 +118,7 @@ if __name__ == "__main__":
     common_neighbour.add_app(app, page='url')
     app.layout = get_main_layout(common_pt, common_neighbour)
     set_objects_app(app, system_objects)
-    
+
     @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
     def display_page(pathname):
@@ -126,7 +126,7 @@ if __name__ == "__main__":
         common_neighbour.analyse(system_objects)
         if not pathname:
             return html.Div(get_layout_list(system_objects))
-        
+
         pathname_real = pathname[1:] # remove '/'
         if pathname_real in system_objects:
             return system_objects[pathname_real].get_layout()
