@@ -23,7 +23,7 @@ VALID_USERNAME_PASSWORD_PAIRS = [
     ['hydrogen', 'hydrogen']
 ]
 PORT = 8050
-COMMON_PHRASE_FOR_NEIGHBOUR='rho0.6'
+COMMON_PHRASE_FOR_NEIGHBOUR=''#rho0.6'
 
 import logging
 logging.basicConfig(filename="log.log", level=logging.INFO)

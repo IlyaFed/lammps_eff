@@ -39,6 +39,7 @@ class energy_distribution_electron(dash_object):
         e_max = energy.max()
         e_min = energy.min()
         e = np.zeros((2, self.grid + 1))
+        theory = e.copy()
         if e_max != e_min:
             for i in range(self.grid + 1):
                 e[0][i] = e_min + (e_max - e_min) / self.grid * i

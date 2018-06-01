@@ -36,6 +36,7 @@ class energy_distribution_ion(dash_object):
         e_max = energy.max()
         e_min = energy.min()
         e = np.zeros((2, self.grid + 1))
+        theory = e.copy()
         if e_max != e_min:
             for i in range(self.grid + 1):
                 e[0][i] = e_min + (e_max - e_min) / self.grid * i
@@ -53,8 +54,9 @@ class energy_distribution_ion(dash_object):
 
                 theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
             
-        self.data.at[Step, self.energy] = e
         self.data.at[Step, 'ion_theory'] = theory
+            
+        self.data.at[Step, self.energy] = e
 
     def __get_scatter_trace(self):
         '''
