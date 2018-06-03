@@ -11,7 +11,7 @@ main:# clean
 
 silence:
 	rm -f log.log
-	bash -c "exec -a lammps_eff python3 main.py &"
+	bash -c "exec -a lammps_eff python3 main.py 2> error.log &"
 
 clean:
 	rm -f ./test_data/.backup
