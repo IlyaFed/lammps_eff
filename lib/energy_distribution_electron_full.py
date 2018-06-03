@@ -19,9 +19,11 @@ class energy_distribution_electron_full(dash_object):
 
 
         parametrs = self.data.loc[self.data.index[0], 'every']
-        if (not 'c_keatom' in parametrs.columns) or (not 'c_peatom' in parametrs.columns):
+        
+        if not self.col_name in parametrs.columns:
             logging.warning ("no {:s} in data".format(self.col_name))
             return
+
 
          
         
