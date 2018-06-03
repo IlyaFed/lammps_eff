@@ -51,6 +51,7 @@ class rdf(dash_object):
         self.data['rdf_el'] = pd.Series([np.zeros(self.grid, dtype=float)]*self.data.shape[0])
         self.data['rdf_ion'] = pd.Series([np.zeros(self.grid, dtype=float)]*self.data.shape[0])
         self.data['rdf_radius'] = pd.Series([np.zeros(self.grid, dtype=float)]*self.data.shape[0])
+         
         for Step in self.data.index:
             self.load_step(Step)
         

@@ -16,7 +16,7 @@ class temperature(dash_object):
                 load_flag = 0
         if load_flag:
             return 0
-
+ 
         for Step in self.data.index:
             self.load_step(Step)
         return 1

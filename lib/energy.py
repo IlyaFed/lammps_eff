@@ -13,8 +13,10 @@ class energy(dash_object):
             if not item in self.data.columns:
                 load_flag = 0
 
+         
         if load_flag:
             return 0
+
         for Step in self.data.index:
             self.load_step(Step)
         return 1

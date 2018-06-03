@@ -22,6 +22,9 @@ class energy_distribution_electron_full(dash_object):
         if (not 'c_keatom' in parametrs.columns) or (not 'c_peatom' in parametrs.columns):
             logging.warning ("no {:s} in data".format(self.col_name))
             return
+
+         
+        
         for Step in self.data.index:
             self.load_step(Step)
         return 1

@@ -21,7 +21,7 @@ class coordinate_visualisation(dash_object):
             return 0
         for item in self.index_list:
             self.data[item] = pd.Series([np.zeros((4,n), dtype=float)]*self.data.shape[0])
-
+ 
         for Step in self.data.index:
             self.load_step(Step)
         return 1

@@ -8,6 +8,8 @@ import logging
 
 min_timeperiod = 100 # 100 fs
 
+#TODO insert path name into warning
+
 class load:
 
     def load_lammpstrj(self):

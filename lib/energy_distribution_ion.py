@@ -21,6 +21,7 @@ class energy_distribution_ion(dash_object):
             logging.warning ("no {:s} in data".format(self.col_name))
             return 
 
+         
         for Step in self.data.index:
             self.load_step(Step)
         return 1
@@ -53,6 +54,12 @@ class energy_distribution_ion(dash_object):
                     theory[1][i] = theory[0][i] ** 0.5 * np.exp(- theory[0][i] / Temperature )
 
                 theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
+            else:
+                for i in range(self.grid + 1):
+                    theory[1][i] = np.exp(- theory[0][i] / Temperature )
+
+                theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
+            
             
         self.data.at[Step, 'ion_theory'] = theory
             

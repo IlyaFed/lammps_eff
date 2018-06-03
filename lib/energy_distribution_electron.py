@@ -23,6 +23,7 @@ class energy_distribution_electron(dash_object):
             logging.warning ("no {:s} in data".format(self.col_name))
             return
          
+        
         for Step in self.data.index:
             self.load_step(Step)
         return 1
@@ -50,7 +51,7 @@ class energy_distribution_electron(dash_object):
             energy.apply(f_e_dist)
             theory = e.copy()
             Temperature = 2. / 3. * energy.mean()
-            if self.energy == 'potential':
+            if self.col_name == 'c_peatom':
                 for i in range(self.grid + 1):
                     theory[1][i] = np.exp(- theory[0][i] / Temperature )
 
@@ -58,6 +59,7 @@ class energy_distribution_electron(dash_object):
             else:
                 for i in range(self.grid + 1):
                     theory[1][i] = theory[0][i] ** 0.5 * np.exp(- theory[0][i] / Temperature)
+                
                 theory[1] = theory[1] / sum(theory[1]) * sum(e[1])
         
         self.data.at[Step, self.energy] = e

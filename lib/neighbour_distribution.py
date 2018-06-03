@@ -95,7 +95,7 @@ class neighbour_distribution(dash_object):
         self.gen_info['particles_types'] = {1: 'e', 2: 'H', 3: 'H+', 4: 'H2+', 5: 'H2', 6: 'H3+', 7: 'H3', 0: 'other'}
         
         self.data['coord_neighboard'] = pd.Series([np.zeros((4,n), dtype=float)]*self.data.shape[0])
-
+ 
         for Step in self.data.index:
             self.load_step(Step)
         

@@ -17,6 +17,7 @@ class energy_h2(dash_object):
         if load_flag:
             return 0
 
+         
         for Step in self.data.index:
             self.load_step(Step)
         return 1
