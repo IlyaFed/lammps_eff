@@ -320,7 +320,7 @@ class load:
         self.objects = objects
         self.minstep = minstep
         self.path = path
-        self.general_info = {'mass': [0,0], 'timestep': 1.0, 'data_description': 'not loaded', 'description': 'not loaded'}
+        self.general_info = {'mass': [0,0], 'timestep': 1.0, 'data_description': 'not loaded', 'description': 'not loaded', 'path': path}
         self.load_log_flag = False
         self.load_lammpstrj_flag = False
 

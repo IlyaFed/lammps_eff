@@ -26,6 +26,8 @@ class common_pt_diagram(dash_object):
         for sys_info in self.info:
             data = sys_info['data']
             geninfo = sys_info['info']
+            if not self.filtrer in geninfo['title']: #filtrered for rho TODO
+                continue
             traces.append(go.Scatter(
                 x=data['Press'].values, # GPa
                 y=data['temp_ion'].values,
@@ -102,8 +104,12 @@ class common_pt_diagram(dash_object):
         @self.app.callback(
             dash.dependencies.Output(self.name, 'figure'),
             [dash.dependencies.Input(page, 'pathname'),
-             dash.dependencies.Input(self.name+'yaxis_type', 'value')])
-        def update_figure(pathname, yaxis_type):
+             dash.dependencies.Input(self.name+'yaxis_type', 'value'),
+             dash.dependencies.Input('common_pt_filtrer_button', 'n_clicks')],
+            [dash.dependencies.State('common_pt_filtrer', 'value')])
+        def update_figure(pathname, yaxis_type, n_clicks, filtrer):
+            if n_clicks:
+                self.filtrer = filtrer
             #if selected_Step == 0:
             #    selected_Step = selected_Step_0
             self.yaxis_type = yaxis_type
@@ -114,6 +120,8 @@ class common_pt_diagram(dash_object):
         Here we describe frontend of our object
         '''
         layout = html.Div([
+            dcc.Input(id='common_pt_filtrer', type='Filtrer (;)', value=self.filtrer),
+            html.Button(id='common_pt_filtrer_button', n_clicks=0, children='Filtrer'),
             html.Div(
                 dcc.RadioItems(
                     id=self.name + 'yaxis_type',
@@ -123,7 +131,8 @@ class common_pt_diagram(dash_object):
                 )),
             html.Div(dcc.Graph(
                 id=self.name,
-            ))],
+            ))
+            ],
             style = {'width': '100%', 'display': 'inline-block'}
         )
         return layout
@@ -134,6 +143,7 @@ class common_pt_diagram(dash_object):
         self.current_index = 0
         self.graph_type = 'scatter'
         self.name = 'Common PT diagramm'
+        self.filtrer = ''
         self.experimental_data = experimental_data
         self.yaxis_type = 'log'
         self.load_flag = 0

@@ -7,8 +7,6 @@ class common_neighbour_distribtution(dash_object):
     def analyse(self, system_objects):
         self.info = []
         for path in system_objects:
-            if not self.common_phrase in path: #filtered for rho TODO
-                continue
             if system_objects[path].is_ready():
                 self.info.append(system_objects[path].info())
         if len(self.info):
@@ -28,6 +26,8 @@ class common_neighbour_distribtution(dash_object):
         for sys_info in self.info:
             data = sys_info['data']
             geninfo = sys_info['info']
+            if not self.filtrer in geninfo['title']: #filtrered for rho TODO
+                continue
             N = data.loc[data.index[0], 'every'].shape[0]
             traces.append(go.Scatter(
                 x=data['Press'].values[1:], # GPa
@@ -47,7 +47,7 @@ class common_neighbour_distribtution(dash_object):
     def __get_layout(self):
         return go.Layout(
             showlegend = True,
-            title = 'Common neighbour distribution for ' + self.common_phrase,
+            title = 'Common neighbour distribution for ' + self.filtrer,
             xaxis = dict(
                 showgrid = True,
                 zeroline = False,
@@ -91,8 +91,12 @@ class common_neighbour_distribtution(dash_object):
         '''
         @self.app.callback(
             dash.dependencies.Output(self.name, 'figure'),
-            [dash.dependencies.Input(page, 'pathname')])
-        def update_figure(pathname):
+            [dash.dependencies.Input(page, 'pathname'),
+             dash.dependencies.Input('common_neighbour_filtrer_button', 'n_clicks')],
+            [dash.dependencies.State('common_neighbour_filtrer', 'value')])
+        def update_figure(pathname, n_clicks, filtrer):
+            if n_clicks:
+                self.filtrer = filtrer
             return self._update_graph()
 
     def get_html(self):
@@ -100,6 +104,8 @@ class common_neighbour_distribtution(dash_object):
         Here we describe frontend of our object
         '''
         layout = html.Div([
+            dcc.Input(id='common_neighbour_filtrer', type='Filtrer (;)', value=self.filtrer),
+            html.Button(id='common_neighbour_filtrer_button', n_clicks=0, children='Filtrer'),
             html.Div(dcc.Graph(
                 id=self.name,
             ))],
@@ -107,10 +113,10 @@ class common_neighbour_distribtution(dash_object):
         )
         return layout
 
-    def __init__(self, common_phrase=''):
+    def __init__(self, filtrer=''):
         dash_object.__init__(self)
         self.info = []
-        self.common_phrase = common_phrase
+        self.filtrer = filtrer
         self.current_index = 0
         self.graph_type = 'scatter'
         self.name = 'Common Neighbour distribution'
