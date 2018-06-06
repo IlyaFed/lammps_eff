@@ -26,7 +26,11 @@ class common_pt_diagram(dash_object):
         for sys_info in self.info:
             data = sys_info['data']
             geninfo = sys_info['info']
-            if not self.filtrer in geninfo['title']: #filtrered for rho TODO
+            filtrer_flag = 0
+            for filtrer in self.filtrer.split(';'):
+                if filtrer in geninfo['title']: #filtrered for rho TODO
+                    filtrer_flag += 1
+            if filtrer_flag == 0:
                 continue
             traces.append(go.Scatter(
                 x=data['Press'].values, # GPa
