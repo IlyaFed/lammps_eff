@@ -6,7 +6,7 @@ import numpy as np
 class common_pt_diagram(dash_object):
     def analyse(self, system_objects):
         self.info = []
-        for path in system_objects:
+        for path in system_objects['paths']:
             if system_objects[path].is_ready():
                 self.info.append(system_objects[path].info())
         if len(self.info):

@@ -23,7 +23,7 @@ VALID_USERNAME_PASSWORD_PAIRS = [
     ['hydrogen', 'hydrogen']
 ]
 PORT = 8050
-COMMON_PHRASE_FOR_NEIGHBOUR='rho0.6'
+COMMON_PHRASE_FOR_NEIGHBOUR='rho0.6;rho=0.6'
 
 import logging
 logging.basicConfig(filename="log.log", level=logging.INFO)
@@ -47,6 +47,7 @@ def run_systems(paths):
     '''
     global experimental_data
     system_objects = dict()
+    system_objects['paths'] = paths
     for path in paths:
         objects = [coordinate_visualisation(),
                     pt_diagram(experimental_data),
@@ -87,7 +88,7 @@ def get_main_layout(common_pt, common_neighbour):
 
 
 def set_objects_app(app, system_objects):
-    for path in system_objects:
+    for path in system_objects['paths']:
         system_objects[path].set_app(app)
 
 def get_layout_list(system_objects):
@@ -96,7 +97,7 @@ def get_layout_list(system_objects):
     return: layout list of title html-structure
     '''
     layout_list = []
-    for path in system_objects:
+    for path in system_objects['paths']:
         #if not path in system_objects:
         #    continue # this work is not finished, should wait
         title = system_objects[path].get_title()
@@ -128,7 +129,7 @@ if __name__ == "__main__":
             return html.Div(get_layout_list(system_objects))
 
         pathname_real = pathname[1:] # remove '/'
-        if pathname_real in system_objects:
+        if pathname_real in system_objects['paths']:
             return system_objects[pathname_real].get_layout()
         else:
             return html.Div(get_layout_list(system_objects))
