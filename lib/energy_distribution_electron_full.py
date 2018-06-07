@@ -68,15 +68,6 @@ class energy_distribution_electron_full(dash_object):
             mode = 'line'
         ))
 
-        if self.col_name == 'c_keatom':
-            distribution = self.data.loc[self.current_index, 'electron_theory']
-            traces.append(go.Scatter(
-                x=distribution[0],
-                y=distribution[1],
-                name='Theory',
-                mode='line'
-            ))
-
         return traces
 
     def __get_trace(self):
