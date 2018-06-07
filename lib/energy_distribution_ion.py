@@ -15,12 +15,6 @@ class energy_distribution_ion(dash_object):
 
         for item in self.index_list:
             self.data[item] = pd.Series([np.zeros((2, self.grid + 1))]*self.data.shape[0])
-
-        parametrs = self.data.loc[self.data.index[0], 'every']
-        if not self.col_name in parametrs.columns:
-            logging.warning ("no {:s} in data".format(self.col_name))
-            return 
-
          
         for Step in self.data.index:
             self.load_step(Step)
@@ -28,6 +22,8 @@ class energy_distribution_ion(dash_object):
 
     def load_step(self, Step):
         parametrs = self.data.loc[Step, 'every']
+         if not self.col_name in parametrs.columns:
+            return 
         '''
         Here we upload step data and put it into data structure
         '''

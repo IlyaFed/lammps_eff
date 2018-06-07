@@ -120,7 +120,7 @@ class common_neighbour_distribtution(dash_object):
             dcc.Dropdown(id='common_neighbour_dropdown',
                 options=[{'label': name, 'value': name} for name in self.particle_types],
                 multi=True,
-                value='H2'
+                value=self.particle
             ),
             html.Div(dcc.Graph(
                 id=self.name,

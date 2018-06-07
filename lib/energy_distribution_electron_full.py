@@ -18,14 +18,6 @@ class energy_distribution_electron_full(dash_object):
             self.data[item] = pd.Series([np.zeros((2, self.grid + 1))]*self.data.shape[0])
 
 
-        parametrs = self.data.loc[self.data.index[0], 'every']
-        if not 'c_peatom' in parametrs.columns:
-            logging.warning ("no {:s} in data".format('c_peatom'))
-            return
-        if not 'c_keatom' in parametrs.columns:
-            logging.warning ("no {:s} in data".format('c_keatom'))
-            return
-    
         
         for Step in self.data.index:
             self.load_step(Step)
@@ -33,6 +25,10 @@ class energy_distribution_electron_full(dash_object):
 
     def load_step(self, Step):
         parametrs = self.data.loc[Step, 'every']
+        if not 'c_peatom' in parametrs.columns:
+            return
+        if not 'c_keatom' in parametrs.columns:
+            return
 
         parametrs['full_energy'] =  parametrs['c_keatom'] + parametrs['c_peatom']
         self.col_name = 'full_energy'        
