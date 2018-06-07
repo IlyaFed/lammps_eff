@@ -19,9 +19,10 @@ import dash_auth
 import dash_core_components as dcc
 import dash_html_components as html
 
+#import markdown
 VALID_USERNAME_PASSWORD_PAIRS = [
     ['hydrogen', 'hydrogen']
-]
+    ]
 PORT = 8050
 COMMON_PHRASE_FOR_NEIGHBOUR='rho0.6;rho=0.6'
 
@@ -33,11 +34,17 @@ experimental_data = {
     'Loubeyre': [[2000, 3000, 350, 350], [110, 50, 40, 25]],
     'Ohta': [[1750, 2200], [105, 85]],
     'Silvera': [[1100, 1300, 1400, 1600, 1750], [160, 150, 140, 120, 110]]
-}
+    }
 
 def read_paths(filename):
     with open(filename, "r") as file:
         paths = [line.replace("\n","") for line in  file.readlines()]
+    for i in range(len(paths)):
+        if paths[i][0] == '/':
+            paths[i] = paths[i][1:]
+        if paths[i][-1] == '/':
+            paths[i] = paths[i][:-1]
+
     return paths
 
 def run_systems(paths):
@@ -64,7 +71,6 @@ def run_systems(paths):
         system_objects[path].start()
     return system_objects
 
-
 def set_app():
     global VALID_USERNAME_PASSWORD_PAIRS
     app = dash.Dash('auth')
@@ -86,24 +92,66 @@ def get_main_layout(common_pt, common_neighbour):
     html.Div(id='page-content')]
     )
 
-
 def set_objects_app(app, system_objects):
     for path in system_objects['paths']:
         system_objects[path].set_app(app)
+
+def add_items_in_dict(my_dict, items, my_object):
+    if len(items) == 1:
+        my_dict[items[0]] = my_object
+        return
+    if items[0] in my_dict:
+        add_items_in_dict(my_dict[items[0]], items[1:], my_object)
+        return
+    my_dict[items[0]] = dict()
+    add_items_in_dict( my_dict[items[0]], items[1:], my_object)
+
+    return
+
+def add_items_to_string(system_object, layout_list, items, tabs):
+    if not type(items) is dict:
+        #print ("items", items)
+        layout_list.append(dcc.Markdown("**" + tabs + ">**[" + items.get_title() + "](/" + items.get_path() + ")"))
+        #layout_list.append( html.Br())
+        
+        return #layout_list
+    for item in items:
+        if type(items[item]) is dict:
+            layout_list.append(dcc.Markdown("**" + tabs + item + "**"))
+            add_items_to_string(system_object, layout_list, items[item], tabs + "|---")
+        else:
+            add_items_to_string(system_object, layout_list, items[item], tabs)
+    
+    return 
 
 def get_layout_list(system_objects):
     '''
     Get and update list of titles
     return: layout list of title html-structure
     '''
-    layout_list = []
+    layout_list =[]
+    layout_dict = dict()
     for path in system_objects['paths']:
+        our_path = path.split("/")
+        #print (our_path)
+        add_items_in_dict( layout_dict, our_path, system_objects[path])
         #if not path in system_objects:
         #    continue # this work is not finished, should wait
-        title = system_objects[path].get_title()
+        #title = system_objects[path].get_title()
 
-        layout_list.append( dcc.Link(title, href="/" + path) )
-        layout_list.append( html.Br())
+        #layout_list.append( dcc.Link(title, href="/" + path) )
+        #layout_list.append( html.Br())
+    #new_layout = []
+    add_items_to_string(system_objects, layout_list, layout_dict, "")
+    layout_list.append(html.Div("--------------------------------------------------------------",
+        style={'color': 'black', 'fontSize': 18}))
+    layout_list.append(html.Div("--------------------------------------------------------------",
+        style={'color': 'black', 'fontSize': 18}))
+    layout_list.append(html.Div("Data was obtained using Open Source LAMMPS packet.",
+        style={'color': 'grey', 'fontSize': 12}))
+    layout_list.append(html.Div("If you have any question, e-mail: ilya.d.fedorov@phystech.edu", 
+        style={'color': 'grey', 'fontSize': 12}))
+
     return layout_list
 
 if __name__ == "__main__":

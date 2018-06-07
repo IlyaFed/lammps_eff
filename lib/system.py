@@ -200,6 +200,9 @@ class system(load, Thread, BaseHTTPRequestHandler):
     def get_title(self):
         return self.general_info['title']
 
+    def get_path(self):
+        return self.path
+
     def __init__(self, path, objects, minstep = 0, custom_steps = []):
         Thread.__init__(self)
         load.__init__(self, objects, minstep=minstep, custom_steps = custom_steps, path = path)
