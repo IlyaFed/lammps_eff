@@ -22,7 +22,7 @@ class energy_distribution_ion(dash_object):
 
     def load_step(self, Step):
         parametrs = self.data.loc[Step, 'every']
-         if not self.col_name in parametrs.columns:
+        if not self.col_name in parametrs.columns:
             return 
         '''
         Here we upload step data and put it into data structure
