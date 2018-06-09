@@ -124,8 +124,8 @@ class common_pt_diagram(dash_object):
         Here we describe frontend of our object
         '''
         layout = html.Div([
-            dcc.Input(id='common_pt_filtrer', type='Filtrer (;)', value=self.filtrer),
-            html.Button(id='common_pt_filtrer_button', n_clicks=0, children='Filtrer'),
+            dcc.Input(id='common_pt_filtrer', type='Filtrer (;)', value=self.filtrer, style={'width': '90%', 'height': '20pt'}),
+            html.Button(id='common_pt_filtrer_button', n_clicks=0, children='Filtrer', style={'width': '9%'}),
             html.Div(
                 dcc.RadioItems(
                     id=self.name + 'yaxis_type',
