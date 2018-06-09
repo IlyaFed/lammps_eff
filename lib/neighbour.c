@@ -16,10 +16,10 @@ double get_r(double x, double y, double z, double x_g, double y_g, double z_g, d
 }
 
 int* neighbour_list( double* x, double* y, double* z, double* type, double* wall, double cut, int n){
-    int* list = new int[n*2 + 7]; // here we will return bonding molecules[n], types of every particle[n], distribution[7 (e, H+, H, H2+, H2, H3+, H3]
+    int* list = new int[n*2 + 8]; // here we will return bonding molecules[n], types of every particle[n], distribution[7 (e, H+, H, H-, H2+, H2, H3+, H3]
     int* k_list_ion = new int[n];
     int* k_list_el = new int[n];
-    for (int l = 0; l < n*2 + 7; l ++)
+    for (int l = 0; l < n*2 + 8; l ++)
         list[l] = 0;
 
     for (int l = 0; l < n; l ++){
@@ -79,6 +79,11 @@ int* neighbour_list( double* x, double* y, double* z, double* type, double* wall
         // H3
         if ( (el == 3) && (ion == 3))
             list[n*2 + 6] ++;
+
+        // H-
+        if ( (el == 0) && (ion == 1) ){
+            list[n*2 + 7] += el + ion;
+        }
     }
 
     return list;
@@ -115,12 +120,12 @@ int* neighbour_list_two( double* x, double* y, double* z,
     double* x_2, double* y_2, double* z_2,
     double* type, double* wall, double cut, int n){
 
-    int* list = new int[n*2 + 7]; // here we will return bonding molecules[n], types of every particle[n], distribution[7 (e, H+, H, H2+, H2, H3+, H3]
+    int* list = new int[n*2 + 8]; // here we will return bonding molecules[n], types of every particle[n], distribution[7 (e, H+, H, H2+, H2, H3+, H3]
     int* k_list_ion = new int[n];
     int* k_list_el = new int[n];
     cut = cut*cut; // we will compare dist^2
 
-    for (int l = 0; l < n*2 + 7; l ++)
+    for (int l = 0; l < n*2 + 8; l ++)
         list[l] = 0;
 
     for (int l = 0; l < n; l ++){
@@ -146,6 +151,7 @@ int* neighbour_list_two( double* x, double* y, double* z,
     H2 - 5
     H3+ - 6
     H3 - 7
+    H- - 8
     other - 0
     */
     // create a list of k-types
@@ -190,6 +196,11 @@ int* neighbour_list_two( double* x, double* y, double* z,
         if ( (el == 3) && (ion == 3) ){
             list[n*2 + 6] += el + ion;
             k_types[j] = 7;
+        }
+        // H-
+        if ( (el == 0) && (ion == 1) ){
+            list[n*2 + 7] += el + ion;
+            k_types[j] = 8;
         }
     }
 

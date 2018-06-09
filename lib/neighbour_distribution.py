@@ -26,7 +26,7 @@ class neighbour_distribution(dash_object):
         p_cut = ctypes.c_double(self.cut)
 
         p_list = self.mylib.neighbour_list(p_x, p_y, p_z, p_type, p_wall, p_cut, p_n)
-        list_dist = list(np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0]) * 2 + 7)))
+        list_dist = list(np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0]) * 2 + len(self.particle_types) - 1 ))) # -1 because of "other"
         self.mylib.free_mem.argtypes = [ctypes.POINTER(ctypes.c_int)]
         self.mylib.free_mem(p_list)
         
@@ -34,7 +34,8 @@ class neighbour_distribution(dash_object):
         self.data.at[Step, 'particle_type'] = types_of_every_particles
 
         distribution = list_dist[len(coord[0]) * 2:]
-        distribution.append( len(coord[0]) - sum(distribution) ) # append "other particles"
+        # append "other particles"
+        distribution.append( len(coord[0]) - sum(distribution) ) 
         for i in range( len(self.particle_types)):
             self.data.at[Step, self.particle_types[i]] = distribution[i]
         
@@ -66,7 +67,7 @@ class neighbour_distribution(dash_object):
         # print ("coord = ", coord)
         # print ("p_list = ", p_list)
         # print ("numpy = ", np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0]) * 2 + 7)))
-        list_dist = list(np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0]) * 2 + 7)))
+        list_dist = list(np.array(np.fromiter(p_list, dtype=np.int, count=len(coord[0]) * 2 + len(self.particle_types) - 1 ))) # -1 because of "other"
         self.mylib.free_mem.argtypes = [ctypes.POINTER(ctypes.c_int)]
         self.mylib.free_mem(p_list)
         
@@ -74,9 +75,9 @@ class neighbour_distribution(dash_object):
         self.data.at[Step, 'particle_type'] = types_of_every_particles
 
         distribution = list_dist[len(coord[0]) * 2:]
-        distribution.append( len(coord[0]) - sum(distribution) ) # append "other particles"
+        # append "other particles"
+        distribution.append( len(coord[0]) - sum(distribution) ) 
         for i in range( len(self.particle_types)):
-            #print ("name = ", self.particle_types[i], ": ", distribution[i])
             self.data.at[Step, self.particle_types[i]] = distribution[i]
     
     def analyse(self, data, gen_info):
@@ -92,7 +93,7 @@ class neighbour_distribution(dash_object):
             
         # reserve space to particle type massives
         self.data['particle_type'] = pd.Series([np.zeros(n, dtype=float)]*self.data.shape[0])
-        self.gen_info['particles_types'] = {1: 'e', 2: 'H', 3: 'H+', 4: 'H2+', 5: 'H2', 6: 'H3+', 7: 'H3', 0: 'other'}
+        self.gen_info['particles_types'] = {1: 'e', 2: 'H', 3: 'H+', 4: 'H2+', 5: 'H2', 6: 'H3+', 7: 'H3', 8: 'H-', 0: 'other'}
         
         self.data['coord_neighboard'] = pd.Series([np.zeros((4,n), dtype=float)]*self.data.shape[0])
  
@@ -210,7 +211,7 @@ class neighbour_distribution(dash_object):
     def __init__(self):
         dash_object.__init__(self)
         self.type = type
-        self.particle_types = ["e", "H+", "H", "H2+", "H2", "H3+", "H3", "other"]
+        self.particle_types = ["e", "H+", "H", "H2+", "H2", "H3+", "H3", "H-", "other"] 
         self.index_list = self.particle_types
         self.current_index = 0
         self.graph_type = 'scatter'

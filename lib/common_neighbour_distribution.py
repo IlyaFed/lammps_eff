@@ -135,7 +135,7 @@ class common_neighbour_distribtution(dash_object):
         self.filtrer = filtrer
         self.current_index = 0
         self.graph_type = 'scatter'
-        self.particle_types = ["e", "H+", "H", "H2+", "H2", "H3+", "H3", "other"]
+        self.particle_types = ["e", "H+", "H", "H2+", "H2", "H3+", "H3", "H-", "other"]
         self.particle = ['H2']
         self.name = 'Common Neighbour distribution'
         self.yaxis_type = 'linear'
