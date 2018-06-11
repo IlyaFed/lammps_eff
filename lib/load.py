@@ -141,9 +141,16 @@ class load:
             line_in_file = 100
         read_flag = 0
         print_list = [30,60]
+        self.general_info['timestep'] = 0
         for num_line, line in enumerate( open( name, 'r')):
-            if (line[0] == 't') and  (line.split()[0] == 'timestep') and (read_flag == 0):
+            if ((line[0] == 't') and  (line.split()[0] == 'timestep') 
+             and (read_flag == 0) and (self.general_info['timestep'] == 0)):
+                try:
+                    float(line.split()[1])
+                except:
+                    continue
                 self.general_info['timestep'] = float(line.split()[1])
+                continue
             if (line[0] == 'S') and  (line.split()[0] == 'Step') and (read_flag == 0):
                 columns = line.split()[1:]
 
