@@ -33,7 +33,7 @@ class load:
             if msdfile.split('.')[-1] == 'lammpstrj':
                 available_lammpstrj = np.append(available_lammpstrj, [int(msdfile.split('.')[1])])
 
-        if self.load_log_flag: 
+        if self.load_log_flag:
             # if self.data exist, clear step which we can't load from lammpstrj
             to_remove = []
             for i in self.data.index:
@@ -63,11 +63,11 @@ class load:
             if len(self.steps) < 2:
                 logging.error ("Number of steps in load lammpstrj too small: {:d}, step of analysis: {:d}".format(len(self.steps), min_step))
                 exit()
-        
+
             self.data = pd.DataFrame(columns=['every', 'wall'], index = self.steps)
-        
+
         # create pandas
-        
+
         iteration_number = 0
         print_list = [30, 60]
         iteration_len = len(self.steps)
@@ -106,14 +106,14 @@ class load:
             #print ("step_pandas: ", step_pandas)
             step_pandas.loc[:, 'x'] -= wall[0]
             step_pandas.loc[:, 'y'] -= wall[1]
-            step_pandas.loc[:, 'z'] -= wall[2] 
+            step_pandas.loc[:, 'z'] -= wall[2]
             wall[3] -= wall[0]
             wall[4] -= wall[1]
             wall[5] -= wall[2]
             wall = wall[3:]
             self.data.at[read_step, 'every'] = step_pandas
             self.data.at[read_step, 'wall'] = wall
-            
+
         logging.info ("{:30s} ({:s}) 100 %".format("read lammpstrj", self.path))
         self.load_lammpstrj_flag = True
 
@@ -132,7 +132,7 @@ class load:
 
         if not self.load_lammpstrj_flag:
             self.data = pd.DataFrame(columns=['every', 'wall']) # TODO check available step in lammps and log
-        
+
         p = Popen(["wc", "-l", "{:s}".format(name)], stdout=PIPE)
         try:
             line_in_file = int(str(p.stdout.read()).split("b'")[1].split(name)[0])
@@ -236,7 +236,7 @@ class load:
         except IndexError:
             logging.error ("error: must be data.lammps file, no timestep")
             exit()
-            
+
 
         mass_flag = 0
         for num_line, line in enumerate( open( name, 'r')):
@@ -254,7 +254,7 @@ class load:
             if mass_flag == 4:
                 self.general_info['mass'][1] = float(line.split()[1])
                 break
-            
+
         logging.info("read data ({:s}) success".format(self.path))
 
         self.load_data_flag = True
@@ -276,19 +276,19 @@ class load:
             self.general_info['description'] += line + "\n"
 
     def load(self):
-        ''' 
+        '''
         Here we read directory to find files:
         log.lammps
         data.lammps
         all.0.lammpstrj -> directory with lammpstrj files
-        
+
         Then start reading this files
         '''
         self.load_discription()
         self.load_data()
-        self.load_log()    
+        self.load_log()
         self.load_lammpstrj()
-        
+
         self.load_objects()
 
     def load_objects(self):
@@ -305,7 +305,7 @@ class load:
             new_flag += object.set(self.data, self.general_info)
         logging.info ("{:30s} ({:s}) {:3d} %".format("read objects", self.path, 100))
         return new_flag
-        
+
     def upload_backup(self, filename):
         backup_data = {'data': self.data, 'general_info': self.general_info}
         with open(filename, 'wb') as f:
