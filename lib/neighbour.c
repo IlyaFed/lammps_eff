@@ -81,7 +81,7 @@ int* neighbour_list( double* x, double* y, double* z, double* type, double* wall
             list[n*2 + 6] ++;
 
         // H-
-        if ( (el == 0) && (ion == 1) ){
+        if ( (el == 2) && (ion == 1) ){
             list[n*2 + 7] += el + ion;
         }
     }
@@ -198,7 +198,7 @@ int* neighbour_list_two( double* x, double* y, double* z,
             k_types[j] = 7;
         }
         // H-
-        if ( (el == 0) && (ion == 1) ){
+        if ( (el == 2) && (ion == 1) ){
             list[n*2 + 7] += el + ion;
             k_types[j] = 8;
         }
