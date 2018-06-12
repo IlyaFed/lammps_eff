@@ -46,10 +46,7 @@ class common_pt_diagram(dash_object):
                 x=self.experimental_data[item][1],
                 y=self.experimental_data[item][0],
                 mode = self.experimental_data[item][2],
-                marker={
-                    'symbol': "x",
-                    'size': 10
-                },
+                marker=self.experimental_data[item][3],
                 name = item
                 ))
             elif self.experimental_data[item][2] == 'line':
