@@ -41,16 +41,24 @@ class common_pt_diagram(dash_object):
 
 
         for item in list(self.experimental_data.keys()):
-            traces.append(go.Scatter(
-            x=self.experimental_data[item][1],
-            y=self.experimental_data[item][0],
-            mode = 'markers',
-            marker={
-                'symbol': "x",
-                'size': 10
-            },
-            name = item
-            ))
+            if self.experimental_data[item][2] in ['markers', 'markers+line']:
+                traces.append(go.Scatter(
+                x=self.experimental_data[item][1],
+                y=self.experimental_data[item][0],
+                mode = self.experimental_data[item][2],
+                marker={
+                    'symbol': "x",
+                    'size': 10
+                },
+                name = item
+                ))
+            elif self.experimental_data[item][2] == 'line':
+                traces.append(go.Scatter(
+                x=self.experimental_data[item][1],
+                y=self.experimental_data[item][0],
+                mode = self.experimental_data[item][2],
+                name = item
+                ))
           
         return traces
 
