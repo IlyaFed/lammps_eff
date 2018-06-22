@@ -41,13 +41,20 @@ class temperature_h2(dash_object):
         e_harty = 4.35974417e-18
         # read ions temp
         #print ("id = ", parametrs[(parametrs['id'].isin(self.indexes_of_particle))]['id'])
-        our_param = parametrs[parametrs['type'] == 1.0]
-        ion = 2. / 3. / k_boltz *  (our_param['c_keatom'].mean() * e_harty)
+        ion_1 = parametrs[(parametrs['type'] == 1.0) and (parametrs['id'] == ions[0])]['c_keatom'].values[0]
+        ion_2 = parametrs[(parametrs['type'] == 1.0) and (parametrs['id'] == ions[1])]['c_keatom'].values[0]
+        electron_1 = parametrs[(parametrs['type'] == 1.0) and (parametrs['id'] == electrons[0])]['c_keatom'].values[0]
+        electron_2 = parametrs[(parametrs['type'] == 1.0) and (parametrs['id'] == electrons[1])]['c_keatom'].values[0]
+        if self.type_T = 'T':
+            ion_1 = 2. / 3. / k_boltz *  (ion_1 * e_harty)
+            ion_2 = 2. / 3. / k_boltz *  (ion_2 * e_harty)
+            electron_1 = 2. / 4. / k_boltz *  (electron_1 * e_harty)
+            electron_2 = 2. / 4. / k_boltz *  (electron_2 * e_harty)
         # read electron temp
-        our_param = parametrs[parametrs['type'] == 2.0]
-        electron = 2. / 4. / k_boltz * (our_param['c_keatom'].mean() * e_harty)
-        self.data.at[ind, 'temp_ion_h2'] = ion
-        self.data.at[ind, 'temp_electron_h2'] = electron
+        self.data.at[ind, 'temp_h2_ion_1'] = ion_1
+        self.data.at[ind, 'temp_h2_ion_2'] = ion_2
+        self.data.at[ind, 'temp_h2_electron_1'] = electron_1
+        self.data.at[ind, 'temp_h2_electron_2'] = electron_2
     
     def slow_load(self, ind, parametrs):
         '''
@@ -89,19 +96,31 @@ class temperature_h2(dash_object):
 
         traces.append(go.Scatter(
             x = self.data.index,
-            y = self.data['temp_ion_h2'].values,
-            name = 'ions',
+            y = self.data['temp_h2_ion_1'].values,
+            name = 'ion_1',
             mode = 'line'
         ))
         traces.append(go.Scatter(
             x=self.data.index,
-            y=self.data['temp_electron_h2'].values,
-            name='electrons',
+            y=self.data['temp_h2_electron_1'].values,
+            name='electron_1',
+            mode = 'line'
+        ))
+        traces.append(go.Scatter(
+            x = self.data.index,
+            y = self.data['temp_h2_ion_2'].values,
+            name = 'ion_2',
+            mode = 'line'
+        ))
+        traces.append(go.Scatter(
+            x=self.data.index,
+            y=self.data['temp_h2_electron_2'].values,
+            name='electron_2',
             mode = 'line'
         ))
         # create line in choosen step
-        max_T = max(self.data['temp_ion_h2'].max(), self.data['temp_electron_h2'].max())
-        min_T = min(self.data['temp_ion_h2'].min(), self.data['temp_electron_h2'].min())
+        max_T = max(self.data['temp_h2_ion_1'].max(), self.data['temp_h2_electron_1'].max())
+        min_T = min(self.data['temp_h2_ion_1'].min(), self.data['temp_h2_electron_1'].min())
         step = self.current_index
         traces.append(go.Scatter(
             x = np.linspace(step, step, 100),
@@ -130,7 +149,7 @@ class temperature_h2(dash_object):
                 showgrid=True,
                 zeroline=False,
                 showline=True,
-                title='Temperature, K'
+                title=self.type_T + ', K'
             )
         )
     def _update_graph(self):
@@ -157,11 +176,14 @@ class temperature_h2(dash_object):
                     )
         return layout
 
-    def __init__(self, indexes_of_particle=[]):
+    def __init__(self, ions=[], electrons=[], type_T="T"):
         dash_object.__init__(self)
-        self.indexes_of_particle = indexes_of_particle # list of 4 elements with h2 particle ids
+        self.type_T=type_T
+        self.indexes_of_particle = ions + electrons
+        self.ions = ions
+        self.electrons = electrons
         self.current_index = 0
         self.graph_type = 'scatter'
         self.name = 'temperature_h2'
         self.load_flag = 0
-        self.index_list = ['temp_ion_h2', 'temp_electron_h2']
+        self.index_list = ['temp_h2_ion_1', 'temp_h2_electron_1', 'temp_h2_ion_2', 'temp_h2_electron_2']
