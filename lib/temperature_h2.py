@@ -51,10 +51,10 @@ class temperature_h2(dash_object):
             electron_1 = 2. / 4. / k_boltz *  (electron_1 * e_harty)
             electron_2 = 2. / 4. / k_boltz *  (electron_2 * e_harty)
         # read electron temp
-        self.data.at[ind, 'temp_h2_ion_1'] = ion_1
-        self.data.at[ind, 'temp_h2_ion_2'] = ion_2
-        self.data.at[ind, 'temp_h2_electron_1'] = electron_1
-        self.data.at[ind, 'temp_h2_electron_2'] = electron_2
+        self.data.at[ind, self.preindex+'_ion_1'] = ion_1
+        self.data.at[ind, self.preindex+'_ion_2'] = ion_2
+        self.data.at[ind, self.preindex+'_electron_1'] = electron_1
+        self.data.at[ind, self.preindex+'_electron_2'] = electron_2
     
     def slow_load(self, ind, parametrs):
         '''
@@ -184,6 +184,7 @@ class temperature_h2(dash_object):
         self.electrons = electrons
         self.current_index = 0
         self.graph_type = 'scatter'
-        self.name = 'temperature_h2'+type_T
+        self.preindex = "h2_temp_"+type_T
+        self.name = self.preindex
         self.load_flag = 0
-        self.index_list = ['temp_h2_ion_1', 'temp_h2_electron_1', 'temp_h2_ion_2', 'temp_h2_electron_2']
+        self.index_list = [self.preindex+'_ion_1', self.preindex+'_electron_1', self.preindex+'_ion_2', self.preindex+'_electron_2']
