@@ -50,10 +50,10 @@ class energy_h2(dash_object):
                 def sum_f(x):
                     return 0
 
-        ion_1 = parametrs[(parametrs['type'] == 1.0) && (parametrs['id'] == ions[0])].apply(sum_f, axis = 1).sum()
-        ion_2 = parametrs[(parametrs['type'] == 1.0) && (parametrs['id'] == ions[1])].apply(sum_f, axis = 1).sum()
-        electron_1 = parametrs[(parametrs['type'] == 1.0) && (parametrs['id'] == electrons[0])].apply(sum_f, axis = 1).sum()
-        electron_2 = parametrs[(parametrs['type'] == 1.0) && (parametrs['id'] == electrons[1])].apply(sum_f, axis = 1).sum()
+        ion_1 = parametrs[(parametrs['type'] == 1.0) and (parametrs['id'] == ions[0])].apply(sum_f, axis = 1).sum()
+        ion_2 = parametrs[(parametrs['type'] == 1.0) and (parametrs['id'] == ions[1])].apply(sum_f, axis = 1).sum()
+        electron_1 = parametrs[(parametrs['type'] == 1.0) and (parametrs['id'] == electrons[0])].apply(sum_f, axis = 1).sum()
+        electron_2 = parametrs[(parametrs['type'] == 1.0) and (parametrs['id'] == electrons[1])].apply(sum_f, axis = 1).sum()
         self.data.at[Step, self.type + "h2_ion_1"] = ion_1
         self.data.at[Step, self.type + "h2_ion_2"] = ion_2
         self.data.at[Step, self.type + "h2_electron_1"] = electron_1
