@@ -50,7 +50,7 @@ class energy_h2(dash_object):
                 def sum_f(x):
                     return 0
 
-        ion_1 = parametrs[parametrs['id'] == self.ions[0].apply(sum_f, axis = 1).sum()
+        ion_1 = parametrs[parametrs['id'] == self.ions[0]].apply(sum_f, axis = 1).sum()
         ion_2 = parametrs[parametrs['id'] == self.ions[1]].apply(sum_f, axis = 1).sum()
         electron_1 = parametrs[parametrs['id'] == self.electrons[0]].apply(sum_f, axis = 1).sum()
         electron_2 = parametrs[parametrs['id'] == self.electrons[1]].apply(sum_f, axis = 1).sum()
