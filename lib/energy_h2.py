@@ -57,7 +57,7 @@ class energy_h2(dash_object):
         self.data.at[Step, self.type + "h2_ion_1"] = ion_1
         self.data.at[Step, self.type + "h2_ion_2"] = ion_2
         self.data.at[Step, self.type + "h2_electron_1"] = electron_1
-        self.data.at[Step, self.type + "h2_electron_1"] = electron_2
+        self.data.at[Step, self.type + "h2_electron_2"] = electron_2
         self.data.at[Step, self.type + "h2_all"] = ion_1 + ion_2 + electron_1 + electron_2
 
 

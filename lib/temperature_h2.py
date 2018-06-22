@@ -96,31 +96,31 @@ class temperature_h2(dash_object):
 
         traces.append(go.Scatter(
             x = self.data.index,
-            y = self.data['temp_h2_ion_1'].values,
+            y = self.data[self.preindex+'_ion_1'].values,
             name = 'ion_1',
             mode = 'line'
         ))
         traces.append(go.Scatter(
             x=self.data.index,
-            y=self.data['temp_h2_electron_1'].values,
+            y=self.data[self.preindex+'_electron_1'].values,
             name='electron_1',
             mode = 'line'
         ))
         traces.append(go.Scatter(
             x = self.data.index,
-            y = self.data['temp_h2_ion_2'].values,
+            y = self.data[self.preindex+'_ion_2'].values,
             name = 'ion_2',
             mode = 'line'
         ))
         traces.append(go.Scatter(
             x=self.data.index,
-            y=self.data['temp_h2_electron_2'].values,
+            y=self.data[self.preindex+'_electron_2'].values,
             name='electron_2',
             mode = 'line'
         ))
         # create line in choosen step
-        max_T = max(self.data['temp_h2_ion_1'].max(), self.data['temp_h2_electron_1'].max())
-        min_T = min(self.data['temp_h2_ion_1'].min(), self.data['temp_h2_electron_1'].min())
+        max_T = max(self.data[self.preindex+'_ion_1'].max(), self.data[self.preindex+'_electron_1'].max())
+        min_T = min(self.data[self.preindex+'_ion_1'].min(), self.data[self.preindex+'_electron_1'].min())
         step = self.current_index
         traces.append(go.Scatter(
             x = np.linspace(step, step, 100),

@@ -6,4 +6,4 @@ lib/test_data/
 lib/grid_gauss.so
 lib/neighbour.so
 lib/rdf.so
-test_data/.backup
+test_data/
