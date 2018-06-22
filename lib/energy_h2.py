@@ -50,11 +50,15 @@ class energy_h2(dash_object):
                 def sum_f(x):
                     return 0
 
-        ion = parametrs[parametrs['type'] == 1.0].apply(sum_f, axis = 1).sum()
-        electron = parametrs[parametrs['type'] == 2.0].apply(sum_f, axis = 1).sum()
-        self.data.at[Step, self.type + "h2_ion"] = ion
-        self.data.at[Step, self.type + "h2_electron"] = electron
-        self.data.at[Step, self.type + "h2_all"] = ion + electron
+        ion_1 = parametrs[(parametrs['type'] == 1.0) && (parametrs['id'] == ions[0])].apply(sum_f, axis = 1).sum()
+        ion_2 = parametrs[(parametrs['type'] == 1.0) && (parametrs['id'] == ions[1])].apply(sum_f, axis = 1).sum()
+        electron_1 = parametrs[(parametrs['type'] == 1.0) && (parametrs['id'] == electrons[0])].apply(sum_f, axis = 1).sum()
+        electron_2 = parametrs[(parametrs['type'] == 1.0) && (parametrs['id'] == electrons[1])].apply(sum_f, axis = 1).sum()
+        self.data.at[Step, self.type + "h2_ion_1"] = ion_1
+        self.data.at[Step, self.type + "h2_ion_2"] = ion_2
+        self.data.at[Step, self.type + "h2_electron_1"] = electron_1
+        self.data.at[Step, self.type + "h2_electron_1"] = electron_2
+        self.data.at[Step, self.type + "h2_all"] = ion_1 + ion_2 + electron_1 + electron_2
 
 
     def __get_scatter_trace(self):
@@ -72,14 +76,27 @@ class energy_h2(dash_object):
 
         traces.append(go.Scatter(
             x=x_step,
-            y=self.data[self.type + "h2_ion"].values,
-            name='ions',
+            y=self.data[self.type + "h2_ion_1"].values,
+            name='ion_1',
             mode='line'
         ))
         traces.append(go.Scatter(
             x=x_step,
-            y=self.data[self.type + 'h2_electron'].values,
-            name='electrons',
+            y=self.data[self.type + 'h2_electron_1'].values,
+            name='electron_1',
+            mode='line',
+        ))
+
+        traces.append(go.Scatter(
+            x=x_step,
+            y=self.data[self.type + "h2_ion_2"].values,
+            name='ion_2',
+            mode='line'
+        ))
+        traces.append(go.Scatter(
+            x=x_step,
+            y=self.data[self.type + 'h2_electron_2'].values,
+            name='electron_2',
             mode='line',
         ))
 
@@ -90,8 +107,8 @@ class energy_h2(dash_object):
             mode='line'
         ))
         # create line in choosen step
-        max_T = max(self.data[self.type + 'h2_ion'].max(), self.data[self.type + 'h2_electron'].max(), self.data[self.type + 'h2_all'].max())
-        min_T = min(self.data[self.type + 'h2_ion'].min(), self.data[self.type + 'h2_electron'].min(), self.data[self.type + 'h2_all'].min())
+        max_T = max(self.data[self.type + 'h2_ion_1'].max(), self.data[self.type + 'h2_electron_1'].max(), self.data[self.type + 'h2_all'].max())
+        min_T = min(self.data[self.type + 'h2_ion_1'].min(), self.data[self.type + 'h2_electron_1'].min(), self.data[self.type + 'h2_all'].min())
         traces.append(go.Scatter(
             x = np.linspace(step, step, 100),
             y = np.linspace(min_T, max_T, 100),
@@ -151,12 +168,14 @@ class energy_h2(dash_object):
                     )
         return layout
 
-    def __init__(self, type = 'full', indexes_of_particle=[]):
+    def __init__(self, type = 'full', ions=[], electrons=[]):
         dash_object.__init__(self)
         self.type = type
-        self.indexes_of_particle = indexes_of_particle # list of 4 elements with h2 particle ids
+        self.indexes_of_particle = ions + electrons
+        self.ions = ions
+        self.electrons = electrons
         self.current_index = 0
         self.graph_type = 'scatter'
         self.name = 'energy_h2'+self.type
         self.load_flag = 0
-        self.index_list = [self.type + "h2_ion", self.type + "h2_electron", self.type + "h2_all"]
+        self.index_list = [self.type + "h2_ion_1", self.type + "h2_ion_2", self.type + "h2_electron_1",self.type + "h2_electron_2", self.type + "h2_all"]
