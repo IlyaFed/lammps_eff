@@ -184,6 +184,6 @@ class temperature_h2(dash_object):
         self.electrons = electrons
         self.current_index = 0
         self.graph_type = 'scatter'
-        self.name = 'temperature_h2'
+        self.name = 'temperature_h2'+type_T
         self.load_flag = 0
         self.index_list = ['temp_h2_ion_1', 'temp_h2_electron_1', 'temp_h2_ion_2', 'temp_h2_electron_2']
