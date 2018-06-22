@@ -41,10 +41,10 @@ class temperature_h2(dash_object):
         e_harty = 4.35974417e-18
         # read ions temp
         #print ("id = ", parametrs[(parametrs['id'].isin(self.indexes_of_particle))]['id'])
-        ion_1 = parametrs[parametrs['id'] == ions[0]]['c_keatom'].values[0]
-        ion_2 = parametrs[parametrs['id'] == ions[1]]['c_keatom'].values[0]
-        electron_1 = parametrs[parametrs['id'] == electrons[0]]['c_keatom'].values[0]
-        electron_2 = parametrs[parametrs['id'] == electrons[1]]['c_keatom'].values[0]
+        ion_1 = parametrs[parametrs['id'] == self.ions[0]]['c_keatom'].values[0]
+        ion_2 = parametrs[parametrs['id'] == self.ions[1]]['c_keatom'].values[0]
+        electron_1 = parametrs[parametrs['id'] == self.electrons[0]]['c_keatom'].values[0]
+        electron_2 = parametrs[parametrs['id'] == self.electrons[1]]['c_keatom'].values[0]
         if self.type_T == 'T':
             ion_1 = 2. / 3. / k_boltz *  (ion_1 * e_harty)
             ion_2 = 2. / 3. / k_boltz *  (ion_2 * e_harty)
