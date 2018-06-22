@@ -1,9 +1,0 @@
-git.sh
-input.txt
-log.log 
-lib/__pycache__/
-lib/test_data/
-lib/grid_gauss.so
-lib/neighbour.so
-lib/rdf.so
-test_data/
