@@ -29,12 +29,10 @@ class distance_h2(dash_object):
         Here we upload step data and put it into data structure
         '''
 
-        ions = parametrs[parametrs['type'] == 1.0]
-        proton_1 = np.array([ions['x'].values[0], ions['y'].values[0], ions['z'].values[0]])
-        proton_2 = np.array([ions['x'].values[1], ions['y'].values[1], ions['z'].values[1]])
-        electrons = parametrs[parametrs['type'] == 2.0]
-        electron_1 = np.array([electrons['x'].values[0], electrons['y'].values[0], electrons['z'].values[0]])
-        electron_2 = np.array([electrons['x'].values[1], electrons['y'].values[1], electrons['z'].values[1]])
+        proton_1 = np.array([self.ions['x'].values[0], self.ions['y'].values[0], self.ions['z'].values[0]])
+        proton_2 = np.array([self.ions['x'].values[1], self.ions['y'].values[1], self.ions['z'].values[1]])
+        electron_1 = np.array([self.electrons['x'].values[0], self.electrons['y'].values[0], self.electrons['z'].values[0]])
+        electron_2 = np.array([self.electrons['x'].values[1], self.electrons['y'].values[1], self.electrons['z'].values[1]])
         center = (proton_1 + proton_2)/2
 
         self.data.at[Step, "distance_h2_proton_1"] = np.linalg.norm(proton_1-center)
@@ -131,9 +129,11 @@ class distance_h2(dash_object):
                     )
         return layout
 
-    def __init__(self, indexes_of_particle=[]):
+    def __init__(self, ions=[], electrons=[]):
         dash_object.__init__(self)
-        self.indexes_of_particle = indexes_of_particle # list of 4 elements with h2 particle ids
+        self.indexes_of_particle = ions + electrons
+        self.ions = ions
+        self.electrons = electrons
         self.current_index = 0
         self.graph_type = 'scatter'
         self.name = 'distance_h2'
