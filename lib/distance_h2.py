@@ -28,11 +28,16 @@ class distance_h2(dash_object):
         '''
         Here we upload step data and put it into data structure
         '''
-
-        proton_1 = np.array([self.ions['x'].values[0], self.ions['y'].values[0], self.ions['z'].values[0]])
-        proton_2 = np.array([self.ions['x'].values[1], self.ions['y'].values[1], self.ions['z'].values[1]])
-        electron_1 = np.array([self.electrons['x'].values[0], self.electrons['y'].values[0], self.electrons['z'].values[0]])
-        electron_2 = np.array([self.electrons['x'].values[1], self.electrons['y'].values[1], self.electrons['z'].values[1]])
+        ions = []
+        ions.append(parametrs[parametrs['id'] == self.ions[0]])
+        ions.append(parametrs[parametrs['id'] == self.ions[1]])
+        electrons = []
+        electrons.append(parametrs[parametrs['id'] == self.electrons[0]])
+        electrons.append(parametrs[parametrs['id'] == self.electrons[1]])
+        proton_1 = np.array([ions[0]['x'].values[0], ions[0]['y'].values[0], ions[0]['z'].values[0]])
+        proton_2 = np.array([ions[1]['x'].values[1], ions[1]['y'].values[1], ions[1]['z'].values[1]])
+        electron_1 = np.array([electrons[0]['x'].values[0], electrons[0]['y'].values[0], electrons[0]['z'].values[0]])
+        electron_2 = np.array([electrons[1]['x'].values[1], electrons[1]['y'].values[1], electrons[1]['z'].values[1]])
         center = (proton_1 + proton_2)/2
 
         self.data.at[Step, "distance_h2_proton_1"] = np.linalg.norm(proton_1-center)
