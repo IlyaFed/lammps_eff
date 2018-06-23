@@ -5,6 +5,7 @@ import glob # to recursive find files
 from subprocess import Popen, PIPE
 import pickle
 import logging
+from lib.glob import find_recurse
 
 min_timeperiod = 100 # 100 fs
 
@@ -18,7 +19,8 @@ class load:
         """
         logging.info ("{:30s} ({:s}) {:3d} %".format("read lammpstrj", self.path, 0))
         try:
-            lammpstrj_path_tmp = glob.glob(self.path + '/**/**/all.0.lammpstrj', recursive=True)[0].split('/')[:-1]
+            #lammpstrj_path_tmp = glob.glob(self.path + '/**/**/all.0.lammpstrj', recursive=True)[0].split('/')[:-1]
+            lammpstrj_path_tmp = find_recurse(self.path, "all.0.lammpstrj")[0].split('/')[:-1]
         except IndexError:
             logging.error("must be all.0.lammpstrj file")
             exit()
@@ -126,7 +128,8 @@ class load:
         """
         logging.info ("{:30s} ({:s}) {:3d} %".format("read log", self.path, 0))
         try:
-            name =  glob.glob(self.path + '/**/**/log.lammps', recursive=True)[0]
+            #name =  glob.glob(self.path + '/**/**/log.lammps', recursive=True)[0]
+            name = find_recurse(self.path, "log.lammps")[0]
         except IndexError:
             logging.error ("error: must be log.lammps file")
             exit()
@@ -234,7 +237,8 @@ class load:
         """
         #print ( "read data ({:s}) 0 %".format(self.path))
         try:
-            name =  glob.glob(self.path + '/**/**/data.lammps', recursive=True)[0]
+            #name =  glob.glob(self.path + '/**/**/data.lammps', recursive=True)[0]
+            name = find_recurse(self.path, "data.lammps")[0]
         except IndexError:
             logging.error ("error: must be data.lammps file, no timestep")
             exit()
@@ -264,7 +268,8 @@ class load:
 
     def load_discription(self):
         try:
-            filename =  glob.glob(self.path + '/**/**/description.txt', recursive=True)[0]
+            #filename =  glob.glob(self.path + '/**/**/description.txt', recursive=True)[0]
+            filename = find_recurse(self.path, "description.txt")[0]
         except IndexError:
             logging.warning ("warning: no description.txt file")
             self.general_info['title'] = self.path
