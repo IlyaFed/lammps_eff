@@ -6,6 +6,7 @@ import logging
 from threading import Thread
 import json #TODO
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from lib.glob import find_recurse
 
 class system(load, Thread, BaseHTTPRequestHandler):
 
@@ -266,7 +267,8 @@ class system(load, Thread, BaseHTTPRequestHandler):
     def run(self):
         # find backup path 
         try:
-            self.backup_file =  glob.glob(self.path + '/**/**/.backup', recursive=True)[0]
+            #self.backup_file =  glob.glob(self.path + '/**/**/.backup', recursive=True)[0]
+            self.backup_file = find_recurse(self.path, ".backup")[0]
         except IndexError:
             self.load_flag = 1
         if self.load_flag:
