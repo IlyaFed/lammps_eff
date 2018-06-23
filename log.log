@@ -1,0 +1,14 @@
+INFO:root:no backup file
+INFO:root:Start loading: test_data
+INFO:root:description file: test_data/description.txt
+INFO:root:data file: test_data/data/data.lammps
+INFO:root:read data (test_data) success
+INFO:root:read log                       (test_data)   0 %
+INFO:root:log file: test_data/log.lammps
+INFO:root:read log                       (test_data)  30 %
+INFO:root:read log                       (test_data)  60 %
+INFO:root:read log                       (test_data) 100 %
+INFO:root:read lammpstrj                 (test_data)   0 %
+INFO:root:lammpstrj path: test_data/all/
+INFO:werkzeug: * Running on http://0.0.0.0:8050/ (Press CTRL+C to quit)
+INFO:root:read lammpstrj                 (test_data)  30 %

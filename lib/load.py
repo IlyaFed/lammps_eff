@@ -20,13 +20,14 @@ class load:
         try:
             lammpstrj_path_tmp = glob.glob(self.path + '/**/**/all.0.lammpstrj', recursive=True)[0].split('/')[:-1]
         except IndexError:
-            print ("error: must be all.0.lammpstrj file")
+            logging.error("must be all.0.lammpstrj file")
             exit()
 
         lammpstrj_path = ''
         for item in lammpstrj_path_tmp:
             lammpstrj_path += item + '/'
-
+        logging.info("lammpstrj path: {:s}".format(lammpstrj_path))
+        
 
         available_lammpstrj = np.array([])
         for msdfile in os.listdir(lammpstrj_path):
@@ -130,6 +131,7 @@ class load:
             logging.error ("error: must be log.lammps file")
             exit()
 
+        logging.info("log file: {:s}".format(name))
         if not self.load_lammpstrj_flag:
             self.data = pd.DataFrame(columns=['every', 'wall']) # TODO check available step in lammps and log
 
@@ -237,6 +239,7 @@ class load:
             logging.error ("error: must be data.lammps file, no timestep")
             exit()
 
+        logging.info("data file: {:s}".format(name))
 
         mass_flag = 0
         for num_line, line in enumerate( open( name, 'r')):
@@ -267,7 +270,7 @@ class load:
             self.general_info['title'] = self.path
             self.general_info['description'] = 'no description file'
             return
-
+        logging.info("description file: {:s}".format(filename))
         with open(filename, 'r') as myfile:
             data_from_file = myfile.readlines()
         self.general_info['title'] = data_from_file[0]
@@ -284,6 +287,7 @@ class load:
 
         Then start reading this files
         '''
+        logging.info("Start loading: {:s}".format(self.path))
         self.load_discription()
         self.load_data()
         self.load_log()
