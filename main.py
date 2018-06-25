@@ -206,9 +206,10 @@ if __name__ == "__main__":
         if not pathname:
             return html.Div(get_layout_list(system_objects))
 
-        pathname_real = pathname[1:] # remove '/'
-        if pathname_real in system_objects['paths']:
-            return system_objects[pathname_real].get_layout()
+        if pathname[1:] in system_objects['paths']: # remove '/' #TODO
+            return system_objects[pathname[1:]].get_layout()
+        elif ".." + pathname in system_objects['paths']:
+            return system_objects[".." + pathname].get_layout()
         else:
             return html.Div(get_layout_list(system_objects))
 
