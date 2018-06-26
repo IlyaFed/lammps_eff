@@ -4,6 +4,7 @@ import numpy as np
 from plotly import figure_factory as ff
 from skimage import measure
 import ctypes
+MAX_RADIUS=5.0
 
 class coordinate_visualisation(dash_object):
     def analyse(self, data, gen_info):
@@ -13,6 +14,17 @@ class coordinate_visualisation(dash_object):
         # create coord_ion and coord_electron columns
         n = self.gen_info['n']
         # read ions coordinates
+    
+        #check_radius_size
+        if self.check_radius:
+            for Step in self.data.index:
+                part_index = self.analyse_radius(Step)
+                if part_index >= 0:
+                    logging.warning("too big radius: Step {:d}, ID {:d} in {:s}".format(Step, part_index, self.warning_name))
+                    break
+            if part_index == -1:
+                logging.info("radius good: {:s}".format(self.warning_name))
+        
         load_flag = 1
         for item in self.index_list:
             if not item in self.data.columns:
@@ -25,7 +37,17 @@ class coordinate_visualisation(dash_object):
         for Step in self.data.index:
             self.load_step(Step)
         return 1
-        
+
+    def analyse_radius(self, Step):
+        parametrs = self.data.loc[Step, 'every']
+        # read electron coordinates
+        our_param = parametrs[parametrs['type'] == 2.0]
+        n = our_param.shape[0]
+        for i in range(n):
+            if our_param.loc[our_param.index[i], 'c_1a[2]'] > MAX_RADIUS:
+                return i
+        return -1
+
     def load_step(self, Step):
         parametrs = self.data.loc[Step, 'every']
         #print ("Step: ", Step)
@@ -385,7 +407,9 @@ class coordinate_visualisation(dash_object):
         )
         return layout
 
-    def __init__(self, highlight_particles=[]):
+    def __init__(self, highlight_particles=[], warning_name="", check_radius=False):
+        self.check_radius = check_radius
+        self.warning_name = warning_name
         dash_object.__init__(self)
         self.highlight_particles = highlight_particles
         self.current_index = 0

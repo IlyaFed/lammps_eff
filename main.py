@@ -86,7 +86,7 @@ def run_systems(paths):
     system_objects = dict()
     system_objects['paths'] = paths
     for path in paths:
-        objects = [coordinate_visualisation(),
+        objects = [coordinate_visualisation(warning_name=path, check_radius=True),
                     pt_diagram(experimental_data),
                     temperature(),
                     pressure(),
