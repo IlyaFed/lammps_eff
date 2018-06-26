@@ -69,6 +69,11 @@ experimental_data = {
 def read_paths(filename):
     with open(filename, "r") as file:
         paths = [line.replace("\n","") for line in  file.readlines()]
+    while (1):
+        try:
+            paths.remove("")
+        except:
+            break
     for i in range(len(paths)):
         if paths[i][0] == '/':
             paths[i] = paths[i][1:]
@@ -86,7 +91,7 @@ def run_systems(paths):
     system_objects = dict()
     system_objects['paths'] = paths
     for path in paths:
-        objects = [coordinate_visualisation(warning_name=path, check_radius=True),
+        objects = [coordinate_visualisation(),
                     pt_diagram(experimental_data),
                     temperature(),
                     pressure(),
