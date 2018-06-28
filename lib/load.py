@@ -16,7 +16,7 @@ class load:
         """
         Read lammpstrj file and apply function
         """
-        self.log("{:30s} ({:s}) {:3d} %".format("read lammpstrj", self.path, 0))
+        self.log("{:30s} {:3d} %".format("read lammpstrj", 0))
         try:
             #lammpstrj_path_tmp = glob.glob(self.path + '/**/**/all.0.lammpstrj', recursive=True)[0].split('/')[:-1]
             lammpstrj_path_tmp = find_recurse(self.path, "all.0.lammpstrj")[0].split('/')[:-1]
@@ -77,7 +77,7 @@ class load:
         iteration_len = len(self.steps)
         for read_step in self.steps:
             if len(print_list) and ( 100.* iteration_number/iteration_len > print_list[0] ):
-                self.log("{:30s} ({:s}) {:3d} %".format("read lammpstrj", self.path, print_list[0]))
+                self.log("{:30s} {:3d} %".format("read lammpstrj", print_list[0]))
                 del ( print_list[0] )
             iteration_number += 1
             file_name = "all.{:d}.lammpstrj".format(read_step)
@@ -118,7 +118,7 @@ class load:
             self.data.at[read_step, 'every'] = step_pandas
             self.data.at[read_step, 'wall'] = wall
 
-        self.log("{:30s} ({:s}) 100 %".format("read lammpstrj", self.path))
+        self.log("{:30s} 100 %".format("read lammpstrj", self.path))
         self.load_lammpstrj_flag = True
 
     def load_log(self):
@@ -127,7 +127,7 @@ class load:
         :param name: full name of you log
         :return: pandas of date
         """
-        self.log("{:30s} ({:s}) {:3d} %".format("read log", self.path, 0))
+        self.log("{:30s} {:3d} %".format("read log", 0))
         try:
             #name =  glob.glob(self.path + '/**/**/log.lammps', recursive=True)[0]
             name = find_recurse(self.path, "log.lammps")[0]
@@ -169,7 +169,7 @@ class load:
             if read_flag:
 
                 if len(print_list) and ( num_line/line_in_file * 100 > print_list[0] ):
-                    self.log ("{:30s} ({:s}) {:3d} %".format("read log", self.path, print_list[0]))
+                    self.log ("{:30s} {:3d} %".format("read log", print_list[0]))
                     del ( print_list[0] )
                 try:
                     line_data = [float(i) for i in line.split()[1:]]
@@ -227,7 +227,7 @@ class load:
 
         self.data['Press'] = self.data['Press'] / 1e9 # create GPa
 
-        self.log("{:30s} ({:s}) {:3d} %".format("read log",self.path,  100))
+        self.log("{:30s} {:3d} %".format("read log",  100))
         del read_flag, columns
 
         self.load_log_flag = True
@@ -238,7 +238,7 @@ class load:
         :param name: full name of you log
         :return: pandas of date
         """
-        #print ( "read data ({:s}) 0 %".format(self.path))
+        #print ( "read data 0 %".format(self.path))
         try:
             #name =  glob.glob(self.path + '/**/**/data.lammps', recursive=True)[0]
             name = find_recurse(self.path, "data.lammps")[0]
@@ -266,7 +266,7 @@ class load:
                 self.general_info['mass'][1] = float(line.split()[1])
                 break
 
-        self.log("read data ({:s}) success".format(self.path))
+        self.log("read data success")
 
         self.load_data_flag = True
 
@@ -287,6 +287,26 @@ class load:
         for line in data_from_file[1:]:
             self.general_info['description'] += line + "\n"
 
+    def load_objects(self):
+        self.log ("{:30s} {:3d} %".format("read objects", 0))
+        new_flag = 0
+        load_object_status = 0
+        max_len = len(self.objects)
+        print_list = [20, 40, 60, 80]
+        for object in self.objects:
+            load_object_status += 1
+            if len(print_list) and ( load_object_status/max_len * 100 > print_list[0] ):
+                    self.log ("{:30s} {:3d} %".format("read objects", print_list[0]))
+                    del ( print_list[0] )
+            new_flag += object.set(self.data, self.general_info)
+        self.log ("{:30s} {:3d} %".format("read objects", 100))
+        return new_flag
+
+    def load_checks(self):
+        for cheack_from_system in self.checks:
+            self.log(cheack_from_system.analyse(self.data, self.general_info))
+        
+
     def load(self):
         '''
         Here we read directory to find files:
@@ -296,29 +316,15 @@ class load:
 
         Then start reading this files
         '''
-        self.log("Start loading: {:s}".format(self.path))
         self.load_discription()
         self.load_data()
         self.load_log()
         self.load_lammpstrj()
 
         self.load_objects()
+        self.load_checks()
 
-    def load_objects(self):
-        self.log ("{:30s} ({:s}) {:3d} %".format("read objects", self.path, 0))
-        new_flag = 0
-        load_object_status = 0
-        max_len = len(self.objects)
-        print_list = [20, 40, 60, 80]
-        for object in self.objects:
-            load_object_status += 1
-            if len(print_list) and ( load_object_status/max_len * 100 > print_list[0] ):
-                    self.log ("{:30s} ({:s}) {:3d} %".format("read objects", self.path, print_list[0]))
-                    del ( print_list[0] )
-            new_flag += object.set(self.data, self.general_info)
-        self.log ("{:30s} ({:s}) {:3d} %".format("read objects", self.path, 100))
-        return new_flag
-
+    
     def upload_backup(self, filename):
         backup_data = {'data': self.data, 'general_info': self.general_info}
         with open(filename, 'wb') as f:
@@ -334,16 +340,18 @@ class load:
         if self.load_objects():
             self.log ("create updated backup")
             self.upload_backup(filename)
+        self.load_checks()
         self.log ("backup has loaded")
 
     def get_log(self):
-        return self.loggin_message[-1]
+        return self.logging_message.split("\n")[-1]
 
     def log(self, log_string):
-        self.loggin_message.append(log_string)
+        self.logging_message += "\n" + log_string
 
-    def __init__(self, objects, minstep, path):
-        self.loggin_message = ["Initialisation"]
+    def __init__(self, objects, checks, minstep, path):
+        self.logging_message = "Initialisation"
+        self.checks = checks
         self.objects = objects
         self.minstep = minstep
         self.path = path

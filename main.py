@@ -17,6 +17,8 @@ from lib.neighbour_distribution import neighbour_distribution
 from lib.pt_diagram import pt_diagram
 from lib.rdf import rdf
 
+from lib.check_radius import check_radius
+
 from lib.common_pt_diagram import common_pt_diagram
 from lib.common_neighbour_distribution import common_neighbour_distribtution
 
@@ -106,8 +108,10 @@ def run_systems(paths_to_run):
                    energy(),
                    neighbour_distribution(),
                    rdf()]
+        checks = [check_radius(max_radius=5.0)]
         # system_objects
-        objects_of_system[path] = system(path=path, objects=objects)
+        objects_of_system[path] = system(
+            path=path, objects=objects, checks=checks)
         objects_of_system[path].start()
     return objects_of_system
 

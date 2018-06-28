@@ -107,7 +107,6 @@ class system(load, Thread, BaseHTTPRequestHandler):
         children = []
         for object_of_system in self.objects:
             children.append(object_of_system.layout())
-
         if self.back_botton:
             return html.Div([
                 html.Div(id=self.unique_code),
@@ -127,6 +126,14 @@ class system(load, Thread, BaseHTTPRequestHandler):
                     id=self.description_input,
                     title="Description",
                     value=self.general_info['description'],
+                    style={
+                        'width': '100%',
+                        'height': '100pt'
+                    }
+                ),
+                dcc.Textarea(
+                    title="Log",
+                    value=self.logging_message,
                     style={
                         'width': '100%',
                         'height': '100pt'
@@ -278,9 +285,9 @@ class system(load, Thread, BaseHTTPRequestHandler):
 
         # self.run(8050)
 
-    def __init__(self, path, objects, minstep=0):
+    def __init__(self, path, objects, checks, minstep=0):
         Thread.__init__(self)
-        load.__init__(self, objects, minstep=minstep, path=path)
+        load.__init__(self, objects, checks, minstep=minstep, path=path)
         # print ("data: ", self.data)
         self.backup_file = ""
         self.path = path
@@ -295,6 +302,7 @@ class system(load, Thread, BaseHTTPRequestHandler):
         self.value_input = self.unique_code + 'input_step'
         self.description_input = self.unique_code + 'description'
         self.data_description_input = self.unique_code + 'data_description'
+        self.log_output = self.unique_code + 'data_log'
         self.title_input = self.unique_code + 'title'
         self.markdown_input_return = self.unique_code + 'markdown_return'
         self.button_input = self.unique_code + 'button'
