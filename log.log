@@ -1,23 +1,12 @@
-INFO:root:no backup file
-INFO:root:Start loading: test_data
-INFO:root:description file: test_data/description.txt
-INFO:root:data file: test_data/data/data.lammps
-INFO:root:read data (test_data) success
-INFO:root:read log                       (test_data)   0 %
-INFO:root:log file: test_data/log.lammps
 INFO:werkzeug: * Running on http://0.0.0.0:8050/ (Press CTRL+C to quit)
-INFO:root:read log                       (test_data)  30 %
-INFO:root:read log                       (test_data)  60 %
-INFO:root:read log                       (test_data) 100 %
-INFO:root:read lammpstrj                 (test_data)   0 %
-INFO:root:lammpstrj path: test_data/all/
-INFO:root:read lammpstrj                 (test_data)  30 %
-INFO:root:read lammpstrj                 (test_data)  60 %
-INFO:root:read lammpstrj                 (test_data) 100 %
-INFO:root:read objects                   (test_data)   0 %
-INFO:root:read objects                   (test_data)  20 %
-INFO:root:read objects                   (test_data)  40 %
-INFO:root:read objects                   (test_data)  60 %
-INFO:root:read objects                   (test_data)  80 %
-INFO:root:read objects                   (test_data) 100 %
-INFO:root:backup success
+INFO:werkzeug:127.0.0.1 - - [28/Jun/2018 16:25:19] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Jun/2018 16:25:19] "GET /_dash-layout HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Jun/2018 16:25:19] "GET /_dash-dependencies HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Jun/2018 16:25:19] "GET /_dash-layout HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Jun/2018 16:25:19] "GET /_dash-dependencies HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Jun/2018 16:25:19] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Jun/2018 16:25:19] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Jun/2018 16:25:19] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Jun/2018 16:25:19] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Jun/2018 16:25:19] "POST /_dash-update-component HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [28/Jun/2018 16:25:19] "POST /_dash-update-component HTTP/1.1" 200 -
