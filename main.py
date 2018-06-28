@@ -146,10 +146,9 @@ def add_items_in_dict(my_dict, items, my_object):
     if len(items) == 1:
         my_dict[items[0]] = my_object
         return
-    if items[0] in my_dict:
-        add_items_in_dict(my_dict[items[0]], items[1:], my_object)
-        return
-    my_dict[items[0]] = dict()
+    if not items[0] in my_dict:
+        my_dict[items[0]] = dict()
+
     add_items_in_dict(my_dict[items[0]], items[1:], my_object)
 
     return
@@ -159,17 +158,18 @@ def add_items_to_string(system_object, layout_list, items, tabs):
     if not type(items) is dict:
         #print ("items", items)
         layout_list.append(dcc.Markdown(
-            "**" + tabs + ">**[" + items.get_title() + "](/" + items.get_path() + ")" + ", status: " + items.get_log()))
+            "**" + tabs + ">**[" + "open" + "](/" + items.get_path() + ")" + ", status: " + items.get_log()))
         #layout_list.append( html.Br())
 
         return  # layout_list
     for item in items:
-        if type(items[item]) is dict:
-            layout_list.append(dcc.Markdown("**" + tabs + item + "**"))
-            add_items_to_string(system_object, layout_list,
-                                items[item], tabs + "|---")
-        else:
-            add_items_to_string(system_object, layout_list, items[item], tabs)
+        layout_list.append(dcc.Markdown("**" + tabs + item + "**"))
+        add_items_to_string(system_object, layout_list,
+                            items[item], tabs + "|---")
+        # if type(items[item]) is dict:
+
+        # else:
+        #     add_items_to_string(system_object, layout_list, items[item], tabs)
 
     return
 
