@@ -229,6 +229,7 @@ if __name__ == "__main__":
     def display_page(pathname):
         common_pt.analyse(system_objects)
         common_neighbour.analyse(system_objects)
+        app.layout = get_main_layout(common_pt, common_neighbour)
         if not pathname:
             return html.Div(get_layout_list(system_objects))
 

@@ -118,7 +118,7 @@ class load:
             self.data.at[read_step, 'every'] = step_pandas
             self.data.at[read_step, 'wall'] = wall
 
-        self.log("{:30s} 100 %".format("read lammpstrj", self.path))
+        self.log("{:30s} 100 %".format("read lammpstrj"))
         self.load_lammpstrj_flag = True
 
     def load_log(self):
